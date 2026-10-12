@@ -26,18 +26,49 @@ header .clk small{font-size:14px;font-weight:600;margin-left:3px;opacity:.9}
 .lock .pad{display:grid;grid-template-columns:repeat(3,72px);gap:14px}
 .lock .pad button{height:72px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font:inherit;font-size:26px;font-weight:600}
 .lock .pad button:active{background:rgba(255,255,255,.32)}
+.lock .biob{margin-top:18px;background:#fff;color:var(--g);border:0;border-radius:14px;padding:13px 18px;font:inherit;font-weight:700;font-size:15px}
 .lock .lnk{background:none;border:0;color:#fff;opacity:.85;font:inherit;font-size:14px;text-decoration:underline;margin-top:18px}
 .lock .box{background:#fff;color:var(--tx);border-radius:16px;padding:16px;width:100%;max-width:380px;text-align:left}
 .lock .box .lab{margin-top:10px}
 .shake{animation:sh .35s}@keyframes sh{0%,100%{transform:none}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 header .ttl{font-weight:700;font-size:18px;line-height:1.2}
+.qb{font-size:12px;background:rgba(255,255,255,.22);border-radius:10px;padding:2px 8px;margin-left:8px;font-weight:600;vertical-align:middle}
+.qb:empty{display:none}
+.abar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.abar button{border:0;border-radius:14px;padding:13px 8px;font:inherit;font-weight:700;font-size:15px;color:#fff}
+.emgb{background:#e65100}.planb{background:#283593}
+.save.emgs{background:#e65100;box-shadow:none}
+.task.started,.task.paused{border-left:4px solid var(--g);padding-left:10px;margin-left:-4px}
+.task.paused{border-left-color:var(--warn)}
+.task.over .tm{color:var(--out)}
+.task.nxt{background:#f6fbf6;border-radius:12px;padding-left:8px;padding-right:8px;margin:0 -8px}
+.task.emgt .th b{color:#e65100}
+.badge.nx{background:#e3f2fd;color:#1565c0}
+.dv{font-size:14px}
+.cfl{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px;color:#8a4b00;font-size:13px;margin-top:6px;background:#fff3e0;border-radius:8px;padding:6px 8px}
+.subs{margin:8px 0 0;display:flex;flex-direction:column;gap:5px}
+.sub{display:flex;align-items:center;gap:8px;border:1px solid var(--bd);background:#fff;border-radius:10px;padding:8px 10px;font:inherit;font-size:14px;text-align:left;color:var(--tx)}
+.sub.on{background:var(--g2);border-color:#a5d6a7;color:#2b5a30}
+.sub .cb{font-size:18px;line-height:1}.sub .stm{color:var(--mut);font-size:12px;min-width:38px}
+.tb.ok.mini{color:var(--g)}
+.pli{display:flex;gap:8px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--bd)}
+.pli:first-of-type{border-top:0}
+.pli input.pt{width:122px;flex:none;padding:8px 6px;font:inherit;font-size:14px;border:1px solid var(--bd);border-radius:10px;background:#fff;color:var(--tx)}
+.pli .pn{flex:1;min-width:0}.pli .pn .s{font-size:12px;color:var(--mut)}
+.pli.sk{opacity:.45}.pli.sk .pn b{text-decoration:line-through}
+.pli.cf input.pt{border-color:var(--warn);background:#fff8f0}
+.sub2{font-size:13px;font-weight:700;margin:14px 0 6px;color:var(--tx)}
+.sub2.out{color:var(--out)}
+.rvl{font-size:13px;padding:2px 0}
+.trend{display:flex;gap:6px;align-items:flex-end;margin-top:6px}
+.trend div{flex:1;text-align:center;font-size:10px;color:var(--mut);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:78px}
+.trend i{display:block;background:#81c784;border-radius:4px 4px 0 0;width:70%;margin:2px 0}
+textarea.inp{resize:vertical;line-height:1.5}
 header .dt{font-size:12px;opacity:.85;font-weight:400}
 header .hb{display:flex;gap:6px}
 header button{background:rgba(255,255,255,.16);border:0;color:#fff;font:inherit;font-size:15px;font-weight:700;border-radius:10px;min-width:38px;height:38px;padding:0 8px}
 #bar{position:fixed;top:0;left:0;height:3px;width:0;background:#ffeb3b;z-index:9;transition:width .4s}
 #bar.on{width:85%}
-#net{display:none;background:#455a64;color:#fff;text-align:center;font-size:13px;padding:5px}
-#net.on{display:block}
 main{padding:12px 14px;max-width:560px;margin:0 auto}
 .pg{display:none}.pg.on{display:block}
 .gt{font-size:13px;color:var(--mut);font-weight:600;margin:14px 2px 6px}
@@ -147,9 +178,8 @@ details.card>summary::-webkit-details-marker{display:none}
 </style></head>
 <body>
 <div id="bar"></div>
-<header><div class="hrow"><div class="ttl" id="hTitle">📒 My Tasks &amp; Accounts</div><div class="hb"><button id="langBtn" data-act="lang">EN</button><button data-go="set">⚙</button></div></div><div class="hrow2"><div class="dt" id="hDate"></div><div class="clk" id="hClock"></div></div></header>
+<header><div class="hrow"><div class="ttl"><span id="hTitle">📒 My Tasks &amp; Accounts</span><span id="qb" class="qb"></span></div><div class="hb"><button data-act="lock" aria-label="lock">🔒</button><button id="langBtn" data-act="lang">EN</button><button data-go="set">⚙</button></div></div><div class="hrow2"><div class="dt" id="hDate"></div><div class="clk" id="hClock"></div></div></header>
 <div id="lock" class="lock hidden"></div>
-<div id="net"></div>
 <main>
   <section id="pg-task" class="pg"><div id="taskBox"><div class="empty">…</div></div></section>
   <section id="pg-add" class="pg on"><div id="addTop"></div><div id="addBox"><div class="empty">…</div></div><div id="recentBox"></div></section>
@@ -164,12 +194,12 @@ details.card>summary::-webkit-details-marker{display:none}
 <datalist id="plist"></datalist>
 <div id="toast"></div>
 <script>
-var APP_VER='v5 · 12-10-2026';
+var APP_VER='v6.1 · 12-10-2026';
 var START=(function(){var p='';try{p=new URLSearchParams(location.search).get('p')||'';}catch(e){}return /^(task|add|sum|per|loan|rec)$/.test(p)?p:'task';})();
 /* ---- API இணைப்பு (Apps Script) + cache: கடைசி data உடனே தெரியும், பின்னணியில் புதுப்பிக்கும் ---- */
 var CFG={};try{CFG=JSON.parse(localStorage.getItem('cfg')||'{}')||{};}catch(e){CFG={};}
 if(!CFG.api)CFG.api='https://script.google.com/macros/s/AKfycbxYPZ95siv1prlc1s6fxXQmj5LU4Pp0F29-Kse5MCmJEvpFMMg_T7PyfQRzIflf1xXRPw/exec';
-var READ={getInit:1,getTasks:1,getSummary:1,getPersons:1,getPerson:1,getLoans:1,getRecords:1,getPockets:1,getCard:1,getAllTasks:1,getTaskReport:1};
+var READ={getInit:1,getTasks:1,getSummary:1,getPersons:1,getPerson:1,getLoans:1,getRecords:1,getPockets:1,getCard:1,getAllTasks:1,getTaskReport:1,getReview:1,getPlan:1};
 function saveCfg(){try{localStorage.setItem('cfg',JSON.stringify(CFG));}catch(e){}}
 function apiCall(fn,args){return fetch(CFG.api,{method:'POST',body:JSON.stringify({key:CFG.key||'',fn:fn,args:args||[]}),redirect:'follow'})
  .then(function(r){if(!r.ok)throw new Error('NetworkError HTTP '+r.status);return r.json();})
@@ -233,7 +263,23 @@ editLoan:'✏️ கடனைத் திருத்து',newLoan:'＋ ப�
 noMonth:'இந்த மாதம் பதிவுகள் இல்லை',delQ:'இந்தப் பதிவை நீக்கவா? (Sheet-ல் "நீக்கம்" என்று குறிக்கப்படும், அழியாது)',deleted:'✓ நீக்கப்பட்டது',tapEdit:'திருத்த, பதிவைத் தட்டவும்',
 setPk:'பணப்பைகள் — தொடக்க இருப்பு',setPkHint:'பதியத் தொடங்கும் நாளில் ஒவ்வொரு கணக்கிலும் இருந்த தொகை. Credit card நிலுவையை மைனஸில் (எ.கா. -5000).',newPk:'புதிய பணப்பை பெயர்',
 
-know:'தெரிந்துகொள்ள',knowBody:'• பதிவைத் திருத்த, அதைத் தட்டவும்.<br>• புதிய வகையைப் பதிவுப் படிவத்திலேயே "＋ புதியது" மூலம் சேர்க்கலாம்.<br>• பழைய கைமாற்றுகளை, பழைய தேதியுடன் "கைமாற்று வாங்கினேன் / கொடுத்தேன்" என்று பதியவும்.<br>• பழைய கடன்களை 🏦 பக்கத்தில், இன்றைய நிலுவையுடன் சேர்க்கவும்.<br>• App திறந்திருக்கும்போது net போனால், பதிவுகள் போனில் சேமிக்கப்பட்டு net வந்ததும் அனுப்பப்படும்.<br>• 💾 ஒவ்வொரு ஞாயிறும் Google Drive "My Accounts Backup" folder-ல் தானாக backup.',ver:'பதிப்பு',me:'நான்'
+know:'தெரிந்துகொள்ள',knowBody:'• பதிவைத் திருத்த, அதைத் தட்டவும்.<br>• புதிய வகையைப் பதிவுப் படிவத்திலேயே "＋ புதியது" மூலம் சேர்க்கலாம்.<br>• பழைய கைமாற்றுகளை, பழைய தேதியுடன் "கைமாற்று வாங்கினேன் / கொடுத்தேன்" என்று பதியவும்.<br>• பழைய கடன்களை 🏦 பக்கத்தில், இன்றைய நிலுவையுடன் சேர்க்கவும்.<br>• App திறந்திருக்கும்போது net போனால், பதிவுகள் போனில் சேமிக்கப்பட்டு net வந்ததும் அனுப்பப்படும்.<br>• 💾 ஒவ்வொரு ஞாயிறும் Google Drive "My Accounts Backup" folder-ல் தானாக backup.',ver:'பதிப்பு',me:'நான்',
+st_paused:'இடைநிறுத்தம்',nextL:'அடுத்து',nowRun:'இப்போது நடப்பவை',emgBtn:'அவசர வேலை',planBtn:'மதிப்பாய்வு & திட்டம்',
+plNotYet:'நாளைய திட்டம் இன்னும் உறுதி செய்யவில்லை',cfN:'{0} பணிகள் 🛵 விநியோக நேரத்துடன் மோதுகின்றன',cfWith:'{0} நேரத்தில்',
+blT:'நேரம் குறிக்காத வேலைகள்',blHint:'திட்டமிடும்போது காலியான நேரத்தில், இடத்துக்கு ஏற்ப, முன்னுரிமைப்படி (கடைசித் தேதி → ⭐ → டெய்ரி → சித்தா → சொந்தம்) தானாக இடம் பெறும்.',blAdd:'＋ வேலை சேர்',blNone:'இல்லை 👍',tDueS:'கடைசி',
+tPause:'இடைநிறுத்து',tResume:'தொடர்',tStart:'தொடங்கு',pauseQ:'ஏன் இடைநிறுத்தம்?',pw_patient:'நோயாளி',pw_dairy:'டெய்ரி அவசரம்',pw_home:'சொந்த வேலை',pw_call:'அழைப்பு',pw_other:'மற்றவை',rsPh:'அல்லது இங்கே type செய்யவும்',
+skipT:'இன்று செய்யவில்லை — காரணம்',sw_time:'நேரமில்லை',sw_emg:'அவசர வேலை',sw_notneed:'தேவையில்லை',sw_rain:'மழை',tmrw:'⏩ நாளைக்கு மாற்று',tmrwS:'நாளைக்கு',
+subConfirm:'{0} உள்வேலைகள் tick செய்யவில்லை. முடிந்ததாகக் குறிக்கவா?',subMissL:'விடுபட்டது',snoozedFrom:'முதலில்',undo:'↺ தவறு — திரும்பப் பெறு',snoozeQ:'எவ்வளவு நேரம் கழித்து?',
+emgT:'அவசர வேலை',emgHint:'திட்டமிடாத வேலை இப்போதே தொடங்கும்; நடக்கும் பணி தானாக இடைநிறுத்தப்படும். முடிந்ததும் ✓ அழுத்தி, இடைநிறுத்திய பணியை ▶ தொடரவும்.',emgWhat:'என்ன வேலை?',emgPh:'அல்லது இங்கே type செய்யவும்',emgGo:'இப்போது தொடங்கு',e_emg:'என்ன வேலை என்று சொல்லவும்',
+eq_cow:'மாடு உடல்நலம்',eq_farm:'பண்ணை அவசரம்',eq_patient:'நோயாளி அழைப்பு',eq_home:'வீட்டு அவசரம்',eq_travel:'பயணம்',emgOn:'⚡ தொடங்கியது — முடிந்ததும் ✓ அழுத்தவும்',
+planT:'இன்றைய மதிப்பாய்வு & நாளைய திட்டம்',rvT:'இன்று',rvDone:'முடிந்தது',rvMissed:'தவறியது',rvSkip:'தவிர்த்தது',rvImp:'⭐ / டெய்ரி — தவறியவை',rvSub:'உள்வேலை விடுபட்டவை',rvDiv:'வேலை நேரம் (பிரிவு வாரியாக)',rvPause:'இடையூறுகள்',rvEmg:'அவசர வேலைகள்',rvLate:'தாமதமாகத் தொடங்கியவை',rvTrend:'கடந்த 7 நாள் (முடிந்த %)',rvAll:'📈 30 நாள் விவரம்',rvGood:'சிறப்பு! முக்கியப் பணி எதுவும் தவறவில்லை 👍',
+plT:'நாளைய திட்டம்',plDone:'உறுதி செய்யப்பட்டது — நினைவூட்டல்கள் Calendar-ல் உள்ளன (signal இல்லாவிட்டாலும் ஒலிக்கும்). மாற்றினால் மீண்டும் உறுதி செய்யவும்.',plNot:'இன்னும் உறுதி செய்யவில்லை. 21:30-க்குள் உறுதி செய்யாவிட்டால் வழக்கமான அட்டவணைப்படி தானாக.',
+plCover:'பிரதீப் விடுப்பு — நான் விநியோகம்',plAuto:'தானாக',plLeft:'இடம் கிடைக்காதவை (＋ அழுத்தி நேரம் போடவும்)',plOnce:'＋ நாளைக்கு மட்டும் ஒரு வேலை',plGo:'✓ நாளைய திட்டம் உறுதி',plOk:'✓ உறுதி — {0} பணிகளுக்கு நினைவூட்டல் Calendar-ல் வைக்கப்பட்டது',plQueued:'Net வந்ததும் உறுதி செய்யப்படும்',
+m_flex:'நேரம் குறிக்காதது',tDur:'எவ்வளவு நேரம் ஆகும்',tDiv:'பிரிவு',tLoc:'எங்கே செய்யலாம்',tSubs:'உள்வேலைகள் (வரிக்கு ஒன்று; நேரம் விருப்பம்: 04:35 சாணம் சுத்தம்)',tRem:'Calendar நினைவூட்டல்',tFill:'இந்த நேரத்தில் வேறு வேலைகளும் செய்யலாம் (எ.கா. Clinic நேரம்)',tDue:'கடைசித் தேதி (விருப்பம்)',
+impHint:'⭐ முக்கியம்: 5 நிமிடம் கழித்து இன்னொரு நினைவூட்டல்; 🔕 நேரத்திலும் வரும்.',coverHint:'"பிரதீப் விடுப்பு" என்று குறித்த நாட்களில் மட்டும் வரும்; அந்த நேரத்தில் தொடங்கும் மற்ற பணிகளுக்கு ⚠ எச்சரிக்கை வரும்.',
+loT:'வெளியேறு',loHint:'இந்த போனிலிருந்து ரகசியக் குறி, PIN, சேமித்த data அழிக்கப்படும். Google Sheet-ல் உள்ள data பாதுகாப்பாக இருக்கும்.',loQ:'வெளியேறவா?',loQ2:'{0} பதிவுகள் இன்னும் Sheet-க்கு அனுப்பப்படவில்லை — அழிந்துவிடும்! வெளியேறவா?',loDone:'வெளியேறியது. மீண்டும் இணைக்க ரகசியக் குறி தேவை.',
+saved:'✓ சேமிக்கப்பட்டது',queued:'✓ சேமிக்கப்பட்டது',dndBtn:'வேலையில் இருக்கிறேன் (நினைவூட்டல் நிறுத்து)',
+lkT:'பூட்டு',lkHint:'மேலே 🔒 அழுத்தினால் உடனே பூட்டப்படும்; நீங்கள் பூட்டாதவரை திறந்தே இருக்கும். பூட்டியிருக்கும்போதும் பதிவுகள் பின்னணியில் Sheet-க்குப் போகும் — எதுவும் அழியாது.',bioT:'கைரேகை / போன் பூட்டால் திறத்தல்',bioBtn:'இயக்கு',bioHint:'போன் கைரேகை கேட்கும் (இல்லையென்றால் போனின் PIN / pattern). App PIN மாற்று வழியாக இருக்கும்.',bioOn:'கைரேகை / போன் பூட்டு இயக்கப்பட்டது',bioOff:'கைரேகை நிறுத்து',bioNo:'இந்த போன் / browser-ல் கைரேகை வசதி இல்லை — PIN பயன்படுத்தவும்',bioFail:'இயக்க முடியவில்லை',nlT:'இரவு தானாகப் பூட்டு',pinCh:'PIN மாற்று',pinOld:'பழைய PIN',pinNew:'புதிய PIN',pinNew2:'மீண்டும் புதிய PIN',loBlock:'{0} பதிவுகள் இன்னும் Sheet-க்குப் போகவில்லை — sync ஆன பிறகு வெளியேறவும்',loHint:'போனை நிரந்தரமாக வேறொருவருக்குக் கொடுக்கும்போது மட்டும். (தினசரிப் பாதுகாப்புக்கு 🔒 பூட்டு போதும்.) Sheet data பாதுகாப்பாக இருக்கும்.'
 },en:{
 ty_OPEN_GET:'Old balance (they owe me)',ty_OPEN_GIVE:'Old balance (I owe)',ty_REVAL:'Value change',morePk:'More (investments / trading)',
 pickT:'Choose a name',pkNew:'add as new person',pkClear:'No name',allL:'All',noEdit:'This cannot be edited — delete it on the Records page and enter again',
@@ -283,7 +329,23 @@ editLoan:'✏️ Edit loan',newLoan:'＋ New loan',lName:'Name (to remember)',lN
 noMonth:'No entries this month',delQ:'Delete this entry? (It is only marked "deleted" in the Sheet, not erased)',deleted:'✓ Deleted',tapEdit:'Tap an entry to edit',
 setPk:'Accounts — opening balance',setPkHint:'The amount in each account on the day you start. Credit card dues as minus (e.g. -5000).',newPk:'New account name',
 
-know:'Good to know',knowBody:'• Tap an entry to edit it.<br>• Add a new category from the entry form with "＋ New".<br>• Enter old hand loans with their old date as "Borrowed / Lent".<br>• Add old loans on the 🏦 page with today\'s outstanding.<br>• If the internet drops while the app is open, entries are kept on the phone and sent later.<br>• 💾 Every Sunday an automatic backup goes to the Google Drive folder "My Accounts Backup".',ver:'Version',me:'Me'
+know:'Good to know',knowBody:'• Tap an entry to edit it.<br>• Add a new category from the entry form with "＋ New".<br>• Enter old hand loans with their old date as "Borrowed / Lent".<br>• Add old loans on the 🏦 page with today\'s outstanding.<br>• If the internet drops while the app is open, entries are kept on the phone and sent later.<br>• 💾 Every Sunday an automatic backup goes to the Google Drive folder "My Accounts Backup".',ver:'Version',me:'Me',
+st_paused:'Paused',nextL:'Next',nowRun:'In progress',emgBtn:'Emergency',planBtn:'Review & plan',
+plNotYet:"Tomorrow's plan is not confirmed yet",cfN:'{0} task(s) clash with 🛵 delivery',cfWith:'during {0}',
+blT:'Unscheduled tasks',blHint:'When planning, these are placed automatically into free time that suits the place, by priority (due date → ⭐ → dairy → siddha → personal).',blAdd:'＋ Add task',blNone:'None 👍',tDueS:'due',
+tPause:'Pause',tResume:'Resume',tStart:'Start',pauseQ:'Why pause?',pw_patient:'Patient',pw_dairy:'Dairy urgent',pw_home:'Personal',pw_call:'Phone call',pw_other:'Other',rsPh:'or type here',
+skipT:'Not today — reason',sw_time:'No time',sw_emg:'Emergency',sw_notneed:'Not needed',sw_rain:'Rain',tmrw:'⏩ Move to tomorrow',tmrwS:'tomorrow',
+subConfirm:'{0} sub-step(s) not ticked. Mark done anyway?',subMissL:'missed',snoozedFrom:'was',undo:'↺ Undo',snoozeQ:'Remind me again in',
+emgT:'Emergency work',emgHint:'Unplanned work starts now; the running task is paused automatically. Tap ✓ when done, then ▶ resume the paused task.',emgWhat:'What is it?',emgPh:'or type here',emgGo:'Start now',e_emg:'Say what it is',
+eq_cow:'Cow health',eq_farm:'Farm urgent',eq_patient:'Patient call',eq_home:'Home urgent',eq_travel:'Travel',emgOn:'⚡ Started — tap ✓ when done',
+planT:"Today's review & tomorrow's plan",rvT:'Today',rvDone:'Done',rvMissed:'Missed',rvSkip:'Skipped',rvImp:'⭐ / dairy — missed',rvSub:'Sub-steps missed',rvDiv:'Work time by section',rvPause:'Interruptions',rvEmg:'Emergencies',rvLate:'Started late',rvTrend:'Last 7 days (% done)',rvAll:'📈 30-day detail',rvGood:'Great — no key task missed 👍',
+plT:"Tomorrow's plan",plDone:'Confirmed — reminders are in Calendar (they ring even without signal). Re-confirm after changes.',plNot:'Not confirmed yet. If not confirmed by 21:30 the usual schedule is used.',
+plCover:'Pradeep on leave — I deliver',plAuto:'auto',plLeft:'Could not place (tap ＋ and set a time)',plOnce:'＋ One-time task for tomorrow',plGo:"✓ Confirm tomorrow's plan",plOk:'✓ Confirmed — reminders set in Calendar for {0} tasks',plQueued:'Will confirm when online',
+m_flex:'Unscheduled',tDur:'How long it takes',tDiv:'Section',tLoc:'Where it can be done',tSubs:'Sub-steps (one per line; optional time: 04:35 Dung cleaning)',tRem:'Calendar reminder',tFill:'Other tasks can be done during this time (e.g. clinic hours)',tDue:'Due date (optional)',
+impHint:'⭐ Important: a second reminder 5 minutes later; also rings while busy 🔕.',coverHint:'Appears only on days marked "Pradeep on leave"; other tasks starting during it get a ⚠ warning.',
+loT:'Log out',loHint:'Removes the key, PIN and saved data from this phone. Your data in the Google Sheet stays safe.',loQ:'Log out?',loQ2:'{0} entries are not yet sent to the Sheet — they will be lost! Log out?',loDone:'Logged out. You need the secret key to connect again.',
+saved:'✓ Saved',queued:'✓ Saved',dndBtn:"I'm busy (pause reminders)",
+lkT:'Lock',lkHint:'Tap 🔒 at the top to lock right away; it stays open until you lock it. While locked, entries still sync to the Sheet in the background — nothing is lost.',bioT:'Unlock with fingerprint / screen lock',bioBtn:'Turn on',bioHint:'The phone asks for your fingerprint (or its PIN / pattern). The app PIN stays as a backup.',bioOn:'Fingerprint / screen lock is on',bioOff:'Turn off fingerprint',bioNo:'Fingerprint is not available on this phone / browser — use the PIN',bioFail:'Could not turn on',nlT:'Auto-lock at night',pinCh:'Change PIN',pinOld:'Old PIN',pinNew:'New PIN',pinNew2:'New PIN again',loBlock:'{0} entries are not yet in the Sheet — log out after they sync',loHint:'Only when giving this phone away for good. (For daily privacy, 🔒 Lock is enough.) Sheet data stays safe.'
 }};
 var VAL_EN={'நண்பர்':'Friend','உறவினர்':'Relative','குடும்பம்':'Family','கடை':'Shop','வாடிக்கையாளர்':'Customer','தொழிலாளர்':'Worker','மற்றவர்':'Other','நகை':'Jewel','வங்கிக் கடன்':'Bank loan','நகைக் கடன்':'Gold loan','நபர் கடன்':'Personal loan','மற்றவை':'Other','செயலில்':'Active','முடிந்தது':'Closed','ரொக்கம்':'Cash','நான்':'Me'};
 var LTYPES=['வங்கிக் கடன்','நகைக் கடன்','நபர் கடன்','மற்றவை'],LSTAT=['செயலில்','முடிந்தது'];
@@ -332,7 +394,7 @@ function renderChrome(){
  navs.forEach(function(n){h+='<button data-go="'+n[0]+'" class="'+(S.page===n[0]?'on':'')+'"><span>'+n[1]+'</span>'+t('nav_'+n[0])+'</button>';});
  $('nav').innerHTML=h;$('perQ').placeholder=t('search');$('perAllL').textContent=t('everyone');
  $('loanTtl').textContent=t('loansTitle');$('newLoanBtn').textContent=t('newOne');
- $('net').textContent=t('offline');$('net').className=navigator.onLine?'':'on';}
+ qBadge();}
 function toggleLang(){if(S.type)grab();LANG=LANG==='en'?'ta':'en';lsSet('lang',LANG);
  google.script.run.withFailureHandler(function(){}).setLang(LANG);
  renderChrome();if(S.page==='add'){if(S.type)renderForm();else renderGrid();}else go(S.page);}
@@ -347,15 +409,20 @@ function go(p){S.page=p;var ps=document.querySelectorAll('.pg');for(var i=0;i<ps
 function qGet(){try{return JSON.parse(lsGet('queue')||'[]');}catch(e){return [];}}
 function qSet(q){lsSet('queue',JSON.stringify(q));}
 var flushing=false;
-function flush(){if(flushing||!navigator.onLine)return;var q=qGet();if(!q.length)return;flushing=true;var item=q[0];
- google.script.run.withSuccessHandler(function(){var q2=qGet().filter(function(x){return x.cid!==item.cid;});qSet(q2);flushing=false;
-   if(q2.length)flush();else{toast(t('synced'));if(S.page==='add'&&!S.type)renderGrid();}})
-  .withFailureHandler(function(e){flushing=false;if(!isNet(e))toast('⚠ '+emsg(e),true);}).saveEntry(item);}
-function queueIt(o){var q=qGet();if(!q.some(function(x){return x.cid===o.cid;}))q.push(o);qSet(q);afterSave(o,true);}
+// வரிசையில் உள்ளவற்றை ஒவ்வொன்றாக Sheet-க்கு அனுப்பு (கணக்குப் பதிவுகள் + பணிச் செயல்கள்)
+function flush(){if(flushing)return;var q=qGet();if(!q.length){qBadge();return;}flushing=true;var item=q[0],fn=item.fn||'saveEntry',args=item.fn?item.args:[item];
+ var drop=function(){var q2=qGet().filter(function(x){return x.cid!==item.cid;});qSet(q2);flushing=false;qBadge();return q2;};
+ google.script.run.withSuccessHandler(function(res){var q2=drop();
+   if(res&&res.items&&(fn==='taskAct'||fn==='emergency'||fn==='backlogAct')){S.tasksRaw=res;lsSet('c:getTasks:[]',JSON.stringify(res));}
+   if(q2.length)flush();else onSynced(fn);})
+  .withFailureHandler(function(e){var m=emsg(e);if(isNet(e)||m==='AUTH'){flushing=false;qBadge();return;}
+   var q2=drop();toast('⚠ '+m,true);if(q2.length)setTimeout(flush,200);else onSynced(fn);})[fn].apply(null,args);}
+function onSynced(fn){if(!S.init)return;if(S.page==='task'&&!sheetOpen()){if(fn==='taskAct'||fn==='emergency'||fn==='backlogAct')renderTasks();else loadTasks();}
+ if(S.page==='add'&&!S.type)renderGrid();}
+function queueIt(o){var q=qGet();if(!q.some(function(x){return x.cid===o.cid;}))q.push(o);qSet(q);qBadge();afterSave(o,true);setTimeout(flush,0);}
 
 /* ---- பதிவு ---- */
-function renderTop(){var h='',q=qGet();
- if(q.length)h+='<div class="pend"><span>'+fmt(t('pending'),q.length)+'</span><button data-act="flush">'+t('sendNow')+'</button></div>';
+function renderTop(){var h='';
  h+=S.init.doneToday?'<div class="done ok">'+t('doneOk')+'</div>':'<button class="done" data-act="done">'+t('doneBtn')+'</button>';
  $('addTop').innerHTML=h;}
 function renderGrid(){S.type=null;S.editId=null;S.f={};renderTop();var h='';GROUPS.forEach(function(g){h+='<div class="gt">'+t(g.t)+'</div><div class="grid'+(g.big?' big2':'')+'">';g.items.forEach(function(it){h+='<button class="tbtn" data-type="'+it[0]+'"><span class="ic">'+it[1]+'</span>'+t('ty_'+it[0])+'</button>';});h+='</div>';});$('addBox').innerHTML=h;loadRecent();}
@@ -400,18 +467,14 @@ function doSave(){grab();var f=S.f,k=S.type,err='';
  if(S.editId){if(!navigator.onLine){toast('⚠ '+t('e_offline'),true);return;}
   call('updateEntry',[S.editId,o],function(){toast(t('updated'));rememberPerson(o.person);var back=S.backTo||'add';S.backTo=null;S.type=null;S.editId=null;if(back==='add')renderGrid();else go(back);});return;}
  o.cid='C'+Date.now()+Math.random().toString(36).slice(2,6);
- if(!navigator.onLine){queueIt(o);return;}
- var fin=false;busy(true);
- var timer=setTimeout(function(){if(fin)return;fin=true;busy(false);queueIt(o);},15000);
- google.script.run.withSuccessHandler(function(){if(fin)return;fin=true;clearTimeout(timer);busy(false);afterSave(o,false);})
-  .withFailureHandler(function(e){if(fin)return;fin=true;clearTimeout(timer);busy(false);if(isNet(e))queueIt(o);else toast('⚠ '+emsg(e),true);}).saveEntry(o);}
+ queueIt(o);}
 function rememberPerson(p){if(!p)return;if(S.init.persons.indexOf(p)<0){S.init.persons.push(p);fillPlist();}var pi=S.init.pinfo||(S.init.pinfo=[]),o=null;pi.forEach(function(x,i){if(x.name===p)o=pi.splice(i,1)[0];});pi.unshift(o||{name:p,rel:'',last:tdy(),n:1});}
 function afterSave(o,queued){lsSet('pocket',o.pocket);if((o.type==='EXP'||o.type==='INC')&&o.div)lsSet('div',o.div);rememberPerson(o.person);
- toast(queued?t('queued'):(t('saved')+' — '+money(o.amount)));renderGrid();}
+ toast(t('saved')+' — '+money(o.amount));renderGrid();}
 function newCat(){grab();var k=S.type,div=k==='SAVE'?'சொந்தம்':S.f.div,kind=k==='SAVE'?'சேமிப்பு':(k==='EXP'?'செலவு':'வரவு');
  var n=prompt(fmt(t('newCatQ'),divN(div),t('k_'+kind)));if(!n||!n.trim())return;n=n.trim();var en=LANG==='en'?n:'';
  call('addCategory',[div,kind,n,en],function(){S.init.cats.push({div:div,kind:kind,name:n,en:en});S.f.cat=n;renderForm();toast(t('catAdded'));});}
-function markDone(){call('markDone',[],function(){S.init.doneToday=true;renderTop();toast(t('doneToast'));});}
+function markDone(){qPush('markDone',[nowStrL()]);S.init.doneToday=true;renderTop();toast(t('doneToast'));}
 function loadRecent(){var q=qGet(),qh=q.slice().reverse().map(function(o){return recRow({id:o.cid,k:o.type,amt:Number(o.amount),date:o.date,div:o.div,cat:o.cat,pocket:o.pocket,to:o.to,person:o.person,loanName:'',interest:o.interest,due:o.due,note:o.note},false,true);}).join('');
  var show=function(list){if(S.type)return;var h=qh+list.slice(0,5).map(function(x){return recRow(x,false);}).join('');
   $('recentBox').innerHTML=h?'<div class="gt">'+t('recent')+'</div><div class="card">'+h+'</div>':'';};
@@ -526,6 +589,11 @@ function loadSet(){call('getPockets',[],function(list){var h='<div class="card">
  h+='<div class="row" style="gap:6px;margin-top:8px"><input id="newPk" class="inp" style="flex:1" placeholder="'+t('newPk')+'">'+gsel('','',"cash").replace('<select class="inp ','<select id="newPkG" class="inp ')+'</div><button class="save" data-act="savepk">'+t('lSave')+'</button></div>';
  h+='<div class="card"><div class="ch">📅 '+t('calT')+'</div><div class="small">'+t('calSteps')+'</div><button class="save" data-act="testcal">'+t('calTest')+'</button></div>';
  h+='<div class="card"><div class="ch">💳 '+t('cardT')+'</div>'+lab(t('cardLim'))+'<input id="cardLim" class="inp" type="number" inputmode="decimal"><div class="small" style="margin-top:6px">'+t('cardHint')+'</div><button class="save sec" data-act="savecard">'+t('lSave')+'</button></div>';
+ h+='<div class="card"><div class="ch">🔒 '+t('lkT')+'</div><div class="small">'+t('lkHint')+'</div>'
+  +lab('👆 '+t('bioT'))+(CFG.bio?'<div class="hint">✓ '+t('bioOn')+'</div><button class="save sec" data-act="bioff">'+t('bioOff')+'</button>':'<button class="save sec" data-act="bioon">👆 '+t('bioBtn')+'</button><div class="small" style="margin-top:6px">'+t('bioHint')+'</div>')
+  +lab('🌙 '+t('nlT'))+'<div class="chips"><button class="chip'+(CFG.nl!==false?' on':'')+'" data-act="nlset" data-val="1">'+t('yes')+'</button><button class="chip'+(CFG.nl===false?' on':'')+'" data-act="nlset" data-val="0">'+t('no')+'</button><input id="nlTime" class="inp" type="time" style="width:130px" value="'+esc(CFG.nlt||'21:00')+'"></div>'
+  +'<button class="save sec" data-act="pinch">🔑 '+t('pinCh')+'</button></div>';
+ h+='<div class="card"><div class="ch">🚪 '+t('loT')+'</div><div class="small">'+t('loHint')+'</div><button class="save sec" style="color:var(--out);border-color:var(--out)" data-act="logout">🚪 '+t('loT')+'</button></div>';
  h+='<div class="card"><div class="ch">'+t('know')+'</div><div class="small">'+t('knowBody')+'<br>• '+t('ver')+': '+esc(S.init.ver)+'</div></div>';
  $('setBox').innerHTML=h;
  call('getCard',[],function(c){$('cardLim').value=c.limit;});
@@ -618,67 +686,256 @@ function openEdit(x){if(!navigator.onLine){toast('⚠ '+t('e_offline'),true);ret
 function oeSave(){var f=S.oe,a=$('oeAmt').value;if(!(Number(a)>0)){toast('⚠ '+t('e_amt'),true);return;}
  call('updateEntry',[f.id,{type:f.k,amount:a,date:$('oeDate').value,person:f.person,due:$('oeDue').value,note:$('oeNote').value.trim()}],function(){closeSheet();toast(t('updated'));refreshAfterEdit();});}
 function refreshAfterEdit(){if(S.page==='per')loadPer();else if(S.page==='rec')loadRec();else if(S.page==='sum')loadSum();}
-/* ---- பணிகள் ---- */
+/* ---- பணிகள் v6 ---- */
 var DAYN={ta:['ஞா','தி','செ','பு','வி','வெ','ச'],en:['Su','Mo','Tu','We','Th','Fr','Sa']};
-function loadTasks(){call('getTasks',[],renderTasks);}
+var DIVI={'அமிர்தம் டெய்ரி':'🐄','நலம் சித்தா':'🌿','சொந்தம்':'🏠'};
+var LOCL=['பண்ணை','Clinic','வீடு','வெளியே','எங்கும்'];
+var LOC_EN={'பண்ணை':'Farm','Clinic':'Clinic','வீடு':'Home','வெளியே':'Outside','எங்கும்':'Anywhere'};
+var PAUSE_W=[['🩺','pw_patient'],['🐄','pw_dairy'],['🏠','pw_home'],['📞','pw_call'],['•','pw_other']];
+var EMG_Q=[['🐄','eq_cow','அமிர்தம் டெய்ரி'],['🐄','eq_farm','அமிர்தம் டெய்ரி'],['🩺','eq_patient','நலம் சித்தா'],['🏠','eq_home','சொந்தம்'],['🚗','eq_travel','சொந்தம்']];
+var SKIP_W=['sw_time','sw_emg','sw_notneed','sw_rain'];
+S.undo={};
+function nowStrL(){var d=new Date();return tdy()+' '+pad(d.getHours())+':'+pad(d.getMinutes());}
+function nowML(){var d=new Date();return d.getHours()*60+d.getMinutes();}
+function hm2m(s){var p=String(s||'').split(':');return (+p[0])*60+(+p[1]||0);}
+function m2hm(m){m=Math.max(0,Math.min(1439,m));return pad(Math.floor(m/60))+':'+pad(m%60);}
+function msOf(s){var p=String(s).split(/[- :]/);return new Date(+p[0],+p[1]-1,+p[2],+p[3]||0,+p[4]||0).getTime();}
+function minsB(a,b){return Math.max(0,Math.round((msOf(b)-msOf(a))/60000));}
+function workM(x,upto){if(!x.start)return 0;var p=0;(x.pauses||[]).forEach(function(z){if(z.f)p+=minsB(z.f,z.t||upto);});return Math.max(0,minsB(x.start,upto)-p);}
+function locN(l){return LANG==='en'?(LOC_EN[l]||l):l;}
 function tN(x){return LANG==='en'&&x.en?x.en:x.name;}
 function dur(m){m=Math.round(Number(m)||0);var h=Math.floor(m/60),mm=m%60;return LANG==='en'?(h?h+'h ':'')+mm+'m':(h?h+' மணி ':'')+mm+' நிமி';}
-function sinceMin(s){if(!s)return 0;var p=s.split(/[- :]/);var d=new Date(+p[0],+p[1]-1,+p[2],+p[3],+p[4]);return Math.max(0,Math.round((Date.now()-d.getTime())/60000));}
-function stBadge(st){var c={pending:'p',started:'o',done:'',skipped:'n',missed:'r'}[st];return '<span class="badge '+c+'">'+t('st_'+st)+'</span>';}
-function renderTasks(r){S.tasks=r;var h='';
- if(r.dnd&&r.dnd>r.now){var d=new Date(r.dnd);h+='<div class="pend"><span>🔕 '+fmt(t('dndOn'),pad(d.getHours())+':'+pad(d.getMinutes()))+'</span><button data-act="dndoff">'+t('dndOff')+'</button></div>';}
+function stBadge(st){var c={pending:'p',started:'o',paused:'o',done:'',skipped:'n',missed:'r'}[st];return '<span class="badge '+c+'">'+t('st_'+st)+'</span>';}
+function sheetOpen(){return !$('sheet').classList.contains('hidden');}
+function qBadge(){var n=qGet().length,e=$('qb');if(e)e.textContent=n?'⏳ '+n:'';}
+function qPush(fn,args){var q=qGet();q.push({fn:fn,args:args,cid:'Q'+Date.now()+Math.random().toString(36).slice(2,6)});qSet(q);qBadge();setTimeout(flush,0);}
+
+/* போனிலேயே உடனே மாற்றம் (offline) — Sheet-க்குப் பின்னணியில் */
+function applyTask(R,fn,a){
+ if(fn==='emergency'){var o=a[0],at=a[1]||nowStrL();if(o.key.slice(0,10)!==R.today||R.items.some(function(x){return x.key===o.key;}))return;
+  R.items.forEach(function(x){if(x.st==='started'){x.st='paused';x.pauses=(x.pauses||[]).concat([{f:at,t:'',w:'⚡ '+o.name}]);}});
+  R.items.push({key:o.key,tid:o.key.split('|')[1],name:'⚡ '+o.name,time:at.slice(11),ptime:at.slice(11),st:'started',start:at,end:'',mins:'',div:o.div,kind:'அவசரம்',emg:true,subs:[],subsDone:[],pauses:[],dur:0,loc:'',imp:false});return;}
+ if(fn==='backlogAct'){var tid=a[0],b=null;(R.backlog||[]).forEach(function(z,i){if(z.tid===tid)b=R.backlog.splice(i,1)[0];});var at2=a[2]||nowStrL();
+  if(b&&!R.items.some(function(x){return x.tid===tid;}))R.items.push({key:R.today+'|'+tid,tid:tid,name:b.name,en:b.en,time:at2.slice(11),ptime:at2.slice(11),st:'pending',div:b.div,loc:b.loc,dur:b.dur,imp:b.imp,backlog:true,subs:[],subsDone:[],pauses:[]});
+  a=[R.today+'|'+tid,a[1],'',at2];fn='taskAct';}
+ if(fn==='markDone'){a=[R.today+'|ACC','done','',a[0]];fn='taskAct';}
+ if(fn!=='taskAct')return;
+ var key=a[0],act=a[1],arg=a[2],at=a[3]||nowStrL(),x=null;R.items.forEach(function(y){if(y.key===key)x=y;});if(!x)return;
+ function close(){var p=x.pauses||[];if(p.length&&!p[p.length-1].t)p[p.length-1].t=at;}
+ function begin(){if(x.st==='pending'||x.st==='missed'){x.start=at;x.late=Math.max(0,hm2m(at.slice(11))-hm2m(x.ptime||x.time));}}
+ function fin(){if(x.st==='paused')close();if(!x.start)x.start=at;x.st='done';x.end=at;x.mins=workM(x,at);}
+ if(act==='start'||act==='resume'){begin();if(x.st==='paused')close();if(x.st!=='done')x.st='started';}
+ else if(act==='pause'){if(x.st==='started'){x.st='paused';x.pauses=(x.pauses||[]).concat([{f:at,t:'',w:arg}]);}}
+ else if(act==='done'){if(x.st!=='done')fin();}
+ else if(act==='sub'){var p=String(arg).split(':'),i=+p[0],v=p[1]==='1',sd=x.subsDone||(x.subsDone=[]),j=sd.indexOf(i);
+  if(v&&j<0)sd.push(i);if(!v&&j>=0)sd.splice(j,1);
+  if(v&&x.st!=='done'){begin();if(x.st==='paused')close();x.st='started';if(x.subs&&x.subs.length&&sd.length>=x.subs.length)fin();}}
+ else if(act==='snooze'){if(x.st==='pending'||x.st==='missed'){x.st='pending';x.time=m2hm(hm2m(at.slice(11))+Math.max(5,+arg||30));}}
+ else if(act==='move'){if(x.st==='pending'||x.st==='missed'){x.time=arg;x.ptime=arg;}}
+ else if(act==='skip'||act==='tomorrow'){if(x.st!=='done'){x.st='skipped';x.end=at;x.note=act==='tomorrow'?'⏩ '+t('tmrwS'):arg;}}
+ else if(act==='reset'){x.st='pending';x.start='';x.end='';x.mins='';x.note='';x.subsDone=[];x.pauses=[];}}
+function conflictsL(items){var bl=items.filter(function(i){return i.cover&&!i.skip&&i.time;}).map(function(i){return {s:hm2m(i.time),e:hm2m(i.time)+(i.dur||0),name:i.name,en:i.en};});
+ items.forEach(function(i){delete i.conflict;if(i.cover||i.skip||!i.time||i.st==='done')return;var s=hm2m(i.time);
+  bl.forEach(function(z){if(!i.conflict&&s>=z.s&&s<z.e)i.conflict={name:z.name,en:z.en,to:m2hm(z.e)};});});}
+function sortT(a,b){return (a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0;}
+function replay(r){var R=JSON.parse(JSON.stringify(r));qGet().forEach(function(q){if(q.fn)applyTask(R,q.fn,q.args);});R.items.sort(sortT);conflictsL(R.items);return R;}
+function loadTasks(){call('getTasks',[],renderTasks);}
+function tAct(key,act,arg){qPush('taskAct',[key,act,arg==null?'':String(arg),nowStrL()]);
+ if(act==='done'||act==='skip'||act==='tomorrow'){S.undo[key]=Date.now()+60000;setTimeout(function(){if(S.page==='task'&&!sheetOpen())renderTasks();},61000);}
+ if(act==='reset')delete S.undo[key];
+ renderTasks();}
+function isOver(x){return x.st==='pending'&&x.time&&hm2m(x.time)+(x.dur||0)+30<nowML();}
+
+function renderTasks(r){if(r)S.tasksRaw=r;if(!S.tasksRaw||!S.init)return;var R=replay(S.tasksRaw);S.tasks=R;var h='',nm=nowML();
+ h+='<div class="abar"><button class="emgb" data-act="emg">⚡ '+t('emgBtn')+'</button><button class="planb" data-act="plan">🌙 '+t('planBtn')+'</button></div>';
+ if(R.dnd&&R.dnd>Date.now()){var d=new Date(R.dnd);h+='<div class="pend"><span>🔕 '+fmt(t('dndOn'),pad(d.getHours())+':'+pad(d.getMinutes()))+'</span><button data-act="dndoff">'+t('dndOff')+'</button></div>';}
  else h+='<button class="done" data-act="dnd">🔕 '+t('dndBtn')+'</button>';
- h+='<div class="covrow"><span>🛵 '+t('coverQ')+'</span><div class="chips"><button class="chip'+(r.cover.today?' on':'')+'" data-act="cover" data-d="'+r.today+'" data-on="'+(r.cover.today?0:1)+'">'+t('today')+'</button><button class="chip'+(r.cover.tomorrow?' on':'')+'" data-act="cover" data-d="'+r.tomorrow+'" data-on="'+(r.cover.tomorrow?0:1)+'">'+t('tomorrow')+'</button></div></div>';
+ h+='<div class="covrow"><span>🛵 '+t('coverQ')+'</span><div class="chips"><button class="chip'+(R.cover.today?' on':'')+'" data-act="cover" data-d="'+R.today+'" data-on="'+(R.cover.today?0:1)+'">'+t('today')+'</button></div></div>';
+ if(!R.planned.tomorrow&&nm>=19*60)h+='<div class="hint warn" data-act="plan" style="margin-top:10px">🌙 '+t('plNotYet')+' ›</div>';
+ var cf=R.items.filter(function(x){return x.conflict&&x.st==='pending';});if(cf.length)h+='<div class="hint warn" style="margin-top:10px">⚠ '+fmt(t('cfN'),cf.length)+'</div>';
+ var run=R.items.filter(function(x){return x.st==='started'||x.st==='paused';}),rest=R.items.filter(function(x){return run.indexOf(x)<0;});
+ if(run.length)h+='<div class="gt">'+t('nowRun')+'</div><div class="card">'+run.map(function(x){return taskCard(x,false);}).join('')+'</div>';
+ var nx=null;rest.forEach(function(x){if(!nx&&x.st==='pending'&&!isOver(x)&&x.time&&hm2m(x.time)+(x.dur||0)>=nm)nx=x.key;});
  h+='<div class="gt">'+t('todayTasks')+'</div>';
- if(!r.items.length)h+='<div class="card empty">'+t('noTasksToday')+'</div>';
- else{h+='<div class="card">';r.items.forEach(function(x){h+=taskRow(x,false);});h+='</div>';}
- h+='<div class="gt">🗂 '+t('flexT')+'</div><div class="card">';
- if(!r.flex.length)h+='<div class="small" style="padding:4px 2px">'+t('noFlex')+'</div>';
- r.flex.forEach(function(x){h+=taskRow(x,true);});
- h+='<div class="tools" style="margin:10px 0 0"><input id="flexNew" class="inp" placeholder="'+t('flexPh')+'"><button class="addbtn" data-act="flexadd">＋</button></div></div>';
- h+='<div class="g2"><button class="save sec" data-act="newtask">＋ '+t('newTask')+'</button><button class="save sec" data-act="alltasks">⚙ '+t('editTasks')+'</button></div><button class="save sec" style="margin-top:0" data-act="report">📈 '+t('report')+'</button>';
+ h+=rest.length?'<div class="card">'+rest.map(function(x){return taskCard(x,x.key===nx);}).join('')+'</div>':'<div class="card empty">'+t('noTasksToday')+'</div>';
+ var bl=R.backlog||[];
+ h+='<details class="card"'+(lsGet('blOpen')==='1'?' open':'')+' data-blk="1"><summary class="ch"><span>📥 '+t('blT')+'</span><span class="s">'+bl.length+'</span></summary><div class="small" style="margin-bottom:6px">'+t('blHint')+'</div>';
+ if(!bl.length)h+='<div class="small">'+t('blNone')+'</div>';
+ bl.forEach(function(b){h+='<div class="prow"><div data-act="bledit" data-tid="'+esc(b.tid)+'" style="flex:1"><b>'+DIVI[b.div]+' '+esc(tN(b))+'</b>'+(b.imp?' ⭐':'')+'<div class="s">'+dur(b.dur)+' · '+esc(locN(b.loc))+(b.due?' · '+t('tDueS')+' '+dmy(b.due):'')+'</div></div><button class="tb mini" data-act="blstart" data-tid="'+esc(b.tid)+'">▶</button><button class="tb mini ok" data-act="bldone" data-tid="'+esc(b.tid)+'">✓</button></div>';});
+ h+='<button class="save sec" data-act="bladd">'+t('blAdd')+'</button></details>';
+ h+='<div class="g2"><button class="save sec" data-act="newtask">＋ '+t('newTask')+'</button><button class="save sec" data-act="alltasks">⚙ '+t('editTasks')+'</button></div>';
  $('taskBox').innerHTML=h;}
-function taskRow(x,flex){var st=x.st,sub=[],b='',k=' data-key="'+esc(x.key)+'"';
- if(!flex&&x.snooze&&st==='pending')sub.push('⏸ '+x.snooze);
- if(st==='started')sub.push(fmt(t('startedAt'),x.start.slice(11))+' · '+dur(sinceMin(x.start)));
- if(st==='done'){sub.push((x.start?x.start.slice(11)+'–':'')+x.end.slice(11)+(x.mins!==''&&x.mins!=null?' · '+dur(x.mins):''));if(Number(x.late)>15)sub.push(fmt(t('lateBy'),dur(x.late)));}
+
+function taskCard(x,isNext){var st=x.st,over=isOver(x),stv=over?'missed':st,k=' data-key="'+esc(x.key)+'"',sub=[],b='',h='';
+ var s0=hm2m(x.time),e0=s0+(x.dur||0);
+ if(st==='pending'){sub.push(x.time+(x.dur?'–'+m2hm(e0):'')+(x.loc?' · '+locN(x.loc):''));if(x.ptime&&x.time!==x.ptime)sub.push('⏰ '+t('snoozedFrom')+' '+x.ptime);}
+ if(st==='started')sub.push(fmt(t('startedAt'),x.start.slice(11))+' · '+dur(workM(x,nowStrL())));
+ if(st==='paused'){var lp=x.pauses[x.pauses.length-1]||{};sub.push('⏸ '+(lp.w||'')+' · '+(lp.f||'').slice(11)+' · '+dur(workM(x,nowStrL())));}
+ if(st==='done'){sub.push((x.start?x.start.slice(11)+'–':'')+String(x.end).slice(11)+(x.mins!==''&&x.mins!=null?' · '+dur(x.mins):''));if(Number(x.late)>15)sub.push(fmt(t('lateBy'),dur(x.late)));if((x.pauses||[]).length)sub.push('⏸×'+x.pauses.length);}
  if(st==='skipped'&&x.note)sub.push(x.note);
- if(st==='pending'||st==='missed'){b+='<button class="tb go" data-act="tstart"'+k+'>▶ '+t('tStart')+'</button><button class="tb ok" data-act="tdone"'+k+'>✓</button>';if(!flex)b+='<button class="tb" data-act="tsnooze"'+k+'>⏸</button><button class="tb" data-act="tskip"'+k+'>✕</button>';}
- else if(st==='started')b+='<button class="tb ok" data-act="tdone"'+k+'>✓ '+t('tDone')+'</button>';
- else b+='<button class="tb" data-act="treset"'+k+'>↺</button>';
- return '<div class="task'+(st==='done'||st==='skipped'?' dim':'')+'"><div class="th"><span class="tm">'+(flex?'🗂':esc(x.time))+'</span><b>'+esc(tN(x))+'</b>'+(x.imp?' ⭐':'')+' '+stBadge(st)+'</div>'+(sub.length?'<div class="ts">'+esc(sub.join(' · '))+'</div>':'')+'<div class="tbs">'+b+'</div></div>';}
-function tAct(key,act,arg){call('taskAct',[key,act,arg==null?'':String(arg)],function(r){renderTasks(r);toast(t('savedOk'));});}
+ h+='<div class="th"><span class="tm">'+(x.emg?'⚡':esc(x.time))+'</span><b>'+esc(tN(x))+'</b>'+(x.imp?' ⭐':'')+' <span class="dv">'+(DIVI[x.div]||'')+'</span>'+(x.backlog?' 📥':'')+' '+stBadge(stv)+(isNext?' <span class="badge nx">'+t('nextL')+'</span>':'')+'</div>';
+ if(sub.length)h+='<div class="ts">'+esc(sub.join(' · '))+'</div>';
+ if(x.conflict&&st==='pending')h+='<div class="cfl"><span>⚠ '+fmt(t('cfWith'),esc(LANG==='en'&&x.conflict.en?x.conflict.en:x.conflict.name))+'</span><button class="tb mini" data-act="tmove"'+k+' data-to="'+x.conflict.to+'">⏩ '+x.conflict.to+'</button></div>';
+ var subs=x.subs||[],sd=x.subsDone||[];
+ if(subs.length){if(st==='done'||st==='skipped'){var miss=subs.filter(function(s,i){return sd.indexOf(i)<0;});h+='<div class="ts">✓ '+(subs.length-miss.length)+'/'+subs.length+(miss.length&&st==='done'?' · '+t('subMissL')+': '+esc(miss.map(function(s){return s.name;}).join(', ')):'')+'</div>';}
+  else{h+='<div class="subs">';subs.forEach(function(s,i){var on=sd.indexOf(i)>=0;h+='<button class="sub'+(on?' on':'')+'" data-act="tsub"'+k+' data-i="'+i+'" data-v="'+(on?0:1)+'"><span class="cb">'+(on?'☑':'☐')+'</span>'+(s.time?'<span class="stm">'+s.time+'</span>':'')+'<span>'+esc(s.name)+'</span></button>';});h+='</div>';}}
+ if(st==='pending')b+='<button class="tb go" data-act="tstart"'+k+'>▶ '+t('tStart')+'</button><button class="tb ok" data-act="tdone"'+k+'>✓</button><button class="tb" data-act="tsnooze"'+k+'>⏰</button><button class="tb" data-act="tskip"'+k+'>✕</button>';
+ else if(st==='started')b+='<button class="tb" data-act="tpause"'+k+'>⏸ '+t('tPause')+'</button><button class="tb ok" data-act="tdone"'+k+'>✓ '+t('tDone')+'</button>';
+ else if(st==='paused')b+='<button class="tb go" data-act="tresume"'+k+'>▶ '+t('tResume')+'</button><button class="tb ok" data-act="tdone"'+k+'>✓ '+t('tDone')+'</button>';
+ else if(S.undo[x.key]&&S.undo[x.key]>Date.now())b+='<button class="tb" data-act="treset"'+k+'>'+t('undo')+'</button>';
+ if(x.tid==='ACC'&&st!=='done')b+='<button class="tb" data-act="plan">🌙</button>';
+ if(b)h+='<div class="tbs">'+b+'</div>';
+ return '<div class="task '+st+(over?' over':'')+(isNext?' nxt':'')+(x.emg?' emgt':'')+(st==='done'||st==='skipped'?' dim':'')+'">'+h+'</div>';}
+
+function reasonSheet(title,act,key,list,extra){var h='<div class="shead"><b>'+title+'</b><button class="x" data-act="close">✕</button></div><div class="chips">';
+ list.forEach(function(w){h+='<button class="chip" data-act="'+act+'" data-key="'+esc(key)+'" data-w="'+esc(w)+'">'+esc(w)+'</button>';});
+ h+='</div><div class="tools" style="margin-top:12px"><input id="rsTxt" class="inp" placeholder="'+t('rsPh')+'"><button class="addbtn" data-act="'+act+'" data-key="'+esc(key)+'" data-w="">✓</button></div>'+(extra||'');openSheet(h);}
+function minOpts(){return [[15,'15 '+t('minS')],[30,'30 '+t('minS')],[60,'1 '+t('hourS')],[120,'2 '+t('hourS')]];}
 function pickSheet(title,act,key,opts){openSheet('<div class="shead"><b>'+title+'</b><button class="x" data-act="close">✕</button></div><div class="chips">'+opts.map(function(o){return '<button class="chip" data-act="'+act+'" data-key="'+esc(key||'')+'" data-min="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div>');}
-function minOpts(){return [[30,'30 '+t('minS')],[60,'1 '+t('hourS')],[120,'2 '+t('hourS')],[180,'3 '+t('hourS')]];}
+function findT(key){var x=null;(S.tasks&&S.tasks.items||[]).forEach(function(y){if(y.key===key)x=y;});return x;}
+
+/* ⚡ அவசர வேலை */
+function emgSheet(){S.em={div:'அமிர்தம் டெய்ரி'};var h='<div class="shead"><b>⚡ '+t('emgT')+'</b><button class="x" data-act="close">✕</button></div><div class="hint">'+t('emgHint')+'</div>'+lab(t('emgWhat'))+'<div class="chips">';
+ EMG_Q.forEach(function(q){h+='<button class="chip" data-act="emq" data-n="'+esc(t(q[1]))+'" data-d="'+q[2]+'">'+q[0]+' '+t(q[1])+'</button>';});
+ h+='</div><input id="emName" class="inp" style="margin-top:10px" placeholder="'+t('emgPh')+'">'+lab(t('tDiv'))+'<div class="chips" id="emDiv">'+emDivChips()+'</div><button class="save emgs" data-act="emgo">⚡ '+t('emgGo')+'</button>';openSheet(h);}
+function emDivChips(){return S.init.divs.map(function(d){return '<button class="chip'+(S.em.div===d?' on':'')+'" data-act="emdiv" data-val="'+esc(d)+'">'+DIVI[d]+' '+esc(divN(d))+'</button>';}).join('');}
+
+/* 🌙 மதிப்பாய்வு & நாளைய திட்டம் */
+function addDayL(ds,n){var p=ds.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]+n);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function dayName(ds){var p=ds.split('-');try{return new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString(LANG==='en'?'en-IN':'ta-IN',{weekday:'long'});}catch(e){return '';}}
+function openPlan(){S.planD=addDayL(tdy(),1);S.planEd={};S.plan=null;
+ openSheet('<div class="shead"><b>🌙 '+t('planT')+'</b><button class="x" data-act="close">✕</button></div><div id="rvBox"><div class="empty">…</div></div><div id="plBox"><div class="empty">…</div></div>');
+ call('getReview',[tdy()],renderReview,function(){var e=$('rvBox');if(e)e.innerHTML='';});
+ call('getPlan',[S.planD],function(p){S.plan=p;renderPlan();},function(e){var b=$('plBox');if(b)b.innerHTML='<div class="card empty">'+esc(isNet(e)?t('e_offline'):emsg(e))+'</div>';});}
+function renderReview(r){var e=$('rvBox');if(!e)return;var h='<div class="card"><div class="ch">📊 '+t('rvT')+' · '+dmy(r.date)+'</div>';
+ h+='<div class="three"><div><small>'+t('rvDone')+'</small><b class="in">'+r.done+'/'+r.planned+'</b></div><div><small>'+t('rvMissed')+'</small><b class="'+(r.missed?'out':'')+'">'+r.missed+'</b></div><div><small>'+t('rvSkip')+'</small><b>'+r.skipped+'</b></div></div>';
+ if(r.missedImp.length){h+='<div class="sub2 out">❗ '+t('rvImp')+'</div>';r.missedImp.forEach(function(m){h+='<div class="rvl out">• '+esc(m.time||'')+' '+esc(tN(m))+(m.note?' — '+esc(m.note):'')+'</div>';});}
+ else h+='<div class="hint" style="margin-top:10px">'+t('rvGood')+'</div>';
+ if(r.subMiss.length){h+='<div class="sub2">☐ '+t('rvSub')+'</div>';r.subMiss.forEach(function(m){h+='<div class="rvl">• '+esc(tN(m))+': '+esc(m.miss.join(', '))+'</div>';});}
+ var tot=0;S.init.divs.forEach(function(d){tot+=r.byDiv[d]||0;});
+ h+='<div class="sub2">⏱ '+t('rvDiv')+' · '+dur(tot)+'</div>';
+ S.init.divs.forEach(function(d){var m=r.byDiv[d]||0;h+='<div class="barrow"><span>'+DIVI[d]+' '+esc(divN(d))+'</span><span>'+dur(m)+'</span><div class="bt"><i class="in" style="width:'+(tot?Math.max(2,Math.round(m/tot*100)):0)+'%"></i></div></div>';});
+ var pk=Object.keys(r.pauses||{});if(pk.length)h+='<div class="sub2">⏸ '+t('rvPause')+'</div><div class="chips">'+pk.map(function(w){return '<span class="chip">'+esc(w)+' ×'+r.pauses[w]+'</span>';}).join('')+'</div>';
+ if(r.emg.length){h+='<div class="sub2">⚡ '+t('rvEmg')+'</div>';r.emg.forEach(function(m){h+='<div class="rvl">• '+esc(m.name)+' · '+dur(m.mins)+'</div>';});}
+ if(r.late.length){h+='<div class="sub2">⏰ '+t('rvLate')+'</div>';r.late.forEach(function(m){h+='<div class="rvl">• '+esc(tN(m))+' · +'+dur(m.late)+'</div>';});}
+ h+='<div class="sub2">📈 '+t('rvTrend')+'</div><div class="trend">';r.trend.forEach(function(d){var pc=d.planned?Math.round(d.done/d.planned*100):0;h+='<div><span>'+(d.planned?pc+'%':'—')+'</span><i style="height:'+(d.planned?Math.max(3,Math.round(pc*0.5)):0)+'px"></i>'+DAYN[LANG][new Date(+d.date.slice(0,4),+d.date.slice(5,7)-1,+d.date.slice(8)).getDay()]+'</div>';});h+='</div>';
+ h+='<button class="save sec" data-act="report">'+t('rvAll')+'</button></div>';e.innerHTML=h;}
+function planItems(){var p=S.plan,ed=S.planEd||{};var items=p.items.filter(function(i){return i.st!=='done';}).map(function(i){var c=JSON.parse(JSON.stringify(i)),e=ed[i.tid];if(e){if(e.time!=null)c.time=e.time;if(e.skip!=null)c.skip=e.skip;}return c;});
+ Object.keys(ed).forEach(function(tid){if(ed[tid].add&&!items.some(function(i){return i.tid===tid;})){var b=null;p.backlog.forEach(function(z){if(z.tid===tid)b=z;});if(b)items.push({tid:tid,name:b.name,en:b.en,time:ed[tid].time||'',dur:b.dur,div:b.div,loc:b.loc,imp:b.imp,backlog:true,st:'pending',skip:false,auto:false,added:true});}});
+ items.sort(sortT);conflictsL(items);return items;}
+function renderPlan(){var e=$('plBox'),p=S.plan;if(!e||!p)return;var items=planItems(),h='<div class="card"><div class="ch">📅 '+t('plT')+' · '+esc(dayName(p.date))+' '+dmy(p.date)+'</div>';
+ h+=p.planned?'<div class="hint">✓ '+t('plDone')+'</div>':'<div class="hint warn">'+t('plNot')+'</div>';
+ h+='<div class="covrow" style="margin:10px 0"><span>🛵 '+t('plCover')+'</span><div class="chips"><button class="chip'+(p.cover?' on':'')+'" data-act="plcover" data-on="'+(p.cover?0:1)+'">'+(p.cover?t('yes'):t('no'))+'</button></div></div>';
+ var ncf=items.filter(function(i){return i.conflict&&!i.skip;}).length;if(ncf)h+='<div class="hint warn">⚠ '+fmt(t('cfN'),ncf)+'</div>';
+ items.forEach(function(i){h+='<div class="pli'+(i.skip?' sk':'')+(i.conflict&&!i.skip?' cf':'')+'"><input type="time" class="pt" data-tid="'+esc(i.tid)+'" value="'+esc(i.time||'')+'"><div class="pn"><b>'+(DIVI[i.div]||'')+' '+esc(tN(i))+'</b>'+(i.imp?' ⭐':'')+(i.auto||i.added?' <span class="badge">📥 '+t('plAuto')+'</span>':'')
+  +'<div class="s">'+(i.dur?dur(i.dur):'')+(i.loc?' · '+esc(locN(i.loc)):'')+(i.nsubs?' · ☐×'+i.nsubs:'')+'</div>'
+  +(i.conflict&&!i.skip?'<div class="cfl"><span>⚠ '+fmt(t('cfWith'),esc(LANG==='en'&&i.conflict.en?i.conflict.en:i.conflict.name))+'</span><button class="tb mini" data-act="plmove" data-tid="'+esc(i.tid)+'" data-to="'+i.conflict.to+'">⏩ '+i.conflict.to+'</button></div>':'')
+  +'</div><button class="tb mini" data-act="plskip" data-tid="'+esc(i.tid)+'">'+(i.skip?'↺':'✕')+'</button></div>';});
+ var left=p.backlog.filter(function(b){return !(S.planEd[b.tid]&&S.planEd[b.tid].add);});
+ if(left.length){h+='<div class="sub2">📥 '+t('plLeft')+'</div>';left.forEach(function(b){h+='<div class="prow"><div><b>'+(DIVI[b.div]||'')+' '+esc(tN(b))+'</b><div class="s">'+dur(b.dur)+' · '+esc(locN(b.loc))+'</div></div><button class="tb mini" data-act="pladd" data-tid="'+esc(b.tid)+'">＋</button></div>';});}
+ h+='<button class="save sec" data-act="plonce">'+t('plOnce')+'</button><button class="save" data-act="plgo">'+t('plGo')+'</button></div>';e.innerHTML=h;}
+function planSet(tid,k,v){S.planEd[tid]=S.planEd[tid]||{};S.planEd[tid][k]=v;}
+function planGo(){var items=planItems(),list=items.filter(function(i){return i.time||i.skip;}).map(function(i){return {tid:i.tid,time:i.time,skip:!!i.skip};});
+ busy(true);google.script.run.withSuccessHandler(function(res){busy(false);S.plan=res.plan;S.planEd={};renderPlan();toast(fmt(t('plOk'),res.events));})
+  .withFailureHandler(function(e){busy(false);if(isNet(e)){qPush('confirmPlan',[S.planD,list]);toast(t('plQueued'));}else toast('⚠ '+emsg(e),true);}).confirmPlan(S.planD,list);}
+
+/* பணி அமைப்பு */
 function allTasks(){call('getAllTasks',[],function(list){S.allT=list;var h='<div class="shead"><b>⚙ '+t('editTasks')+'</b><button class="x" data-act="close">✕</button></div><div class="card">';
- list.forEach(function(x){var d=x.mode==='fixed'?x.days.split('').map(function(i){return DAYN[LANG][+i];}).join(' '):t('m_'+x.mode)+(x.mode==='once'?' · '+dmy(x.date):'');
-  h+='<div class="prow" data-act="edittask" data-id="'+esc(x.id)+'" style="'+(x.active?'':'opacity:.45')+'"><div><b>'+esc(tN(x))+'</b>'+(x.imp?' ⭐':'')+'<div class="s">'+esc(d)+(x.active?'':' · '+t('inactive'))+'</div></div><b>'+esc(x.time||'—')+'</b></div>';});
+ list.forEach(function(x){var d=x.mode==='fixed'?x.days.split('').map(function(i){return DAYN[LANG][+i];}).join(' '):t('m_'+x.mode)+(x.mode==='once'&&x.date?' · '+dmy(x.date):'');
+  h+='<div class="prow" data-act="edittask" data-id="'+esc(x.id)+'" style="'+(x.active?'':'opacity:.45')+'"><div><b>'+(DIVI[x.div]||'')+' '+esc(tN(x))+'</b>'+(x.imp?' ⭐':'')+(x.subs&&x.subs.length?' ☐×'+x.subs.length:'')+'<div class="s">'+esc(d)+' · '+dur(x.dur)+' · '+esc(locN(x.loc))+(x.rem?'':' · 🔕')+(x.active?'':' · '+t('inactive'))+'</div></div><b>'+esc(x.time||'—')+'</b></div>';});
  h+='</div><button class="save" data-act="newtask">＋ '+t('newTask')+'</button>';openSheet(h);});}
-function taskForm(x){S.tf=x?JSON.parse(JSON.stringify(x)):{mode:'fixed',time:'',days:'0123456',nag:60,imp:false,active:true};renderTaskForm();}
+function taskForm(x){S.tf=x?JSON.parse(JSON.stringify(x)):{mode:'fixed',time:'',days:'0123456',dur:30,div:'அமிர்தம் டெய்ரி',loc:'எங்கும்',rem:true,imp:false,fill:false,active:true,subsText:''};
+ if(S.tf.subsText==null)S.tf.subsText=(S.tf.subs||[]).map(function(s){return (s.time?s.time+' ':'')+s.name;}).join('\n');renderTaskForm();}
+function fchips(f,list,sel,lbl){return '<div class="chips">'+list.map(function(v){return '<button class="chip'+(String(sel)===String(v)?' on':'')+'" data-act="tfset" data-f="'+f+'" data-val="'+esc(v)+'">'+lbl(v)+'</button>';}).join('')+'</div>';}
 function renderTaskForm(){var f=S.tf,h='<div class="shead"><b>'+(f.id?'✏️ '+t('editT'):'＋ '+t('newTask'))+'</b><button class="x" data-act="close">✕</button></div>';
  h+=lab(t('tName'))+'<input id="tfName" class="inp" value="'+esc(f.name||'')+'">';
  h+=lab(t('tNameEn'))+'<input id="tfEn" class="inp" value="'+esc(f.en||'')+'">';
  h+=lab(t('tMode'))+'<div class="chips">'+['fixed','once','flex','cover'].map(function(m){return '<button class="chip'+(f.mode===m?' on':'')+'" data-act="tfmode" data-val="'+m+'">'+t('m_'+m)+'</button>';}).join('')+'</div>';
  if(f.mode==='cover')h+='<div class="hint" style="margin-top:8px">'+t('coverHint')+'</div>';
+ if(f.mode==='flex')h+='<div class="hint" style="margin-top:8px">'+t('blHint')+'</div>';
  if(f.mode!=='flex')h+=lab(t('tTime'))+'<input id="tfTime" class="inp" type="time" value="'+esc(f.time||'')+'">';
  if(f.mode==='fixed')h+=lab(t('tDays'))+'<div class="chips">'+[1,2,3,4,5,6,0].map(function(i){return '<button class="chip'+(String(f.days||'').indexOf(String(i))>=0?' on':'')+'" data-act="tfday" data-val="'+i+'">'+DAYN[LANG][i]+'</button>';}).join('')+'</div>';
- if(f.mode==='once')h+=lab(t('date'))+'<input id="tfDate" class="inp" type="date" value="'+esc(f.date||'')+'">';
- if(f.mode!=='flex'){
-  h+=lab(t('tNag'))+'<div class="chips">'+[[0,t('nag0')],[30,'30 '+t('minS')],[60,'1 '+t('hourS')],[120,'2 '+t('hourS')]].map(function(o){return '<button class="chip'+(Number(f.nag)===o[0]?' on':'')+'" data-act="tfset" data-f="nag" data-val="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div><div class="small" style="margin-top:6px">'+t('nagHint')+'</div>';
-  h+=lab(t('tImp'))+'<div class="chips"><button class="chip'+(f.imp?' on':'')+'" data-act="tfset" data-f="imp" data-val="1">⭐ '+t('yes')+'</button><button class="chip'+(!f.imp?' on':'')+'" data-act="tfset" data-f="imp" data-val="0">'+t('no')+'</button></div><div class="small" style="margin-top:6px">'+t('impHint')+'</div>';}
- h+=lab(t('tActive'))+'<div class="chips"><button class="chip'+(f.active?' on':'')+'" data-act="tfset" data-f="active" data-val="1">'+t('yes')+'</button><button class="chip'+(!f.active?' on':'')+'" data-act="tfset" data-f="active" data-val="0">'+t('no')+'</button></div>';
+ if(f.mode==='once'||f.mode==='flex')h+=lab(f.mode==='once'?t('date'):t('tDue'))+'<input id="tfDate" class="inp" type="date" value="'+esc(f.date||'')+'">';
+ h+=lab(t('tDur'))+fchips('dur',[5,10,15,30,45,60,90,120],f.dur,function(v){return v<60?v+' '+t('minS'):(v/60)+' '+t('hourS');})+'<input id="tfDur" class="inp" type="number" inputmode="numeric" style="margin-top:8px" value="'+esc(f.dur||'')+'">';
+ h+=lab(t('tDiv'))+fchips('div',S.init.divs,f.div,function(v){return DIVI[v]+' '+esc(divN(v));});
+ h+=lab(t('tLoc'))+fchips('loc',LOCL,f.loc,function(v){return esc(locN(v));});
+ if(f.mode!=='flex')h+=lab(t('tSubs'))+'<textarea id="tfSubs" class="inp" rows="4">'+esc(f.subsText||'')+'</textarea>';
+ h+=lab(t('tRem'))+fchips('rem',['1','0'],f.rem?'1':'0',function(v){return v==='1'?'🔔 '+t('yes'):'🔕 '+t('no');});
+ h+=lab(t('tImp'))+fchips('imp',['1','0'],f.imp?'1':'0',function(v){return v==='1'?'⭐ '+t('yes'):t('no');})+'<div class="small" style="margin-top:6px">'+t('impHint')+'</div>';
+ if(f.mode==='fixed')h+=lab(t('tFill'))+fchips('fill',['1','0'],f.fill?'1':'0',function(v){return v==='1'?t('yes'):t('no');});
+ h+=lab(t('tActive'))+fchips('active',['1','0'],f.active?'1':'0',function(v){return v==='1'?t('yes'):t('no');});
  h+=lab(t('note'))+'<input id="tfNote" class="inp" value="'+esc(f.note||'')+'">';
  h+='<button class="save" data-act="savetask">'+t('lSave')+'</button>';openSheet(h);}
-function grabTF(){var m={tfName:'name',tfEn:'en',tfTime:'time',tfDate:'date',tfNote:'note'};for(var id in m){var el=$(id);if(el)S.tf[m[id]]=el.value.trim();}}
+function grabTF(){var m={tfName:'name',tfEn:'en',tfTime:'time',tfDate:'date',tfNote:'note',tfSubs:'subsText',tfDur:'dur'};for(var id in m){var el=$(id);if(el)S.tf[m[id]]=id==='tfDur'?Number(el.value)||'':el.value.trim();}}
 function saveTaskF(){grabTF();var f=S.tf;if(!f.name){toast('⚠ '+t('e_tname'),true);return;}
  if(f.mode!=='flex'&&!f.time){toast('⚠ '+t('e_ttime'),true);return;}
  if(f.mode==='fixed'&&!String(f.days||'').length){toast('⚠ '+t('e_tdays'),true);return;}
- call('saveTask',[f],function(){closeSheet();toast(t('savedOk'));loadTasks();});}
+ var o={id:f.id||'',name:f.name,en:f.en||'',mode:f.mode,time:f.time||'',days:f.days||'',date:f.date||'',dur:f.dur||30,div:f.div,loc:f.loc,subsText:f.subsText||'',rem:!!f.rem,imp:!!f.imp,fill:!!f.fill,active:f.active!==false,note:f.note||''};
+ call('saveTask',[o],function(){closeSheet();toast(t('savedOk'));loadTasks();if(S.afterTF){var fn=S.afterTF;S.afterTF=null;fn();}});}
 function report(){call('getTaskReport',[30],function(list){var h='<div class="shead"><b>📈 '+t('report')+' · 30 '+t('daysS')+'</b><button class="x" data-act="close">✕</button></div>';
  if(!list.length)h+='<div class="card empty">'+t('noRep')+'</div>';
  else{h+='<div class="card">';list.forEach(function(r){h+='<div class="row" style="display:block"><b>'+esc(tN(r))+'</b> <span class="small">'+esc(r.time||'')+'</span><div class="small">✓ '+r.onTime+' · ⏰ '+r.late+' · ✕ '+r.missed+' · ⤼ '+r.skipped+(r.avg!==''?' · ⌀ '+dur(r.avg):'')+'</div></div>';});
   h+='<div class="small" style="margin-top:8px">'+t('repLegend')+'</div></div>';}
  openSheet(h);});}
+function editTaskById(tid){var go2=function(list){S.allT=list;list.forEach(function(x){if(x.id===tid)taskForm(x);});};if(S.allT)go2(S.allT);call('getAllTasks',[],go2);}
+function logout(){var n=qGet().length;if(n){flush();toast('⚠ '+fmt(t('loBlock'),n),true);return;}if(!confirm(t('loQ')))return;
+ try{var ks=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k!=='lang')ks.push(k);}ks.forEach(function(k){localStorage.removeItem(k);});}catch(e){}
+ CFG={api:CFG.api};S.init=null;S.tasksRaw=null;S.tasks=null;started=false;closeSheet();qBadge();showSetup(t('loDone'));}
+
+var TACT={
+ emg:emgSheet,plan:function(){openPlan();},
+ emq:function(b){$('emName').value=b.getAttribute('data-n');S.em.div=b.getAttribute('data-d');$('emDiv').innerHTML=emDivChips();var sib=b.parentNode.querySelectorAll('.chip');for(var i=0;i<sib.length;i++)sib[i].classList.toggle('on',sib[i]===b);},
+ emdiv:function(b){S.em.div=b.getAttribute('data-val');$('emDiv').innerHTML=emDivChips();},
+ emgo:function(){var n=$('emName').value.trim();if(!n){toast('⚠ '+t('e_emg'),true);return;}
+  qPush('emergency',[{name:n,div:S.em.div,key:tdy()+'|EMG'+Date.now().toString(36)},nowStrL()]);closeSheet();if(S.page!=='task')go('task');else renderTasks();toast(t('emgOn'));},
+ tstart:function(b){tAct(b.getAttribute('data-key'),'start');},
+ tresume:function(b){tAct(b.getAttribute('data-key'),'resume');},
+ tdone:function(b){var key=b.getAttribute('data-key'),x=findT(key);
+  if(x&&x.subs&&x.subs.length){var left=x.subs.length-(x.subsDone||[]).length;if(left>0&&!confirm(fmt(t('subConfirm'),left)))return;}tAct(key,'done');},
+ treset:function(b){tAct(b.getAttribute('data-key'),'reset');},
+ tpause:function(b){reasonSheet('⏸ '+t('pauseQ'),'tpz',b.getAttribute('data-key'),PAUSE_W.map(function(p){return p[0]+' '+t(p[1]);}));},
+ tpz:function(b){var w=b.getAttribute('data-w')||($('rsTxt')&&$('rsTxt').value.trim())||t('pw_other');closeSheet();tAct(b.getAttribute('data-key'),'pause',w);},
+ tsnooze:function(b){pickSheet('⏰ '+t('snoozeQ'),'tsnz',b.getAttribute('data-key'),minOpts());},
+ tsnz:function(b){closeSheet();tAct(b.getAttribute('data-key'),'snooze',b.getAttribute('data-min'));},
+ tskip:function(b){var key=b.getAttribute('data-key'),x=findT(key);
+  reasonSheet('✕ '+t('skipT'),'tskp',key,SKIP_W.map(function(w){return t(w);}),(x&&(x.backlog||x.once))?'<button class="save sec" data-act="ttmrw" data-key="'+esc(key)+'">'+t('tmrw')+'</button>':'');},
+ tskp:function(b){var w=b.getAttribute('data-w')||($('rsTxt')&&$('rsTxt').value.trim())||'';closeSheet();tAct(b.getAttribute('data-key'),'skip',w);},
+ ttmrw:function(b){closeSheet();tAct(b.getAttribute('data-key'),'tomorrow');},
+ tmove:function(b){tAct(b.getAttribute('data-key'),'move',b.getAttribute('data-to'));},
+ tsub:function(b){tAct(b.getAttribute('data-key'),'sub',b.getAttribute('data-i')+':'+b.getAttribute('data-v'));},
+ blstart:function(b){qPush('backlogAct',[b.getAttribute('data-tid'),'start',nowStrL()]);renderTasks();},
+ bldone:function(b){var tid=b.getAttribute('data-tid');qPush('backlogAct',[tid,'done',nowStrL()]);S.undo[tdy()+'|'+tid]=Date.now()+60000;renderTasks();},
+ bladd:function(){taskForm({mode:'flex',dur:30,div:'அமிர்தம் டெய்ரி',loc:'எங்கும்',rem:true,imp:false,active:true});},
+ bledit:function(b){editTaskById(b.getAttribute('data-tid'));},
+ newtask:function(){taskForm(null);},alltasks:allTasks,report:report,savetask:saveTaskF,
+ edittask:function(b){var id=b.getAttribute('data-id');(S.allT||[]).forEach(function(x){if(x.id===id)taskForm(x);});},
+ tfmode:function(b){grabTF();S.tf.mode=b.getAttribute('data-val');renderTaskForm();},
+ tfday:function(b){var v=b.getAttribute('data-val'),d=String(S.tf.days||'');d=d.indexOf(v)>=0?d.replace(v,''):d+v;S.tf.days=d.split('').sort().join('');b.classList.toggle('on');},
+ tfset:function(b){var f=b.getAttribute('data-f'),v=b.getAttribute('data-val'),bools={imp:1,active:1,rem:1,fill:1};
+  S.tf[f]=bools[f]?v==='1':(f==='dur'?Number(v):v);if(f==='dur'&&$('tfDur'))$('tfDur').value=v;
+  var sib=b.parentNode.querySelectorAll('.chip');for(var i=0;i<sib.length;i++)sib[i].classList.toggle('on',sib[i]===b);},
+ dnd:function(){pickSheet('🔕 '+t('dndQ'),'dndset','',[[60,'1 '+t('hourS')],[120,'2 '+t('hourS')],[180,'3 '+t('hourS')]]);},
+ dndset:function(b){closeSheet();call('setDnd',[b.getAttribute('data-min')],renderTasks);},
+ dndoff:function(){call('setDnd',[0],renderTasks);},
+ cover:function(b){call('toggleCover',[b.getAttribute('data-d'),b.getAttribute('data-on')==='1'],renderTasks);},
+ plcover:function(b){call('toggleCover',[S.planD,b.getAttribute('data-on')==='1','plan'],function(p){S.plan=p;renderPlan();});},
+ plmove:function(b){planSet(b.getAttribute('data-tid'),'time',b.getAttribute('data-to'));renderPlan();},
+ plskip:function(b){var tid=b.getAttribute('data-tid'),it=null;planItems().forEach(function(i){if(i.tid===tid)it=i;});
+  if(it&&it.added){delete S.planEd[tid];}else planSet(tid,'skip',!(it&&it.skip));renderPlan();},
+ pladd:function(b){planSet(b.getAttribute('data-tid'),'add',true);renderPlan();},
+ plonce:function(){S.afterTF=function(){call('getPlan',[S.planD],function(p){S.plan=p;openPlan2();});};taskForm({mode:'once',date:S.planD,time:'',dur:30,div:'அமிர்தம் டெய்ரி',loc:'எங்கும்',rem:true,imp:false,active:true});},
+ plgo:planGo,logout:logout,lock:lockNow,pinch:pinChange,pcgo:pinChangeGo,bioon:bioSetup,
+ bioff:function(){delete CFG.bio;saveCfg();toast(t('savedOk'));loadSet();},
+ nlset:function(b){CFG.nl=b.getAttribute('data-val')==='1';saveCfg();loadSet();}
+};
+function openPlan2(){var ed=S.planEd,p=S.plan;openPlan();S.planEd=ed;S.plan=p;renderPlan();}
+document.addEventListener('change',function(e){var el=e.target;
+ if(el.classList&&el.classList.contains('pt')){planSet(el.getAttribute('data-tid'),'time',el.value);renderPlan();}
+ if(el.id==='tfDur'&&S.tf){S.tf.dur=Number(el.value)||'';}
+ if(el.id==='nlTime'&&el.value){CFG.nlt=el.value;CFG.nlDone=tdy();saveCfg();toast(t('savedOk'));}});
+document.addEventListener('toggle',function(e){var el=e.target;if(el.getAttribute&&el.getAttribute('data-blk'))lsSet('blOpen',el.open?'1':'0');},true);
+setInterval(function(){if(qGet().length)flush();},20000);
+setInterval(function(){if(S.page==='task'&&S.tasksRaw&&!sheetOpen())renderTasks();},30000);
 
 /* ---- நிகழ்வுகள் ---- */
 var ACT={back:function(){var back=S.backTo;S.backTo=null;if(back&&back!=='add'){S.type=null;S.editId=null;go(back);}else renderGrid();},save:doSave,newcat:newCat,close:closeSheet,newloan:function(){loanForm(null);},saveloan:saveLoan,savepk:savePk,
@@ -716,6 +973,7 @@ var ACT={back:function(){var back=S.backTo;S.backTo=null;if(back&&back!=='add'){
  edit:function(b){editRec(b.getAttribute('data-id'));},
  loan:function(b){var id=b.getAttribute('data-id');for(var i=0;i<S.loans.length;i++)if(S.loans[i].id===id)loanForm(S.loans[i]);},
  delrec:function(b){delRec(b.getAttribute('data-id'));}};
+Object.keys(TACT).forEach(function(k){ACT[k]=TACT[k];});
 document.addEventListener('click',function(e){
  if(e.target===$('sheet')){closeSheet();return;}
  var b=e.target.closest('[data-type],[data-chip],[data-lchip],[data-act],[data-go]');if(!b)return;
@@ -727,16 +985,15 @@ document.addEventListener('click',function(e){
 });
 $('sumMonth').addEventListener('change',loadSum);$('recMonth').addEventListener('change',loadRec);
 $('perQ').addEventListener('input',renderPer);$('perAll').addEventListener('change',renderPer);
-window.addEventListener('online',function(){$('net').className='';flush();});
-window.addEventListener('offline',function(){$('net').className='on';});
-document.addEventListener('visibilitychange',function(){if(!document.hidden){if(CFG.pin&&lsGet('unlock')!==tdy()&&started){showPin();return;}renderChrome();flush();if(S.page==='task'&&S.init)loadTasks();}});
+window.addEventListener('online',function(){flush();});
+document.addEventListener('visibilitychange',function(){if(!document.hidden){if(CFG.locked&&CFG.pin){showPin();return;}if(nightCheck())return;renderChrome();flush();if(S.page==='task'&&S.init)loadTasks();}});
 renderChrome();
 /* ---- கடிகாரம் ---- */
 var lastDay=tdy();
 function tickClock(){var d=new Date(),h=d.getHours(),ap=h<12?'AM':'PM',h12=h%12||12;$('hClock').innerHTML=pad(h12)+':'+pad(d.getMinutes())+':'+pad(d.getSeconds())+'<small>'+ap+'</small>';
  if(tdy()!==lastDay){lastDay=tdy();renderChrome();if(S.init&&S.page==='task')loadTasks();}}
 tickClock();setInterval(tickClock,1000);
-/* ---- 🔒 இணைப்பு & PIN (தினம் ஒருமுறை) ---- */
+/* ---- 🔒 இணைப்பு, பூட்டு (நீங்கள் பூட்டினால் / இரவு தானாக) & கைரேகை / போன் பூட்டு ---- */
 function phash(pin){var s=String(pin)+'|'+(CFG.key||'').slice(0,12);
  if(window.crypto&&crypto.subtle&&window.TextEncoder)return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});
  var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return Promise.resolve('d'+h);}
@@ -751,16 +1008,17 @@ function showSetup(msg,key){var lk=$('lock');lk.classList.remove('hidden');
   if(k.length<20){toast('⚠ '+L('ரகசியக் குறி சரியில்லை','Key looks wrong'),true);return;}
   if(!/^\d{4}$/.test(p1)||p1!==p2){toast('⚠ '+L('PIN 4 இலக்கம், இரண்டும் ஒன்றாக இருக்க வேண்டும்','PIN must be 4 digits and match'),true);return;}
   CFG.key=k;CFG.api=api||CFG.api;busy(true);
-  apiCall('ping',[]).then(function(){busy(false);return phash(p1);}).then(function(hs){CFG.pin=hs;saveCfg();lsSet('unlock',tdy());lk.classList.add('hidden');startApp();})
+  apiCall('ping',[]).then(function(){busy(false);return phash(p1);}).then(function(hs){CFG.pin=hs;CFG.locked=false;CFG.nlDone=tdy();saveCfg();lk.classList.add('hidden');startApp();})
   .catch(function(e){busy(false);var m=String(e.message||e);CFG.key='';showSetup(m==='AUTH'?L('ரகசியக் குறி தவறு','Wrong key'):L('இணைக்க முடியவில்லை: ','Could not connect: ')+m,k);});};}
 function showPin(msg){var lk=$('lock'),entry='';lk.classList.remove('hidden');
  function draw(){var d='';for(var i=0;i<4;i++)d+='<i class="'+(i<entry.length?'f':'')+'"></i>';$('pinDots').innerHTML=d;}
  lk.innerHTML='<div style="font-size:44px">🔒</div><h2>'+esc(t('app'))+'</h2><div class="msg" id="pinMsg">'+esc(msg||L('PIN-ஐ உள்ளிடவும்','Enter PIN'))+'</div><div class="dots" id="pinDots"></div><div class="pad">'
-  +[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(function(n){return n===''?'<span></span>':'<button data-k="'+n+'">'+n+'</button>';}).join('')+'</div><button class="lnk" id="pinForgot">'+L('PIN மறந்துவிட்டதா?','Forgot PIN?')+'</button>';
+  +[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(function(n){return n===''?'<span></span>':'<button data-k="'+n+'">'+n+'</button>';}).join('')+'</div>'+(CFG.bio?'<button class="biob" id="bioBtn">👆 '+L('கைரேகை / போன் பூட்டால் திற','Unlock with fingerprint / screen lock')+'</button>':'')+'<button class="lnk" id="pinForgot">'+L('PIN மறந்துவிட்டதா?','Forgot PIN?')+'</button>';
  draw();
+ if(CFG.bio){$('bioBtn').onclick=function(){bioUnlock();};if(!msg)setTimeout(function(){bioUnlock(true);},300);}
  lk.querySelector('.pad').onclick=function(e){var b=e.target.closest('button');if(!b)return;var k=b.getAttribute('data-k');
   if(k==='⌫'){entry=entry.slice(0,-1);draw();return;}if(entry.length>=4)return;entry+=k;draw();
-  if(entry.length===4)phash(entry).then(function(hs){if(hs===CFG.pin){lsSet('unlock',tdy());lk.classList.add('hidden');startApp();}
+  if(entry.length===4)phash(entry).then(function(hs){if(hs===CFG.pin){unlockOk();}
    else{entry='';draw();$('pinDots').classList.remove('shake');void $('pinDots').offsetWidth;$('pinDots').classList.add('shake');$('pinMsg').textContent=L('PIN தவறு','Wrong PIN');}});};
  $('pinForgot').onclick=function(){showSetup(L('ரகசியக் குறியை மீண்டும் போட்டு புதிய PIN அமைக்கவும்','Enter the key again and set a new PIN'),'');};}
 window.onAuthFail=function(){CFG.key='';saveCfg();showSetup(L('ரகசியக் குறி மாற்றப்பட்டுள்ளது — புதிய குறியை உள்ளிடவும்','The key was changed — enter the new key'));};
@@ -769,10 +1027,35 @@ var started=false;
 function startApp(){if(started)return;started=true;renderChrome();
  call('getInit',[],function(r){var first=!S.init;S.init=r;if(!lsGet('lang')&&r.lang){LANG=r.lang;}renderChrome();fillPlist();
   if(first){var m=tdy().slice(0,7);$('sumMonth').value=m;$('recMonth').value=m;if(START==='add')renderGrid();else go(START);}flush();});}
+/* பூட்டு */
+function b64e(buf){var s='',a=new Uint8Array(buf);for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s);}
+function b64d(str){var s=atob(str),a=new Uint8Array(s.length);for(var i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a;}
+function rnd(n){var a=new Uint8Array(n);crypto.getRandomValues(a);return a;}
+function lockNow(){if(!CFG.key||!CFG.pin)return;CFG.locked=true;saveCfg();closeSheet();showPin();}
+function unlockOk(){CFG.locked=false;saveCfg();$('lock').classList.add('hidden');if(!started)startApp();else{renderChrome();flush();if(S.page==='task'&&S.init)loadTasks();}}
+// இரவு தானியங்கிப் பூட்டு (⚙-ல் ON/OFF, நேரம்); அன்று ஒருமுறை மட்டும் — பிறகு திறந்தால் மறுநாள் இரவு வரை பூட்டு இல்லை
+function nightCheck(){if(!CFG.key||!CFG.pin||CFG.locked||CFG.nl===false)return false;var d=new Date(),nm=d.getHours()*60+d.getMinutes();
+ if(nm>=hm2m(CFG.nlt||'21:00')&&CFG.nlDone!==tdy()){CFG.nlDone=tdy();lockNow();return true;}return false;}
+function bioOk(){return !!(window.PublicKeyCredential&&navigator.credentials&&window.crypto&&crypto.getRandomValues);}
+function bioUnlock(auto){if(!CFG.bio||!bioOk())return;
+ navigator.credentials.get({publicKey:{challenge:rnd(32),allowCredentials:[{type:'public-key',id:b64d(CFG.bio),transports:['internal']}],userVerification:'required',timeout:60000}})
+  .then(function(c){if(c)unlockOk();}).catch(function(e){if(!auto){var m=$('pinMsg');if(m)m.textContent=L('கைரேகை வேலை செய்யவில்லை — PIN போடவும்','Fingerprint failed — use PIN');}});}
+function bioSetup(){if(!bioOk()){toast('⚠ '+t('bioNo'),true);return;}
+ var go2=function(){navigator.credentials.create({publicKey:{challenge:rnd(32),rp:{name:'My Tasks & Accounts'},user:{id:rnd(16),name:'owner',displayName:'My Tasks & Accounts'},
+   pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'discouraged'},timeout:60000}})
+  .then(function(c){CFG.bio=b64e(c.rawId);saveCfg();toast(t('bioOn'));loadSet();}).catch(function(e){toast('⚠ '+t('bioFail')+' ('+emsg(e).slice(0,60)+')',true);});};
+ if(PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable)PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(function(ok){if(ok)go2();else toast('⚠ '+t('bioNo'),true);}).catch(go2);else go2();}
+function pinChange(){openSheet('<div class="shead"><b>🔑 '+t('pinCh')+'</b><button class="x" data-act="close">✕</button></div>'+lab(t('pinOld'))+'<input id="pcOld" class="inp" type="password" inputmode="numeric" maxlength="4">'
+ +'<div class="g2"><div>'+lab(t('pinNew'))+'<input id="pcNew" class="inp" type="password" inputmode="numeric" maxlength="4"></div><div>'+lab(t('pinNew2'))+'<input id="pcNew2" class="inp" type="password" inputmode="numeric" maxlength="4"></div></div><button class="save" data-act="pcgo">'+t('lSave')+'</button>');}
+function pinChangeGo(){var o=$('pcOld').value,n1=$('pcNew').value,n2=$('pcNew2').value;
+ if(!/^\d{4}$/.test(n1)||n1!==n2){toast('⚠ '+L('PIN 4 இலக்கம், இரண்டும் ஒன்றாக இருக்க வேண்டும்','PIN must be 4 digits and match'),true);return;}
+ phash(o).then(function(h){if(h!==CFG.pin){toast('⚠ '+L('பழைய PIN தவறு','Old PIN is wrong'),true);return null;}return phash(n1);}).then(function(h2){if(!h2)return;CFG.pin=h2;saveCfg();closeSheet();toast(t('savedOk'));});}
+setInterval(nightCheck,30000);
 function boot(){var h=location.hash||'';
  if(h.indexOf('#k=')===0){var k=decodeURIComponent(h.slice(3));try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}showSetup(L('புதிய PIN அமைக்கவும்','Set a PIN'),k);return;}
  if(!CFG.key){showSetup('');return;}
- if(CFG.pin&&lsGet('unlock')!==tdy()){showPin();return;}
+ if(CFG.locked&&CFG.pin){showPin();return;}
+ if(nightCheck())return;
  startApp();}
 window.addEventListener('hashchange',function(){if((location.hash||'').indexOf('#k=')===0)boot();});
 if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(function(){});}
