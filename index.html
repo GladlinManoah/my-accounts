@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="ta"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2e7d32">
+<title>My Tasks & Accounts</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#2e7d32;--g2:#e8f5e9;--bg:#f3f5f2;--card:#fff;--tx:#1d2a1f;--mut:#6b776d;--in:#1b8a3a;--out:#c62828;--bd:#e2e8e1;--warn:#ef6c00}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:'Noto Sans Tamil',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;padding-bottom:84px}
+header{position:sticky;top:0;z-index:5;background:var(--g);color:#fff;padding:10px 14px 8px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+header .hrow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+header .hrow2{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:4px}
+header .clk{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.5px;white-space:nowrap;line-height:1.1}
+header .clk small{font-size:14px;font-weight:600;margin-left:3px;opacity:.9}
+.lock{position:fixed;inset:0;z-index:20;background:var(--g);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.lock.hidden{display:none}
+.lock h2{margin:8px 0 4px;font-size:22px}
+.lock .msg{min-height:22px;font-size:14px;margin:8px 0;color:#ffe082}
+.lock .dots{display:flex;gap:14px;margin:18px 0}
+.lock .dots i{width:16px;height:16px;border-radius:50%;border:2px solid #fff;display:block}
+.lock .dots i.f{background:#fff}
+.lock .pad{display:grid;grid-template-columns:repeat(3,72px);gap:14px}
+.lock .pad button{height:72px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font:inherit;font-size:26px;font-weight:600}
+.lock .pad button:active{background:rgba(255,255,255,.32)}
+.lock .lnk{background:none;border:0;color:#fff;opacity:.85;font:inherit;font-size:14px;text-decoration:underline;margin-top:18px}
+.lock .box{background:#fff;color:var(--tx);border-radius:16px;padding:16px;width:100%;max-width:380px;text-align:left}
+.lock .box .lab{margin-top:10px}
+.shake{animation:sh .35s}@keyframes sh{0%,100%{transform:none}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+header .ttl{font-weight:700;font-size:18px;line-height:1.2}
+header .dt{font-size:12px;opacity:.85;font-weight:400}
+header .hb{display:flex;gap:6px}
+header button{background:rgba(255,255,255,.16);border:0;color:#fff;font:inherit;font-size:15px;font-weight:700;border-radius:10px;min-width:38px;height:38px;padding:0 8px}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:#ffeb3b;z-index:9;transition:width .4s}
+#bar.on{width:85%}
+#net{display:none;background:#455a64;color:#fff;text-align:center;font-size:13px;padding:5px}
+#net.on{display:block}
+main{padding:12px 14px;max-width:560px;margin:0 auto}
+.pg{display:none}.pg.on{display:block}
+.gt{font-size:13px;color:var(--mut);font-weight:600;margin:14px 2px 6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tbtn{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px 10px;font:inherit;font-weight:600;color:var(--tx);text-align:left;display:flex;align-items:center;gap:8px;min-height:58px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.tbtn:active{background:var(--g2)}
+.tbtn .ic,.fhead .ic{font-size:22px}
+.big2 .tbtn{min-height:70px;font-size:17px}
+.done{width:100%;border:1px dashed var(--g);background:#fff;color:var(--g);border-radius:14px;padding:12px;font:inherit;font-weight:700;margin-bottom:4px}
+.done.ok{border-style:solid;background:var(--g2);color:#2b5a30;font-weight:600}
+.pend{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff3e0;color:#8a4b00;border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:8px}
+.pend button{border:0;background:var(--warn);color:#fff;border-radius:10px;padding:8px 12px;font:inherit;font-weight:600}
+.fhead{display:flex;align-items:center;gap:10px;font-size:18px;margin:4px 0 8px}
+.back{border:0;background:var(--card);border-radius:10px;width:40px;height:40px;font-size:24px;color:var(--g);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.hint{background:var(--g2);border-radius:10px;padding:8px 12px;color:#33513a;font-size:13px;margin-bottom:10px}
+.hint.warn{background:#fff3e0;color:#8a4b00}
+.lab{font-size:13px;color:var(--mut);font-weight:600;margin:14px 2px 6px}
+.amt{width:100%;font:inherit;font-size:30px;font-weight:700;padding:12px 14px;border:2px solid var(--g);border-radius:14px;background:#fff;color:var(--tx)}
+.inp{width:100%;font:inherit;padding:12px;border:1px solid var(--bd);border-radius:12px;background:#fff;color:var(--tx)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--bd);background:#fff;border-radius:22px;padding:9px 14px;font:inherit;font-size:14px;color:var(--tx)}
+.chip.on{background:var(--g);border-color:var(--g);color:#fff;font-weight:600}
+.chip.add{border-style:dashed;color:var(--g)}
+.save{width:100%;margin:20px 0 6px;background:var(--g);color:#fff;border:0;border-radius:14px;padding:15px;font:inherit;font-size:17px;font-weight:700;box-shadow:0 2px 6px rgba(46,125,50,.35)}
+.save.sec{background:#fff;color:var(--g);border:1px solid var(--g);box-shadow:none;margin-top:10px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.ch{font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.three small{display:block;color:var(--mut);font-size:12px}
+.three b{font-size:16px}
+.in{color:var(--in)}.out{color:var(--out)}.neu{color:var(--mut)}
+.sub{font-size:12px;color:var(--mut);font-weight:600;margin:12px 0 4px}
+.barrow{display:grid;grid-template-columns:1fr 90px;gap:4px 8px;align-items:center;font-size:13px;margin:4px 0}
+.barrow .bt{grid-column:1/3;height:6px;background:#eef1ed;border-radius:4px;overflow:hidden}
+.barrow .bt i{display:block;height:100%;border-radius:4px}
+.barrow .bt i.out{background:#ef9a9a}.barrow .bt i.in{background:#a5d6a7}
+.barrow span:nth-child(2){text-align:right;font-weight:600}
+.due{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--bd);font-size:14px}
+.due:first-of-type{border-top:0}
+.due .dd{white-space:nowrap;font-weight:600;color:var(--mut)}
+.due.soon .dd{color:var(--warn)}.due.late .dd{color:var(--out)}
+.rec{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--bd)}
+.rec:first-child{border-top:0}
+.rec .ic{font-size:20px;width:30px;text-align:center}
+.rec .mid{flex:1;min-width:0}
+.rec .t{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rec .s{font-size:12px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rec .a{font-weight:700;white-space:nowrap}
+.rec.q{opacity:.7}
+.del{border:0;background:none;font-size:17px;padding:4px 2px;color:#b0b8b1}
+.row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--bd)}
+.row:first-child{border-top:0}
+.prow{display:flex;justify-content:space-between;align-items:center;padding:12px 2px;border-top:1px solid var(--bd)}
+.prow:first-child{border-top:0}
+.prow .s{font-size:12px;color:var(--mut)}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:var(--g2);color:var(--g);font-weight:600;margin-right:4px}
+.badge.o{background:#fff3e0;color:#8a4b00}
+.loanc .big{font-size:22px;font-weight:700;margin:4px 0}
+.loanc .s{font-size:13px;color:var(--mut);margin-top:3px}
+.top2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.top2 .card{margin:0}
+.top2 small{display:block;color:var(--mut);font-size:12px}
+.top2 b{font-size:18px}
+.tools{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.tools .inp{flex:1}
+.addbtn{background:var(--g);color:#fff;border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:700;white-space:nowrap}
+.empty{text-align:center;color:var(--mut);padding:24px 8px;font-size:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.small{font-size:13px;line-height:1.7;color:var(--mut)}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--bd);display:flex;z-index:6;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;font:inherit;font-size:11px;color:var(--mut);padding:8px 0 10px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button span{font-size:21px}
+nav button.on{color:var(--g);font-weight:700}
+.pickf{display:flex;justify-content:space-between;align-items:center;text-align:left;font:inherit}
+.pickf .ph{color:#9aa59b}.pickf .pkar{color:var(--mut)}
+.bignum{font-size:28px;font-weight:700;margin:2px 0 8px}
+.tb.mini{padding:4px 8px;min-width:0;font-size:13px;margin-left:6px}
+details.card>summary.ch{margin-bottom:0}details.card[open]>summary.ch{margin-bottom:10px}
+select.inp{background:#fff}
+.task{padding:12px 0;border-top:1px solid var(--bd)}
+.task:first-child{border-top:0}
+.task.dim{opacity:.6}
+.th{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.th .tm{font-weight:700;color:var(--g);min-width:44px}
+.ts{font-size:12px;color:var(--mut);margin:4px 0 0}
+.tbs{display:flex;gap:8px;margin:8px 0 0;flex-wrap:wrap}
+.tb{border:1px solid var(--bd);background:#fff;border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;color:var(--tx);min-width:46px}
+.tb.go{flex:1}
+.tb.go{background:var(--g);border-color:var(--g);color:#fff;font-weight:600}
+.tb.ok{border-color:var(--g);color:var(--g);font-weight:700}
+.badge.p{background:#eef1ed;color:var(--mut)}
+.badge.r{background:#fdecea;color:var(--out)}
+.badge.n{background:#eef1ed;color:var(--mut)}
+.covrow{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:10px 2px 0;font-size:14px}
+details.card>summary{cursor:pointer;list-style:none}
+details.card>summary::-webkit-details-marker{display:none}
+#sheet{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:8;display:flex;align-items:flex-end}
+#sheet.hidden{display:none}
+.sbox{background:var(--bg);width:100%;max-width:560px;margin:0 auto;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:14px 14px 30px}
+.shead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.shead b{font-size:17px}
+.x{border:0;background:#fff;border-radius:10px;width:36px;height:36px;font-size:18px}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:#1d2a1f;color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;opacity:0;transition:.25s;z-index:10;pointer-events:none;max-width:90%;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.bad{background:var(--out)}
+</style></head>
+<body>
+<div id="bar"></div>
+<header><div class="hrow"><div class="ttl" id="hTitle">📒 My Tasks &amp; Accounts</div><div class="hb"><button id="langBtn" data-act="lang">EN</button><button data-go="set">⚙</button></div></div><div class="hrow2"><div class="dt" id="hDate"></div><div class="clk" id="hClock"></div></div></header>
+<div id="lock" class="lock hidden"></div>
+<div id="net"></div>
+<main>
+  <section id="pg-task" class="pg"><div id="taskBox"><div class="empty">…</div></div></section>
+  <section id="pg-add" class="pg on"><div id="addTop"></div><div id="addBox"><div class="empty">…</div></div><div id="recentBox"></div></section>
+  <section id="pg-sum" class="pg"><div class="tools"><input id="sumMonth" class="inp" type="month"></div><div id="sumBox"></div></section>
+  <section id="pg-per" class="pg"><div id="perTop"></div><div class="tools"><input id="perQ" class="inp"><label style="font-size:13px;white-space:nowrap"><input id="perAll" type="checkbox"> <span id="perAllL"></span></label></div><div id="perBox" class="card"></div></section>
+  <section id="pg-loan" class="pg"><div class="tools"><div style="flex:1;font-weight:700" id="loanTtl"></div><button class="addbtn" data-act="newloan" id="newLoanBtn"></button></div><div id="loanBox"></div></section>
+  <section id="pg-rec" class="pg"><div class="tools"><input id="recMonth" class="inp" type="month"></div><div id="recBox" class="card"></div></section>
+  <section id="pg-set" class="pg"><div id="setBox"></div></section>
+</main>
+<nav id="nav"></nav>
+<div id="sheet" class="hidden"><div class="sbox" id="sbox"></div></div>
+<datalist id="plist"></datalist>
+<div id="toast"></div>
+<script>
+var APP_VER='v5 · 12-10-2026';
+var START=(function(){var p='';try{p=new URLSearchParams(location.search).get('p')||'';}catch(e){}return /^(task|add|sum|per|loan|rec)$/.test(p)?p:'task';})();
+/* ---- API இணைப்பு (Apps Script) + cache: கடைசி data உடனே தெரியும், பின்னணியில் புதுப்பிக்கும் ---- */
+var CFG={};try{CFG=JSON.parse(localStorage.getItem('cfg')||'{}')||{};}catch(e){CFG={};}
+if(!CFG.api)CFG.api='https://script.google.com/macros/s/AKfycbxYPZ95siv1prlc1s6fxXQmj5LU4Pp0F29-Kse5MCmJEvpFMMg_T7PyfQRzIflf1xXRPw/exec';
+var READ={getInit:1,getTasks:1,getSummary:1,getPersons:1,getPerson:1,getLoans:1,getRecords:1,getPockets:1,getCard:1,getAllTasks:1,getTaskReport:1};
+function saveCfg(){try{localStorage.setItem('cfg',JSON.stringify(CFG));}catch(e){}}
+function apiCall(fn,args){return fetch(CFG.api,{method:'POST',body:JSON.stringify({key:CFG.key||'',fn:fn,args:args||[]}),redirect:'follow'})
+ .then(function(r){if(!r.ok)throw new Error('NetworkError HTTP '+r.status);return r.json();})
+ .then(function(j){if(!j||!j.ok){var m=(j&&j.err)||'?';if(m==='AUTH'&&window.onAuthFail)window.onAuthFail();throw new Error(m);}return j.r;});}
+function mkRun(){var ok=null,fail=null,px;var h={get:function(_,k){if(k==='withSuccessHandler')return function(f){ok=f;return px;};if(k==='withFailureHandler')return function(f){fail=f;return px;};
+ return function(){var args=Array.prototype.slice.call(arguments),ck=READ[k]?'c:'+k+':'+JSON.stringify(args):null,cached=null;
+  if(ck){try{cached=localStorage.getItem(ck);}catch(e){}if(cached)setTimeout(function(){ok&&ok(JSON.parse(cached));},0);}
+  apiCall(k,args).then(function(res){var str=JSON.stringify(res===undefined?null:res);
+    if(ck){try{localStorage.setItem(ck,str);}catch(e){}if(cached&&str===cached)return;
+      if(cached&&k==='getInit'&&window.freshInit){window.freshInit(JSON.parse(str));return;}}
+    ok&&ok(JSON.parse(str));})
+  .catch(function(e){var m=String((e&&e.message)||e);if(cached&&/NetworkError|Failed to fetch|network|Load failed/i.test(m))return;fail&&fail(e);});};}};px=new Proxy({},h);return px;}
+window.google={script:{get run(){return mkRun();}}};
+var LANG='ta';try{LANG=localStorage.getItem('lang')||'ta';}catch(e){}
+var TX={ta:{
+ty_OPEN_GET:'பழைய நிலுவை (அவர் தர வேண்டும்)',ty_OPEN_GIVE:'பழைய நிலுவை (நான் தர வேண்டும்)',ty_REVAL:'மதிப்பு மாற்றம்',morePk:'மேலும் (முதலீடு / Trading)',
+pickT:'பெயரைத் தேர்ந்தெடுக்கவும்',pkNew:'புதிய நபராகச் சேர்',pkClear:'பெயர் வேண்டாம்',allL:'எல்லோரும்',noEdit:'இதைத் திருத்த முடியாது — பதிவுகள் பக்கத்தில் நீக்கி மீண்டும் பதியவும்',
+g_cash:'ரொக்கம்',g_bank:'வங்கி',g_card:'Credit card',g_invest:'முதலீடு',g_trade:'Trading',
+netT:'நிகர சொத்து (இன்று)',nwCash:'ரொக்கம் + வங்கி',nwInv:'முதலீடு + Trading',nwCard:'Credit card நிலுவை',nwGet:'நபர்கள் தர வேண்டியது',nwGive:'நபர்களுக்குத் தர வேண்டியது',nwLoan:'கடன்கள் (என் பயன்பாடு)',nwExcl:'நிகர சொத்தில் சேர்க்காத குடும்ப நிலுவை: {0}',
+tallyHint:'🧮 ரொக்கம் எண்ணு · ✔ வங்கி இருப்பு சரிபார் · 📈 முதலீட்டு மதிப்பு புதுப்பி',countT:'ரொக்கம் எண்ணுதல்',revalT:'மதிப்பு புதுப்பி',checkT:'இருப்பு சரிபார்',coins:'சில்லறை (மொத்தம்)',
+actualBal:'உண்மையான இருப்பு (app / passbook)',curValue:'இன்றைய மொத்த மதிப்பு (Zerodha / Coin / app காட்டுவது)',cardDueQ:'Card நிலுவை (கட்ட வேண்டியது)',appBal:'App-ல் உள்ளது',counted:'உண்மையில்',diffL:'வித்தியாசம்',
+tlHintCash:'வித்தியாசம் "சொந்தம் → கணக்கில் வராதது" என்று தானாகப் பதியும். பதியாமல் விட்ட செலவு நினைவுக்கு வந்தால், சேமிக்கும் முன் அதைப் பதிவது நல்லது.',
+tlHintTrade:'வித்தியாசம் "Trading லாபம் / நஷ்டம்" ஆகப் பதியும் (உங்கள் மாத வரவு-செலவில் சேரும்).',tlHintInv:'வித்தியாசம் "மதிப்பு மாற்றம்" ஆகப் பதியும் — மாத வரவு-செலவில் சேராது, நிகர சொத்தில் மட்டும்.',
+tlSaved:'✓ சரிசெய்யப்பட்டது',tlSame:'✓ சரியாக உள்ளது, வித்தியாசம் இல்லை',
+othT:'பிறர் சொத்து (என் பெயரில்)',othNew:'புதிய பதிவு',othHint:'உங்கள் பெயரில் உள்ள, ஆனால் பிறருடைய பணம் (எ.கா. அம்மாவின் RD). உங்கள் கணக்கில் சேராது; முதிர்வுக்கு முன் Calendar நினைவூட்டல் வரும்.',
+oName:'பெயர்',oNamePh:'எ.கா. RD — Post Office',oOwner:'யாருடையது',oOwnerPh:'எ.கா. அம்மா',oAmt:'தொகை / மதிப்பு',oStart:'தொடக்கம்',oMature:'முதிர்வு',
+newPer:'புதிய நபர்',pName:'பெயர்',pRel:'உறவு',pPhone:'Phone',pInc:'நிகர சொத்தில் சேர்க்கவா?',pIncHint:'"இல்லை" என்றால் இவருடைய நிலுவை நிகர சொத்தில் சேராது (எ.கா. குடும்பம்).',editPer:'திருத்து / பழைய நிலுவை சேர்',
+openT:'பழைய நிலுவை (விருப்பம்)',openHint:'இந்த app-க்கு முன்பிருந்த நிலுவை. பணப்பைகளைத் தொடாது.',openGive:'நான் தர வேண்டும்',openGet:'அவர் தர வேண்டும்',openAmt:'தொகை',openAsOf:'எந்தத் தேதி நிலவரம்',openDue:'திருப்ப வேண்டிய தேதி',
+lHist:'பழைய கடன் விவரம் (விருப்பம்)',lAsofHint:'"நிலுவை தேதி" = மேலே உள்ள நிலுவை எந்தத் தேதி நிலவரம். அந்தத் தேதி வரை கட்டிய தவணைகள் ஏற்கனவே அதில் அடங்கும்.',lStart:'தொடங்கிய தேதி',lAsof:'நிலுவை தேதி',lOrig:'அசல் கடன் தொகை',lTenure:'காலம் (மாதங்கள்)',remEmi:'~{0} தவணைகள் மீதம் · ~{1} முடியும்',
+cardHint:'"Credit card" குழுவில் உள்ள பணப்பைகளின் நிலுவை கூட்டப்பட்டு, மீதமுள்ள வரம்பு சுருக்கத்தில் தெரியும்.',
+nav_task:'பணிகள்',st_pending:'காத்திருப்பு',st_started:'நடக்கிறது',st_done:'முடிந்தது',st_skipped:'தவிர்த்தது',st_missed:'தவறியது',
+dndOn:'வேலையில் — {0} வரை நினைவூட்டல் இல்லை',dndOff:'நிறுத்து',dndBtn:'வேலையில் இருக்கிறேன் (நினைவூட்டல் நிறுத்து)',dndQ:'எவ்வளவு நேரம்?',
+coverQ:'பிரதீப் விடுப்பு (நான் விநியோகம்)',todayTasks:'இன்றைய பணிகள்',noTasksToday:'இன்று பணிகள் இல்லை',flexT:'நேரம் இருக்கும்போது',noFlex:'நிலுவை வேலைகள் இல்லை 👍',flexPh:'புதிய வேலை (எ.கா. மருந்து தயாரிப்பு)',
+newTask:'புதிய பணி',editTasks:'பணிகளை மாற்று',report:'பணி அறிக்கை',startedAt:'{0} முதல் நடக்கிறது',lateBy:'{0} தாமதம்',tStart:'தொடங்கினேன்',tDone:'முடிந்தது',
+snoozeQ:'எப்போது மீண்டும் நினைவூட்ட?',minS:'நிமி',hourS:'மணி',skipQ:'இன்று ஏன் இல்லை? (விருப்பம்)',
+tName:'பணியின் பெயர்',tNameEn:'English பெயர் (விருப்பம்)',tMode:'வகை',m_fixed:'தினசரி / வாரநாட்கள்',m_once:'ஒருமுறை',m_flex:'நேரம் இருக்கும்போது',m_cover:'பிரதீப் விடுப்பு நாளில்',
+coverHint:'"பணிகள்" பக்கத்தில் பிரதீப் விடுப்பு என்று குறித்த நாட்களில் மட்டும் வரும்.',tTime:'நேரம்',tDays:'எந்த நாட்கள்',tNag:'தொடங்கும் வரை நினைவூட்டல்',nag0:'ஒருமுறை மட்டும்',
+nagHint:'பணி நேரத்தில் ஒரு நினைவூட்டல், பிறகு "தொடங்கினேன்" அழுத்தும் வரை 15 நிமிடத்துக்கு ஒருமுறை.',tImp:'முக்கியம்',impHint:'⭐ முக்கியமானவை 🔕 நேரத்திலும் நினைவூட்டும்.',yes:'ஆம்',no:'இல்லை',tActive:'செயலில்',inactive:'நிறுத்தப்பட்டது',
+e_tname:'பணியின் பெயர் தேவை',e_ttime:'நேரம் தேவை',e_tdays:'குறைந்தது ஒரு நாளைத் தேர்ந்தெடுக்கவும்',daysS:'நாட்கள்',noRep:'இன்னும் தரவு இல்லை',
+repLegend:'✓ நேரத்தில் (15 நிமி-க்குள்) · ⏰ தாமதம் · ✕ தவறியது · ⤼ தவிர்த்தது · ⌀ சராசரி வேலை நேரம்',
+calT:'Google Calendar நினைவூட்டல்',calSteps:'நினைவூட்டல்கள் உங்கள் Google Calendar-ல் "📒 என் கணக்கு" என்ற தனி calendar-ல் வரும் (EMI, கைமாற்று, நகை தேதிகள் உட்பட; தொகை இருக்காது).<br><b>ஒலியை மாற்ற:</b> போன் Settings ▸ Apps ▸ Calendar ▸ Notifications ▸ "Event reminders" / "Reminders" ▸ Sound: தனி ஒலி · "Pop on screen" ON · "Override Do Not Disturb" ON.<br>Google Calendar app ▸ Settings ▸ "📒 என் கணக்கு" ▸ notifications ON என்பதை உறுதி செய்யவும்.',
+calTest:'🔔 Calendar சோதனை',calOk:'✓ {0}-க்கு "{1}" calendar-ல் சோதனை நினைவூட்டல் வைக்கப்பட்டது. 2 நிமிடம் காத்திருங்கள்.',
+cardT:'Credit card வரம்பு',cardLim:'பகிர்ந்த மொத்த வரம்பு (₹)',cardAvail:'பயன்படுத்தக்கூடியது',cardUsed:'நிலுவை',
+
+app:'என் பணிகள் & கணக்கு',nav_add:'பதிவு',nav_sum:'சுருக்கம்',nav_per:'நபர்கள்',nav_loan:'கடன்கள்',nav_rec:'பதிவுகள்',
+g_daily:'அன்றாடம்',g_people:'நண்பர்கள் / நபர்கள்',g_loan:'கடன்',g_other:'மற்றவை',
+ty_EXP:'செலவு',ty_INC:'வரவு',ty_BORROW:'கைமாற்று வாங்கினேன்',ty_REPAY:'திருப்பிக் கொடுத்தேன்',ty_LEND:'கைமாற்று கொடுத்தேன்',ty_RECOVER:'திரும்பப் பெற்றேன்',ty_PASS_IN:'பிறர் பணம் வந்தது',ty_PASS_OUT:'பிறர் பணம் அனுப்பினேன்',ty_LOAN_IN:'கடன் பெற்றேன்',ty_EMI:'தவணை / வட்டி கட்டினேன்',ty_XFER:'பணப்பை மாற்றம்',ty_SAVE:'சேமிப்பு / முதலீடு',
+h_BORROW:'நண்பரிடம் தற்காலிகமாக வாங்கியது.',h_REPAY:'நீங்கள் வாங்கியதை நண்பருக்குத் திருப்பிக் கொடுத்தது.',h_LEND:'நண்பருக்குக் கொடுத்தது. உங்கள் பெயரில் கடன் எடுத்து அவருக்குக் கொடுத்தாலும் இதுவே.',h_RECOVER:'நண்பர் உங்களுக்குத் திருப்பித் தந்தது (அவருடைய கடன் தவணைப் பணம் உட்பட).',h_PASS_IN:'வேறொருவருக்கு மாற்றுவதற்காக நண்பர் அனுப்பியது. லாப-நஷ்டத்தில் வராது.',h_PASS_OUT:'நண்பர் சொன்னபடி வேறொருவருக்கு அனுப்பியது. லாப-நஷ்டத்தில் வராது.',h_LOAN_IN:'வங்கி / நகைக் கடன் தொகை கைக்கு வந்தது.',h_EMI:'கடன் தவணை அல்லது நகைக் கடன் வட்டி. வட்டி மட்டும் கட்டினால், "இதில் வட்டி" கட்டத்திலும் அதே தொகையைப் போடவும்.',h_XFER:'ATM-ல் எடுத்தல், Credit card bill கட்டுதல், ஒரு வங்கியிலிருந்து மற்றொன்றுக்கு அனுப்புதல்.',h_SAVE:'Atal Pension, பங்குகள், RD — இவை செலவு அல்ல, உங்கள் பணம் இடம் மாறுகிறது.',
+amount:'₹ தொகை',division:'பிரிவு',category:'வகை',saveIn:'எதில்',whichLoan:'எந்தக் கடன்',noLoan:'முதலில் 🏦 கடன்கள் பக்கத்தில் கடனைச் சேர்க்கவும்.',from:'எதிலிருந்து',to:'எதற்கு',cameIn:'எதில் வந்தது',wentFrom:'எதிலிருந்து போனது',whose:'யாருடைய பணம்',who:'யார்',whoOpt:'யாருக்கு / யாரிடமிருந்து (விருப்பம்)',personPh:'பெயர் — புதியவர் என்றால் type செய்யவும்',interestQ:'இதில் வட்டி எவ்வளவு? (தெரிந்தால்)',interestPh:'₹ வட்டி',dueQ:'திருப்ப வேண்டிய தேதி',date:'தேதி',note:'குறிப்பு',notePh:'விருப்பம்',toWhomPh:'யாருக்கு?',save:'✓ பதிவு செய்',update:'✓ மாற்றத்தைச் சேமி',editT:'திருத்து',newOne:'＋ புதியது',
+e_amt:'தொகையை உள்ளிடவும்',e_div:'பிரிவைத் தேர்ந்தெடுக்கவும்',e_cat:'வகையைத் தேர்ந்தெடுக்கவும்',e_loan:'கடனைத் தேர்ந்தெடுக்கவும்',e_pocket:'பணப்பையைத் தேர்ந்தெடுக்கவும்',e_to:'"எதற்கு" பணப்பையைத் தேர்ந்தெடுக்கவும்',e_person:'நபரின் பெயர் தேவை',e_int:'வட்டி மொத்தத்தை விட அதிகம்',e_offline:'இதற்கு net தேவை',
+saved:'✓ பதிவானது',queued:'📴 போனில் சேமிக்கப்பட்டது — net வந்ததும் அனுப்பப்படும்',synced:'✓ காத்திருந்த பதிவுகள் அனுப்பப்பட்டன',pending:'⏳ {0} பதிவுகள் அனுப்பக் காத்திருக்கின்றன',sendNow:'இப்போது அனுப்பு',updated:'✓ மாற்றப்பட்டது',offline:'📴 Net இல்லை — பதிவுகள் போனில் சேமிக்கப்படும்',
+newCatQ:'{0} — புதிய {1} வகையின் பெயர்:',catAdded:'✓ வகை சேர்க்கப்பட்டது',k_செலவு:'செலவு',k_வரவு:'வரவு',k_சேமிப்பு:'சேமிப்பு',
+recent:'சமீபத்திய பதிவுகள்',doneBtn:'✓ இன்றைய கணக்கைப் பதிந்து முடித்தேன்',doneOk:'✓ இன்றைய கணக்கு முடிந்தது — இரவு நினைவூட்டல் நின்றது',doneToast:'✓ நல்லது! இன்றைய நினைவூட்டல் நிறுத்தப்பட்டது',
+savings:'சேமிப்பு',interestW:'வட்டி',repayBy:'திருப்ப',
+upcoming:'⏰ வரவிருப்பவை',inc:'வரவு',exp:'செலவு',expInt:'செலவு + வட்டி',profit:'லாபம்',loss:'இழப்பு',left:'மீதம்',intShare:'கடன் வட்டி (பங்கு)',ownMoney:'இந்த மாதம் {0} சொந்தப் பணம் / கடனிலிருந்து இதற்குப் போனது.',expDet:'செலவு விவரம்',incDet:'வரவு விவரம்',monthOther:'இந்த மாதம் — மற்றவை',saveInv:'🐷 சேமிப்பு / முதலீடு',principal:'🧾 கடன் அசல் திருப்பியது',pocketBal:'பணப்பை இருப்பு (இன்று)',total:'மொத்தம்',openNote:'⚙ அமைப்பில் தொடக்க இருப்பைப் போட்டால் இவை சரியாக வரும்.',
+late:'{0} நாள் தாமதம்',today:'இன்று',tomorrow:'நாளை',inDays:'{0} ({1} நாளில்)',
+d_emi:'தவணை',d_gold:'நகை மீட்பு / புதுப்பிப்பு',d_end:'முடிவுத் தேதி',d_pin:'{0} உங்களுக்குத் தர வேண்டும் {1}',d_pout:'{0}-க்கு நீங்கள் தர வேண்டும் {1}',
+toGet:'உங்களுக்கு வர வேண்டியது',toGive:'நீங்கள் தர வேண்டியது',search:'🔍 பெயர் தேடு',everyone:'எல்லோரும்',noOne:'யாரும் இல்லை',noDues:'நிலுவை இல்லை 👍 — எல்லோரையும் பார்க்க "எல்லோரும்" டிக் செய்யவும்',theyOwe:'அவர் தர வேண்டும்',youOwe:'நீங்கள் தர வேண்டும்',settled:'கணக்கு சரி',byDate:'{0}-க்குள்',theyOweL:'அவர் உங்களுக்குத் தர வேண்டியது',youOweL:'நீங்கள் அவருக்குத் தர வேண்டியது',dueDate:'திருப்ப வேண்டிய தேதி',noRecs:'பதிவுகள் இல்லை',
+loansTitle:'கடன்கள் & நகைக் கடன்கள்',noLoans:'இன்னும் கடன் சேர்க்கவில்லை.<br>"＋ புதியது" அழுத்தி உங்கள் கடன்கள், நகைக் கடன்களைச் சேர்க்கவும்.',totLoan:'உங்கள் மொத்தக் கடன் நிலுவை (நீங்கள் பயன்படுத்துபவை)',forOthers:'பிறருக்காக',acct:'கணக்கு',use:'பயன்',emiPaid:'✓ இந்த மாதத் தவணை கட்டியாச்சு',emiDay:'⏳ தவணை நாள்: {0}',goldEnd:'மீட்பு / புதுப்பிப்பு',endD:'முடிவு',
+editLoan:'✏️ கடனைத் திருத்து',newLoan:'＋ புதிய கடன்',lName:'பெயர் (நினைவில் வைக்க)',lNamePh:'எ.கா. HDFC நகைக் கடன் 1',lType:'வகை',lLender:'வங்கி / கொடுத்தவர்',lLenderPh:'எ.கா. SBI, அல்லது நபர் பெயர்',lAcct:'கணக்கு யார் பெயரில்',lUser:'யார் பயன்படுத்துகிறார்',lUserHint:'நீங்களே பயன்படுத்தினால் "நான்". நண்பருக்காக எடுத்திருந்தால் அவர் பெயர்.',lPct:'எதற்குப் பயன்பட்டது (%) — வட்டியைப் பிரிக்க',pD:'டெய்ரி',pS:'சித்தா',pP:'சொந்தம்',lOpen:'இன்றைய நிலுவை (பழைய கடன்)',lRate:'வட்டி % (ஆண்டு)',lEmi:'மாதத் தவணை',lDay:'தவணை நாள் (1-31)',lDayPh:'எ.கா. 5',lEnd:'முடிவு / நகை புதுப்பிப்புத் தேதி',lJewel:'நகை விவரம்',lJewelPh:'எ.கா. 2 வளையல் 16g',lJOwner:'நகை யாருடையது',lStatus:'நிலை',lSave:'✓ சேமி',recentTx:'சமீபத்திய பரிமாற்றங்கள்',e_lname:'பெயர் தேவை',savedOk:'✓ சேமிக்கப்பட்டது',
+noMonth:'இந்த மாதம் பதிவுகள் இல்லை',delQ:'இந்தப் பதிவை நீக்கவா? (Sheet-ல் "நீக்கம்" என்று குறிக்கப்படும், அழியாது)',deleted:'✓ நீக்கப்பட்டது',tapEdit:'திருத்த, பதிவைத் தட்டவும்',
+setPk:'பணப்பைகள் — தொடக்க இருப்பு',setPkHint:'பதியத் தொடங்கும் நாளில் ஒவ்வொரு கணக்கிலும் இருந்த தொகை. Credit card நிலுவையை மைனஸில் (எ.கா. -5000).',newPk:'புதிய பணப்பை பெயர்',
+
+know:'தெரிந்துகொள்ள',knowBody:'• பதிவைத் திருத்த, அதைத் தட்டவும்.<br>• புதிய வகையைப் பதிவுப் படிவத்திலேயே "＋ புதியது" மூலம் சேர்க்கலாம்.<br>• பழைய கைமாற்றுகளை, பழைய தேதியுடன் "கைமாற்று வாங்கினேன் / கொடுத்தேன்" என்று பதியவும்.<br>• பழைய கடன்களை 🏦 பக்கத்தில், இன்றைய நிலுவையுடன் சேர்க்கவும்.<br>• App திறந்திருக்கும்போது net போனால், பதிவுகள் போனில் சேமிக்கப்பட்டு net வந்ததும் அனுப்பப்படும்.<br>• 💾 ஒவ்வொரு ஞாயிறும் Google Drive "My Accounts Backup" folder-ல் தானாக backup.',ver:'பதிப்பு',me:'நான்'
+},en:{
+ty_OPEN_GET:'Old balance (they owe me)',ty_OPEN_GIVE:'Old balance (I owe)',ty_REVAL:'Value change',morePk:'More (investments / trading)',
+pickT:'Choose a name',pkNew:'add as new person',pkClear:'No name',allL:'All',noEdit:'This cannot be edited — delete it on the Records page and enter again',
+g_cash:'Cash',g_bank:'Bank',g_card:'Credit card',g_invest:'Investments',g_trade:'Trading',
+netT:'Net worth (today)',nwCash:'Cash + bank',nwInv:'Investments + trading',nwCard:'Credit card dues',nwGet:'People owe me',nwGive:'I owe people',nwLoan:'Loans (used by me)',nwExcl:'Family dues not counted in net worth: {0}',
+tallyHint:'🧮 count cash · ✔ check bank balance · 📈 update investment value',countT:'Count cash',revalT:'Update value',checkT:'Check balance',coins:'Coins (total)',
+actualBal:'Actual balance (bank app / passbook)',curValue:'Current total value (as shown in Zerodha / Coin / app)',cardDueQ:'Card due (amount to pay)',appBal:'In the app',counted:'Actual',diffL:'Difference',
+tlHintCash:'The difference is recorded as "Personal → Unrecorded difference". If you remember a missed expense, enter it before saving.',
+tlHintTrade:'The difference is recorded as Trading profit / loss (counts in your monthly income/expense).',tlHintInv:'The difference is recorded as a value change — not in monthly income/expense, only in net worth.',
+tlSaved:'✓ Adjusted',tlSame:'✓ Matches — no difference',
+othT:'Others\' assets (in my name)',othNew:'New entry',othHint:'Money in your name that belongs to someone else (e.g. Amma\'s RD). Not counted in your accounts; a Calendar reminder comes before maturity.',
+oName:'Name',oNamePh:'e.g. RD — Post Office',oOwner:'Whose',oOwnerPh:'e.g. Amma',oAmt:'Amount / value',oStart:'Start',oMature:'Maturity',
+newPer:'New person',pName:'Name',pRel:'Relationship',pPhone:'Phone',pInc:'Count in net worth?',pIncHint:'"No" keeps this person\'s balance out of net worth (e.g. family).',editPer:'Edit / add old balance',
+openT:'Old balance (optional)',openHint:'Balance from before this app. Does not touch any account.',openGive:'I owe',openGet:'They owe me',openAmt:'Amount',openAsOf:'As of date',openDue:'Return by',
+lHist:'Old loan details (optional)',lAsofHint:'"Balance as of" = the date of the outstanding above. EMIs paid up to that date are already included.',lStart:'Start date',lAsof:'Balance as of',lOrig:'Original amount',lTenure:'Tenure (months)',remEmi:'~{0} EMIs left · ends ~{1}',
+cardHint:'Dues of accounts in the "Credit card" group are added up; the remaining limit shows in Summary.',
+nav_task:'Tasks',st_pending:'Waiting',st_started:'In progress',st_done:'Done',st_skipped:'Skipped',st_missed:'Missed',
+dndOn:'Busy — no reminders until {0}',dndOff:'Stop',dndBtn:'I\'m busy (pause reminders)',dndQ:'For how long?',
+coverQ:'Pradeep on leave (I deliver)',todayTasks:'Today\'s tasks',noTasksToday:'No tasks today',flexT:'When free',noFlex:'Nothing pending 👍',flexPh:'New task (e.g. medicine preparation)',
+newTask:'New task',editTasks:'Edit tasks',report:'Task report',startedAt:'In progress since {0}',lateBy:'{0} late',tStart:'Start',tDone:'Done',
+snoozeQ:'Remind me again in',minS:'min',hourS:'h',skipQ:'Why not today? (optional)',
+tName:'Task name',tNameEn:'English name (optional)',tMode:'Type',m_fixed:'Daily / weekdays',m_once:'One time',m_flex:'When free',m_cover:'On Pradeep\'s leave',
+coverHint:'Appears only on days marked "Pradeep on leave" in Tasks.',tTime:'Time',tDays:'Which days',tNag:'Remind until started',nag0:'Only once',
+nagHint:'One reminder at the time, then every 15 min until you tap "Start".',tImp:'Important',impHint:'⭐ Important tasks remind even while busy.',yes:'Yes',no:'No',tActive:'Active',inactive:'paused',
+e_tname:'Task name is required',e_ttime:'Time is required',e_tdays:'Choose at least one day',daysS:'days',noRep:'No data yet',
+repLegend:'✓ on time (within 15 min) · ⏰ late · ✕ missed · ⤼ skipped · ⌀ average work time',
+calT:'Google Calendar reminders',calSteps:'Reminders appear in a separate Google Calendar "📒 என் கணக்கு" (including EMI, hand-loan and gold dates; no amounts).<br><b>To change the sound:</b> phone Settings ▸ Apps ▸ Calendar ▸ Notifications ▸ "Event reminders" / "Reminders" ▸ Sound: a distinct tone · "Pop on screen" ON · "Override Do Not Disturb" ON.<br>In Google Calendar ▸ Settings ▸ "📒 என் கணக்கு", make sure notifications are ON.',
+calTest:'🔔 Calendar test',calOk:'✓ Test reminder set for {0} in the "{1}" calendar. Wait 2 minutes.',
+cardT:'Credit card limit',cardLim:'Shared total limit (₹)',cardAvail:'Available',cardUsed:'Due',
+
+app:'My Tasks & Accounts',nav_add:'Add',nav_sum:'Summary',nav_per:'People',nav_loan:'Loans',nav_rec:'Records',
+g_daily:'Daily',g_people:'Friends / people',g_loan:'Loans',g_other:'Others',
+ty_EXP:'Expense',ty_INC:'Income',ty_BORROW:'Borrowed (hand loan)',ty_REPAY:'Paid back',ty_LEND:'Lent (hand loan)',ty_RECOVER:'Got back',ty_PASS_IN:'Others\' money received',ty_PASS_OUT:'Others\' money sent',ty_LOAN_IN:'Loan received',ty_EMI:'EMI / interest paid',ty_XFER:'Transfer',ty_SAVE:'Savings / investment',
+h_BORROW:'Money borrowed from a friend for a short time.',h_REPAY:'Paying back money you borrowed.',h_LEND:'Money given to a friend — also when you took a loan in your name for them.',h_RECOVER:'Money a friend paid back to you (including their loan EMI money).',h_PASS_IN:'Money a friend sent you to forward to someone. Not counted in profit/loss.',h_PASS_OUT:'Money forwarded to someone as a friend asked. Not counted in profit/loss.',h_LOAN_IN:'Bank / gold loan amount received.',h_EMI:'Loan EMI or gold-loan interest. If you paid only interest, put the same amount in "interest".',h_XFER:'ATM withdrawal, credit card bill payment, moving money between banks.',h_SAVE:'Atal Pension, shares, RD — not an expense, your money only moves.',
+amount:'₹ Amount',division:'Section',category:'Category',saveIn:'Into',whichLoan:'Which loan',noLoan:'First add the loan on the 🏦 Loans page.',from:'From',to:'To',cameIn:'Received in',wentFrom:'Paid from',whose:'Whose money',who:'Who',whoOpt:'To / from whom (optional)',personPh:'Name — type a new name if needed',interestQ:'Interest part (if known)',interestPh:'₹ Interest',dueQ:'Return by',date:'Date',note:'Note',notePh:'Optional',toWhomPh:'To whom?',save:'✓ Save',update:'✓ Save changes',editT:'Edit',newOne:'＋ New',
+e_amt:'Enter the amount',e_div:'Choose a section',e_cat:'Choose a category',e_loan:'Choose the loan',e_pocket:'Choose the account',e_to:'Choose the "To" account',e_person:'Name is required',e_int:'Interest is more than the total',e_offline:'This needs internet',
+saved:'✓ Saved',queued:'📴 Saved on phone — will be sent when online',synced:'✓ Pending entries sent',pending:'⏳ {0} entries waiting to be sent',sendNow:'Send now',updated:'✓ Updated',offline:'📴 No internet — entries will be kept on the phone',
+newCatQ:'{0} — new {1} category name:',catAdded:'✓ Category added',k_செலவு:'expense',k_வரவு:'income',k_சேமிப்பு:'savings',
+recent:'Recent entries',doneBtn:'✓ I have finished today\'s accounts',doneOk:'✓ Today\'s accounts done — night reminder stopped',doneToast:'✓ Great! Today\'s reminder stopped',
+savings:'Savings',interestW:'interest',repayBy:'return by',
+upcoming:'⏰ Coming up',inc:'Income',exp:'Expense',expInt:'Expense + interest',profit:'Profit',loss:'Loss',left:'Balance',intShare:'Loan interest (share)',ownMoney:'This month {0} went in from own money / loans.',expDet:'Expense details',incDet:'Income details',monthOther:'This month — others',saveInv:'🐷 Savings / investment',principal:'🧾 Loan principal repaid',pocketBal:'Account balances (today)',total:'Total',openNote:'⚙ Enter opening balances in Settings for correct figures.',
+late:'{0} days late',today:'Today',tomorrow:'Tomorrow',inDays:'{0} (in {1} days)',
+d_emi:'EMI',d_gold:'gold release / renewal',d_end:'end date',d_pin:'{0} owes you {1}',d_pout:'You owe {0} {1}',
+toGet:'You will get',toGive:'You have to give',search:'🔍 Search name',everyone:'Everyone',noOne:'No one',noDues:'Nothing pending 👍 — tick "Everyone" to see all',theyOwe:'They owe you',youOwe:'You owe',settled:'Settled',byDate:'by {0}',theyOweL:'They owe you',youOweL:'You owe them',dueDate:'Return by',noRecs:'No entries',
+loansTitle:'Loans & gold loans',noLoans:'No loans added yet.<br>Tap "＋ New" to add your loans and gold loans.',totLoan:'Your total loan outstanding (used by you)',forOthers:'For others',acct:'Account',use:'Used by',emiPaid:'✓ This month\'s EMI paid',emiDay:'⏳ EMI day: {0}',goldEnd:'Release / renewal',endD:'Ends',
+editLoan:'✏️ Edit loan',newLoan:'＋ New loan',lName:'Name (to remember)',lNamePh:'e.g. HDFC gold loan 1',lType:'Type',lLender:'Bank / lender',lLenderPh:'e.g. SBI, or a person',lAcct:'Account in whose name',lUser:'Who uses it',lUserHint:'"Me" if you use it. If taken for a friend, their name.',lPct:'Used for (%) — to split interest',pD:'Dairy',pS:'Siddha',pP:'Personal',lOpen:'Outstanding today (old loan)',lRate:'Interest % (yearly)',lEmi:'Monthly EMI',lDay:'EMI day (1-31)',lDayPh:'e.g. 5',lEnd:'End / gold renewal date',lJewel:'Jewel details',lJewelPh:'e.g. 2 bangles 16g',lJOwner:'Whose jewel',lStatus:'Status',lSave:'✓ Save',recentTx:'Recent transactions',e_lname:'Name is required',savedOk:'✓ Saved',
+noMonth:'No entries this month',delQ:'Delete this entry? (It is only marked "deleted" in the Sheet, not erased)',deleted:'✓ Deleted',tapEdit:'Tap an entry to edit',
+setPk:'Accounts — opening balance',setPkHint:'The amount in each account on the day you start. Credit card dues as minus (e.g. -5000).',newPk:'New account name',
+
+know:'Good to know',knowBody:'• Tap an entry to edit it.<br>• Add a new category from the entry form with "＋ New".<br>• Enter old hand loans with their old date as "Borrowed / Lent".<br>• Add old loans on the 🏦 page with today\'s outstanding.<br>• If the internet drops while the app is open, entries are kept on the phone and sent later.<br>• 💾 Every Sunday an automatic backup goes to the Google Drive folder "My Accounts Backup".',ver:'Version',me:'Me'
+}};
+var VAL_EN={'நண்பர்':'Friend','உறவினர்':'Relative','குடும்பம்':'Family','கடை':'Shop','வாடிக்கையாளர்':'Customer','தொழிலாளர்':'Worker','மற்றவர்':'Other','நகை':'Jewel','வங்கிக் கடன்':'Bank loan','நகைக் கடன்':'Gold loan','நபர் கடன்':'Personal loan','மற்றவை':'Other','செயலில்':'Active','முடிந்தது':'Closed','ரொக்கம்':'Cash','நான்':'Me'};
+var LTYPES=['வங்கிக் கடன்','நகைக் கடன்','நபர் கடன்','மற்றவை'],LSTAT=['செயலில்','முடிந்தது'];
+function t(k){var v=TX[LANG][k];if(v==null)v=TX.ta[k];return v==null?k:v;}
+function fmt(s){var a=arguments;return s.replace(/\{(\d)\}/g,function(m,i){return a[+i+1];});}
+function tv(v){return LANG==='en'&&VAL_EN[v]?VAL_EN[v]:v;}
+function divN(d){return LANG==='en'&&S.init&&S.init.divEn[d]?S.init.divEn[d]:d;}
+function catN(div,name){if(LANG!=='en')return name;var c=S.init.cats;for(var i=0;i<c.length;i++)if(c[i].name===name&&(c[i].div===div||!div)&&c[i].en)return c[i].en;return name;}
+
+var S={init:null,type:null,f:{},lf:{},per:[],loans:[],editId:null,recMap:{},page:'add'};
+var PERSON=['BORROW','REPAY','LEND','RECOVER','PASS_IN','PASS_OUT'];
+var PSIGN={EXP:-1,INC:1,BORROW:1,LEND:-1,REPAY:-1,RECOVER:1,PASS_IN:1,PASS_OUT:-1,LOAN_IN:1,EMI:-1,SAVE:-1,XFER:0,OPEN_GET:0,OPEN_GIVE:0,REVAL:0};
+var GROUPS=[{t:'g_daily',big:true,items:[['EXP','💸'],['INC','💰']]},{t:'g_people',items:[['BORROW','🤝'],['REPAY','↩️'],['LEND','🫴'],['RECOVER','📥'],['PASS_IN','📨'],['PASS_OUT','📤']]},{t:'g_loan',items:[['LOAN_IN','🏦'],['EMI','🧾']]},{t:'g_other',items:[['XFER','🔁'],['SAVE','🐷']]}];
+var ICON={EXP:'💸',INC:'💰',BORROW:'🤝',REPAY:'↩️',LEND:'🫴',RECOVER:'📥',PASS_IN:'📨',PASS_OUT:'📤',LOAN_IN:'🏦',EMI:'🧾',XFER:'🔁',SAVE:'🐷',OPEN_GET:'📋',OPEN_GIVE:'📋',REVAL:'📈'};
+
+function $(i){return document.getElementById(i);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function money(n){n=Number(n)||0;var neg=n<0;var v=Math.round(Math.abs(n));return (neg?'− ':'')+'₹'+v.toLocaleString('en-IN');}
+function dmy(s){if(!s)return '';var p=s.split('-');return p[2]+'-'+p[1]+'-'+p[0].slice(2);}
+function pad(n){return (n<10?'0':'')+n;}
+function tdy(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function emsg(e){return (e&&e.message)||String(e||'');}
+function isNet(e){var m=emsg(e);return !navigator.onLine||!m||/NetworkError|Failed to fetch|network error|ERR_INTERNET|ERR_NETWORK/i.test(m);}
+var loadN=0;
+function busy(on){loadN+=on?1:-1;if(loadN<0)loadN=0;$('bar').className=loadN?'on':'';}
+function call(fn,args,ok,fail){busy(true);var r=google.script.run.withSuccessHandler(function(res){busy(false);if(ok)ok(res);}).withFailureHandler(function(e){busy(false);if(fail)fail(e);else toast('⚠ '+(isNet(e)?t('e_offline'):emsg(e)),true);});r[fn].apply(r,args||[]);}
+var tt;function toast(m,bad){var x=$('toast');x.textContent=m;x.className='show'+(bad?' bad':'');clearTimeout(tt);tt=setTimeout(function(){x.className='';},2800);}
+function lab(s){return '<div class="lab">'+s+'</div>';}
+function chips(name,kv,sel,addNew){var h='<div class="chips">';kv.forEach(function(o){h+='<button class="chip'+(o[0]===sel?' on':'')+'" data-chip="'+name+'" data-val="'+esc(o[0])+'">'+esc(o[1])+'</button>';});if(addNew)h+='<button class="chip add" data-act="newcat">'+t('newOne')+'</button>';return h+'</div>';}
+function lchips(name,opts,sel){var h='<div class="chips">';opts.forEach(function(o){h+='<button class="chip'+(o===sel?' on':'')+'" data-lchip="'+name+'" data-val="'+esc(o)+'">'+esc(tv(o))+'</button>';});return h+'</div>';}
+function catsFor(div,kind){return S.init.cats.filter(function(c){return c.div===div&&c.kind===kind;}).map(function(c){return [c.name,LANG==='en'&&c.en?c.en:c.name];});}
+function pocketsKV(){return S.init.pockets.map(function(p){return [p,tv(p)];});}
+function fillPlist(){$('plist').innerHTML=S.init.persons.map(function(p){return '<option value="'+esc(p)+'">';}).join('');}
+function openSheet(h){$('sbox').innerHTML=h;$('sheet').classList.remove('hidden');}
+function closeSheet(){$('sheet').classList.add('hidden');}
+
+/* ---- மொழி & மேல் பகுதி ---- */
+function renderChrome(){
+ $('hTitle').textContent='📒 '+t('app');
+ var p=tdy().split('-'),d=new Date(+p[0],+p[1]-1,+p[2]),ds;
+ try{ds=d.toLocaleDateString(LANG==='en'?'en-IN':'ta-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}catch(e){ds=dmy(tdy());}
+ $('hDate').textContent=ds;$('langBtn').textContent=LANG==='en'?'த':'EN';document.title=t('app');
+ var navs=[['task','✅'],['add','➕'],['sum','📊'],['per','👥'],['loan','🏦'],['rec','📜']],h='';
+ navs.forEach(function(n){h+='<button data-go="'+n[0]+'" class="'+(S.page===n[0]?'on':'')+'"><span>'+n[1]+'</span>'+t('nav_'+n[0])+'</button>';});
+ $('nav').innerHTML=h;$('perQ').placeholder=t('search');$('perAllL').textContent=t('everyone');
+ $('loanTtl').textContent=t('loansTitle');$('newLoanBtn').textContent=t('newOne');
+ $('net').textContent=t('offline');$('net').className=navigator.onLine?'':'on';}
+function toggleLang(){if(S.type)grab();LANG=LANG==='en'?'ta':'en';lsSet('lang',LANG);
+ google.script.run.withFailureHandler(function(){}).setLang(LANG);
+ renderChrome();if(S.page==='add'){if(S.type)renderForm();else renderGrid();}else go(S.page);}
+
+/* ---- பக்கங்கள் ---- */
+function go(p){S.page=p;var ps=document.querySelectorAll('.pg');for(var i=0;i<ps.length;i++)ps[i].classList.remove('on');$('pg-'+p).classList.add('on');
+ var ns=document.querySelectorAll('nav button');for(var j=0;j<ns.length;j++)ns[j].classList.toggle('on',ns[j].getAttribute('data-go')===p);window.scrollTo(0,0);
+ if(!S.init)return;
+ if(p==='task')loadTasks();if(p==='sum')loadSum();if(p==='per')loadPer();if(p==='loan')loadLoans();if(p==='rec')loadRec();if(p==='set')loadSet();if(p==='add'&&!S.type)renderGrid();}
+
+/* ---- Offline வரிசை ---- */
+function qGet(){try{return JSON.parse(lsGet('queue')||'[]');}catch(e){return [];}}
+function qSet(q){lsSet('queue',JSON.stringify(q));}
+var flushing=false;
+function flush(){if(flushing||!navigator.onLine)return;var q=qGet();if(!q.length)return;flushing=true;var item=q[0];
+ google.script.run.withSuccessHandler(function(){var q2=qGet().filter(function(x){return x.cid!==item.cid;});qSet(q2);flushing=false;
+   if(q2.length)flush();else{toast(t('synced'));if(S.page==='add'&&!S.type)renderGrid();}})
+  .withFailureHandler(function(e){flushing=false;if(!isNet(e))toast('⚠ '+emsg(e),true);}).saveEntry(item);}
+function queueIt(o){var q=qGet();if(!q.some(function(x){return x.cid===o.cid;}))q.push(o);qSet(q);afterSave(o,true);}
+
+/* ---- பதிவு ---- */
+function renderTop(){var h='',q=qGet();
+ if(q.length)h+='<div class="pend"><span>'+fmt(t('pending'),q.length)+'</span><button data-act="flush">'+t('sendNow')+'</button></div>';
+ h+=S.init.doneToday?'<div class="done ok">'+t('doneOk')+'</div>':'<button class="done" data-act="done">'+t('doneBtn')+'</button>';
+ $('addTop').innerHTML=h;}
+function renderGrid(){S.type=null;S.editId=null;S.f={};renderTop();var h='';GROUPS.forEach(function(g){h+='<div class="gt">'+t(g.t)+'</div><div class="grid'+(g.big?' big2':'')+'">';g.items.forEach(function(it){h+='<button class="tbtn" data-type="'+it[0]+'"><span class="ic">'+it[1]+'</span>'+t('ty_'+it[0])+'</button>';});h+='</div>';});$('addBox').innerHTML=h;loadRecent();}
+function openForm(k,rec){S.type=k;S.morePk=false;S.editId=rec?rec.id:null;
+ if(rec)S.f={amount:rec.amt,date:rec.date,div:rec.div,cat:rec.cat,pocket:rec.pocket,to:rec.to,person:rec.person,loan:rec.loan,interest:rec.interest||'',due:rec.due,note:rec.note};
+ else{S.f={date:tdy()};var lp=lsGet('pocket');if(lp&&S.init.pockets.indexOf(lp)>=0)S.f.pocket=lp;
+  var ld=lsGet('div');if((k==='EXP'||k==='INC')&&ld&&S.init.divs.indexOf(ld)>=0)S.f.div=ld;}
+ go('add');S.type=k;$('addTop').innerHTML='';$('recentBox').innerHTML='';renderForm();window.scrollTo(0,0);
+ if(!rec)setTimeout(function(){var a=$('fAmt');if(a)a.focus();},50);}
+function renderForm(){var k=S.type,f=S.f,h='',ic=ICON[k];
+ h+='<div class="fhead"><button class="back" data-act="back">‹</button><span class="ic">'+(S.editId?'✏️':ic)+'</span><b>'+(S.editId?t('editT')+' · ':'')+t('ty_'+k)+'</b></div>';
+ if(TX.ta['h_'+k])h+='<div class="hint">'+t('h_'+k)+'</div>';
+ h+='<input id="fAmt" class="amt" type="number" inputmode="decimal" placeholder="'+t('amount')+'" value="'+esc(f.amount||'')+'">';
+ if(k==='EXP'||k==='INC'){h+=lab(t('division'))+chips('div',S.init.divs.map(function(d){return [d,divN(d)];}),f.div);
+  if(f.div)h+=lab(t('category'))+chips('cat',catsFor(f.div,k==='EXP'?'செலவு':'வரவு'),f.cat,true);}
+ if(k==='SAVE')h+=lab(t('saveIn'))+chips('cat',catsFor('சொந்தம்','சேமிப்பு'),f.cat,true);
+ if(k==='LOAN_IN'||k==='EMI'){var ls=S.init.loans.filter(function(l){return l.active||l.id===f.loan;});h+=lab(t('whichLoan'));
+  if(!ls.length)h+='<div class="hint warn">'+t('noLoan')+'</div>';
+  else h+=chips('loan',ls.map(function(l){return [l.id,l.name+(l.user&&l.user!=='நான்'?' ('+l.user+')':'')];}),f.loan);}
+ if(k==='XFER')h+=lab(t('from'))+pkChips('pocket',f.pocket)+lab(t('to'))+pkChips('to',f.to);
+ else h+=lab(PSIGN[k]>0?t('cameIn'):t('wentFrom'))+pkChips('pocket',f.pocket);
+ var pt=PERSON.indexOf(k)>=0;
+ if(pt||k==='EXP'||k==='INC')h+=lab(pt?(k==='PASS_IN'||k==='PASS_OUT'?t('whose'):t('who')):t('whoOpt'))+pickBtn('f',f.person,t('personPh'));
+ if(k==='EMI')h+=lab(t('interestQ'))+'<input id="fInt" class="inp" type="number" inputmode="decimal" placeholder="'+t('interestPh')+'" value="'+esc(f.interest||'')+'">';
+ if(k==='BORROW'||k==='LEND')h+=lab(t('dueQ'))+'<input id="fDue" class="inp" type="date" value="'+esc(f.due||'')+'">';
+ h+='<div class="g2"><div>'+lab(t('date'))+'<input id="fDate" class="inp" type="date" value="'+esc(f.date)+'"></div><div>'+lab(t('note'))+'<input id="fNote" class="inp" placeholder="'+(k==='PASS_OUT'?t('toWhomPh'):t('notePh'))+'" value="'+esc(f.note||'')+'"></div></div>';
+ h+='<button class="save" data-act="save">'+(S.editId?t('update'):t('save'))+'</button>';
+ if(S.editId)h+='<button class="save sec" data-act="delrec" data-id="'+esc(S.editId)+'">🗑 '+(LANG==='en'?'Delete':'நீக்கு')+'</button>';
+ $('addBox').innerHTML=h;}
+function grab(){var ids={fAmt:'amount',fInt:'interest',fDue:'due',fDate:'date',fNote:'note'};for(var id in ids){var el=$(id);if(el)S.f[ids[id]]=el.value.trim();}}
+function doSave(){grab();var f=S.f,k=S.type,err='';
+ if(!(Number(f.amount)>0))err='e_amt';
+ else if((k==='EXP'||k==='INC')&&!f.div)err='e_div';
+ else if((k==='EXP'||k==='INC'||k==='SAVE')&&!f.cat)err='e_cat';
+ else if((k==='LOAN_IN'||k==='EMI')&&!f.loan)err='e_loan';
+ else if(!f.pocket)err='e_pocket';
+ else if(k==='XFER'&&(!f.to||f.to===f.pocket))err='e_to';
+ else if(PERSON.indexOf(k)>=0&&!f.person)err='e_person';
+ else if(k==='EMI'&&f.interest&&Number(f.interest)>Number(f.amount))err='e_int';
+ if(err){toast('⚠ '+t(err),true);return;}
+ var o={type:k,amount:f.amount,date:f.date||tdy(),div:f.div||'',cat:f.cat||'',pocket:f.pocket,to:f.to||'',person:f.person||'',loan:f.loan||'',interest:f.interest||'',due:f.due||'',note:f.note||''};
+ if(S.editId){if(!navigator.onLine){toast('⚠ '+t('e_offline'),true);return;}
+  call('updateEntry',[S.editId,o],function(){toast(t('updated'));rememberPerson(o.person);var back=S.backTo||'add';S.backTo=null;S.type=null;S.editId=null;if(back==='add')renderGrid();else go(back);});return;}
+ o.cid='C'+Date.now()+Math.random().toString(36).slice(2,6);
+ if(!navigator.onLine){queueIt(o);return;}
+ var fin=false;busy(true);
+ var timer=setTimeout(function(){if(fin)return;fin=true;busy(false);queueIt(o);},15000);
+ google.script.run.withSuccessHandler(function(){if(fin)return;fin=true;clearTimeout(timer);busy(false);afterSave(o,false);})
+  .withFailureHandler(function(e){if(fin)return;fin=true;clearTimeout(timer);busy(false);if(isNet(e))queueIt(o);else toast('⚠ '+emsg(e),true);}).saveEntry(o);}
+function rememberPerson(p){if(!p)return;if(S.init.persons.indexOf(p)<0){S.init.persons.push(p);fillPlist();}var pi=S.init.pinfo||(S.init.pinfo=[]),o=null;pi.forEach(function(x,i){if(x.name===p)o=pi.splice(i,1)[0];});pi.unshift(o||{name:p,rel:'',last:tdy(),n:1});}
+function afterSave(o,queued){lsSet('pocket',o.pocket);if((o.type==='EXP'||o.type==='INC')&&o.div)lsSet('div',o.div);rememberPerson(o.person);
+ toast(queued?t('queued'):(t('saved')+' — '+money(o.amount)));renderGrid();}
+function newCat(){grab();var k=S.type,div=k==='SAVE'?'சொந்தம்':S.f.div,kind=k==='SAVE'?'சேமிப்பு':(k==='EXP'?'செலவு':'வரவு');
+ var n=prompt(fmt(t('newCatQ'),divN(div),t('k_'+kind)));if(!n||!n.trim())return;n=n.trim();var en=LANG==='en'?n:'';
+ call('addCategory',[div,kind,n,en],function(){S.init.cats.push({div:div,kind:kind,name:n,en:en});S.f.cat=n;renderForm();toast(t('catAdded'));});}
+function markDone(){call('markDone',[],function(){S.init.doneToday=true;renderTop();toast(t('doneToast'));});}
+function loadRecent(){var q=qGet(),qh=q.slice().reverse().map(function(o){return recRow({id:o.cid,k:o.type,amt:Number(o.amount),date:o.date,div:o.div,cat:o.cat,pocket:o.pocket,to:o.to,person:o.person,loanName:'',interest:o.interest,due:o.due,note:o.note},false,true);}).join('');
+ var show=function(list){if(S.type)return;var h=qh+list.slice(0,5).map(function(x){return recRow(x,false);}).join('');
+  $('recentBox').innerHTML=h?'<div class="gt">'+t('recent')+'</div><div class="card">'+h+'</div>':'';};
+ show([]);if(navigator.onLine)call('getRecords',[tdy().slice(0,7)],show,function(){});}
+
+function recRow(x,del,queued){var k=x.k,ti='',s=[];if(!queued)S.recMap[x.id]=x;
+ if(k==='EXP'||k==='INC'){ti=catN(x.div,x.cat);s.push(divN(x.div));if(x.person)s.push(x.person);}
+ else if(PERSON.indexOf(k)>=0||k==='OPEN_GET'||k==='OPEN_GIVE'){ti=t('ty_'+k)+' · '+x.person;}
+ else if(k==='REVAL'){ti=t('ty_REVAL')+' · '+tv(x.pocket);}
+ else if(k==='LOAN_IN'||k==='EMI'){ti=t('ty_'+k)+(x.loanName?' · '+x.loanName:'');if(x.interest)s.push(t('interestW')+' '+money(x.interest));}
+ else if(k==='XFER'){ti=tv(x.pocket)+' → '+tv(x.to);}
+ else if(k==='SAVE'){ti=t('savings')+' · '+catN('சொந்தம்',x.cat);}
+ else ti=x.type||k;
+ s.unshift((queued?'⏳ ':'')+dmy(x.date));if(k!=='XFER'&&k!=='REVAL'&&x.pocket)s.push(tv(x.pocket));if(x.note)s.push(x.note);if(x.due)s.push(t('repayBy')+': '+dmy(x.due));
+ var sg=k==='REVAL'?(x.amt>0?1:-1):PSIGN[k],cls=sg>0?'in':sg<0?'out':'neu';
+ return '<div class="rec'+(queued?' q':'')+'"'+(queued?'':' data-act="edit" data-id="'+esc(x.id)+'"')+'><div class="ic">'+(ICON[k]||'•')+'</div><div class="mid"><div class="t">'+esc(ti)+'</div><div class="s">'+esc(s.join(' · '))+'</div></div><div class="a '+cls+'">'+(sg>0?'+':sg<0?'−':'')+money(x.amt).replace('− ','')+'</div>'+(del?'<button class="del" data-act="delrec" data-id="'+esc(x.id)+'">🗑</button>':'')+'</div>';}
+function editRec(id){var x=S.recMap[id];if(!x)return;if(x.k==='REVAL'){toast(t('noEdit'));return;}if(x.k==='OPEN_GET'||x.k==='OPEN_GIVE'){openEdit(x);return;}if(!navigator.onLine){toast('⚠ '+t('e_offline'),true);return;}S.backTo=S.page==='add'?'add':S.page;closeSheet();openForm(x.k,x);}
+
+/* ---- சுருக்கம் ---- */
+function loadSum(){var m=$('sumMonth').value||tdy().slice(0,7);call('getSummary',[m],renderSum);}
+function dueLbl(d){if(d.diff<0)return fmt(t('late'),-d.diff);if(d.diff===0)return t('today');if(d.diff===1)return t('tomorrow');return fmt(t('inDays'),dmy(d.date),d.diff);}
+function dueText(d){if(d.kind==='emi')return d.name+' — '+t('d_emi')+(d.amt?' '+money(d.amt):'');if(d.kind==='end')return d.name+' — '+(d.gold?t('d_gold'):t('d_end'));
+ return d.amt>0?fmt(t('d_pin'),d.name,money(d.amt)):fmt(t('d_pout'),d.name,money(-d.amt));}
+function bars(obj,cls,title,div){var ks=Object.keys(obj);if(!ks.length)return '';ks.sort(function(a,b){return obj[b]-obj[a];});var mx=obj[ks[0]]||1;
+ var h='<div class="sub">'+title+'</div>';ks.forEach(function(k){h+='<div class="barrow"><span>'+esc(catN(div,k))+'</span><span>'+money(obj[k])+'</span><div class="bt"><i class="'+cls+'" style="width:'+Math.max(3,Math.round(obj[k]/mx*100))+'%"></i></div></div>';});return h;}
+function renderSum(r){S.sum=r;var h='',n=r.net;
+ if(n){h+='<div class="card"><div class="ch">💎 '+t('netT')+'</div><div class="bignum '+(n.net<0?'out':'in')+'">'+money(n.net)+'</div>';
+  [['nwCash',n.cashBank],['nwInv',n.invest],['nwCard',n.card],['nwGet',n.get],['nwGive',-n.give],['nwLoan',-n.loan]].forEach(function(a){if(a[1])h+='<div class="row"><span>'+t(a[0])+'</span><b class="'+(a[1]<0?'out':'')+'">'+money(a[1])+'</b></div>';});
+  if(n.excluded)h+='<div class="small" style="margin-top:6px">'+fmt(t('nwExcl'),money(n.excluded))+'</div>';h+='</div>';}
+ if(r.dues.length){h+='<div class="card"><div class="ch">'+t('upcoming')+'</div>';r.dues.forEach(function(d){h+='<div class="due '+(d.diff<0?'late':(d.diff<=2?'soon':''))+'"><span>'+esc(dueText(d))+'</span><span class="dd">'+dueLbl(d)+'</span></div>';});h+='</div>';}
+ GRPS.forEach(function(g){var list=r.pockets.filter(function(p){return p.group===g;});if(!list.length)return;var tot=0;list.forEach(function(p){tot+=p.bal;});
+  var closed=g==='invest'||g==='trade';h+='<details class="card"'+(closed?'':' open')+'><summary class="ch"><span>'+GICON[g]+' '+t('g_'+g)+'</span><b class="'+(tot<0?'out':'')+'">'+money(tot)+'</b></summary>';
+  list.forEach(function(p){h+='<div class="row"><span>'+esc(tv(p.name))+'</span><span><b class="'+(p.bal<0?'out':'')+'">'+money(p.bal)+'</b> <button class="tb mini" data-act="tally" data-name="'+esc(p.name)+'">'+(g==='cash'?'🧮':g==='invest'||g==='trade'?'📈':'✔')+'</button></span></div>';});
+  if(g==='card'&&r.card){var c=r.card;h+='<div class="row"><span>'+t('cardAvail')+' · '+money(c.limit)+'</span><b class="'+(c.avail<0?'out':'in')+'">'+money(c.avail)+'</b></div><div class="barrow"><div class="bt"><i class="out" style="width:'+Math.min(100,Math.max(0,Math.round(c.used/(c.limit||1)*100)))+'%"></i></div></div>';}
+  h+='</details>';});
+ h+='<div class="sub" style="font-weight:400;margin:-4px 4px 12px">'+t('tallyHint')+'</div>';
+ r.divs.forEach(function(d){var p=d.inc-d.exp-d.int,own=d.name==='சொந்தம்';
+  h+='<div class="card"><div class="ch">'+esc(divN(d.name))+'</div><div class="three"><div><small>'+t('inc')+'</small><b class="in">'+money(d.inc)+'</b></div><div><small>'+(d.int?t('expInt'):t('exp'))+'</small><b class="out">'+money(d.exp+d.int)+'</b></div><div><small>'+(own?t('left'):(p>=0?t('profit'):t('loss')))+'</small><b class="'+(p>=0?'in':'out')+'">'+money(p)+'</b></div></div>';
+  if(d.int)h+='<div class="sub">'+t('intShare')+': '+money(d.int)+'</div>';
+  if(!own&&p<0&&(d.inc||d.exp))h+='<div class="hint warn" style="margin-top:10px">'+fmt(t('ownMoney'),money(-p))+'</div>';
+  h+=bars(d.expCats,'out',t('expDet'),d.name)+bars(d.incCats,'in',t('incDet'),d.name)+'</div>';});
+ h+='<div class="card"><div class="ch">'+t('monthOther')+'</div><div class="row"><span>'+t('saveInv')+'</span><b>'+money(r.save)+'</b></div><div class="row"><span>'+t('principal')+'</span><b>'+money(r.principal)+'</b></div></div>';
+ h+='<details class="card"><summary class="ch"><span>🤝 '+t('othT')+'</span><span class="s">'+(r.others||[]).filter(function(o){return o.status!=='முடிந்தது';}).length+'</span></summary><div class="small" style="margin-bottom:6px">'+t('othHint')+'</div>';
+ (r.others||[]).forEach(function(o){h+='<div class="prow" data-act="othedit" data-id="'+esc(o.id)+'" style="'+(o.status==='முடிந்தது'?'opacity:.5':'')+'"><div><b>'+esc(o.name)+'</b><div class="s">'+esc([o.owner,tv(o.type),o.mature?t('oMature')+': '+dmy(o.mature):''].filter(Boolean).join(' · '))+'</div></div><b>'+(o.amount!==''?money(o.amount):'')+'</b></div>';});
+ h+='<button class="save sec" data-act="othnew">＋ '+t('othNew')+'</button></details>';
+ $('sumBox').innerHTML=h;}
+
+/* ---- நபர்கள் ---- */
+function loadPer(){call('getPersons',[],function(l){S.per=l;renderPer();});}
+function renderPer(){var q=($('perQ').value||'').toLowerCase(),all=$('perAll').checked,get=0,give=0,h='';
+ S.per.forEach(function(p){if(p.bal>0)get+=p.bal;else give-=p.bal;});
+ $('perTop').innerHTML='<div class="top2"><div class="card"><small>'+t('toGet')+'</small><b class="in">'+money(get)+'</b></div><div class="card"><small>'+t('toGive')+'</small><b class="out">'+money(give)+'</b></div></div><button class="save sec" style="margin:0 0 12px" data-act="pernew">＋ '+t('newPer')+'</button>';
+ var list=S.per.filter(function(p){return (all||p.bal)&&p.name.toLowerCase().indexOf(q)>=0;});
+ if(!list.length){$('perBox').innerHTML='<div class="empty">'+(all?t('noOne'):t('noDues'))+'</div>';return;}
+ list.forEach(function(p){var st=p.bal>0?t('theyOwe'):(p.bal<0?t('youOwe'):t('settled'));if(p.due)st+=' · '+fmt(t('byDate'),dmy(p.due));
+  h+='<div class="prow" data-act="per" data-name="'+esc(p.name)+'"><div><b>'+esc(p.name)+'</b>'+(p.rel?' <span class="badge">'+esc(tv(p.rel))+'</span>':'')+'<div class="s">'+st+'</div></div><b class="'+(p.bal>0?'in':p.bal<0?'out':'neu')+'">'+money(Math.abs(p.bal))+'</b></div>';});
+ $('perBox').innerHTML=h;}
+function openPer(name){call('getPerson',[name],function(r){var st=r.bal>0?t('theyOweL'):(r.bal<0?t('youOweL'):t('settled'));
+ var h='<div class="shead"><b>👤 '+esc(r.name)+'</b><button class="x" data-act="close">✕</button></div><div class="card"><small style="color:var(--mut)">'+st+'</small><div style="font-size:24px;font-weight:700" class="'+(r.bal>0?'in':r.bal<0?'out':'')+'">'+money(Math.abs(r.bal))+'</div>'+(r.due?'<div style="font-size:13px;color:var(--mut)">'+t('dueDate')+': '+dmy(r.due)+'</div>':'')+'<div class="s" style="margin-top:6px">'+esc([tv(r.rel),r.note].filter(Boolean).join(' · '))+'</div>'+(r.phone?'<a class="tb" style="display:inline-block;margin-top:8px;text-decoration:none" href="tel:'+esc(r.phone)+'">📞 '+esc(r.phone)+'</a>':'')+'</div><button class="save sec" style="margin:0 0 12px" data-act="peredit">✏️ '+t('editPer')+'</button>';S.perCur=r;
+ h+='<div class="card">'+(r.list.length?r.list.map(function(x){return recRow(x,false);}).join(''):'<div class="empty">'+t('noRecs')+'</div>')+'</div>';openSheet(h);});}
+
+/* ---- கடன்கள் ---- */
+function loadLoans(){call('getLoans',[],function(l){S.loans=l;renderLoans();});}
+function renderLoans(){if(!S.loans.length){$('loanBox').innerHTML='<div class="card empty">'+t('noLoans')+'</div>';return;}
+ var act=S.loans.filter(function(l){return l.status!=='முடிந்தது';}),done=S.loans.filter(function(l){return l.status==='முடிந்தது';}),h='',tot=0;
+ act.forEach(function(l){if(l.user==='நான்')tot+=l.outstanding;});
+ h+='<div class="card"><small style="color:var(--mut)">'+t('totLoan')+'</small><div style="font-size:22px;font-weight:700" class="out">'+money(tot)+'</div></div>';
+ act.concat(done).forEach(function(l){var s1=[];if(l.lender)s1.push(l.lender);if(l.acct!=='நான்')s1.push(t('acct')+': '+l.acct);if(l.user!=='நான்')s1.push(t('use')+': '+l.user);
+  var emi='';if(l.day){emi=l.paidThisMonth?t('emiPaid'):fmt(t('emiDay'),l.day)+(l.emi?' · '+money(l.emi):'');}
+  h+='<div class="card loanc" data-act="loan" data-id="'+esc(l.id)+'" style="'+(l.status==='முடிந்தது'?'opacity:.55':'')+'"><div><span class="badge">'+esc(tv(l.type))+'</span>'+(l.user!=='நான்'?'<span class="badge o">'+t('forOthers')+'</span>':'')+(l.status==='முடிந்தது'?'<span class="badge">'+tv('முடிந்தது')+'</span>':'')+'</div>'
+   +'<div style="font-weight:700;margin-top:6px">'+esc(l.name)+'</div><div class="big">'+money(l.outstanding)+'</div>'
+   +(s1.length?'<div class="s">'+esc(s1.join(' · '))+'</div>':'')+(emi?'<div class="s">'+emi+'</div>':'')
+   +(l.remaining?'<div class="s">⏳ '+fmt(t('remEmi'),l.remaining,l.endEst?l.endEst.slice(5)+'/'+l.endEst.slice(0,4):'')+'</div>':'')+(l.end?'<div class="s">📅 '+(l.type==='நகைக் கடன்'?t('goldEnd'):t('endD'))+': '+dmy(l.end)+'</div>':'')+(l.jewel?'<div class="s">💍 '+esc(l.jewel)+(l.jewelOwner?' ('+esc(l.jewelOwner)+')':'')+'</div>':'')+'</div>';});
+ $('loanBox').innerHTML=h;}
+function meIn(v){return v==='நான்'?t('me'):(v||'');}
+function meOut(v){v=(v||'').trim();return (!v||v.toLowerCase()==='me'||v==='நான்')?'நான்':v;}
+function loanForm(l){S.lf=l?JSON.parse(JSON.stringify(l)):{type:'வங்கிக் கடன்',acct:'நான்',user:'நான்',status:'செயலில்'};S.lfEdit=!!l;renderLoanForm();}
+function renderLoanForm(){var f=S.lf,l=S.lfEdit?f:null;
+ function inp(id,lbl,v,type,ph){return lab(lbl)+'<input id="'+id+'" class="inp" '+(type?'type="'+type+'" ':'')+(type==='number'?'inputmode="decimal" ':'')+'placeholder="'+(ph||'')+'" value="'+esc(v==null?'':v)+'">';}
+ var h='<div class="shead"><b>'+(l?t('editLoan'):t('newLoan'))+'</b><button class="x" data-act="close">✕</button></div>';
+ h+=inp('lName',t('lName'),f.name,'',t('lNamePh'));
+ h+=lab(t('lType'))+lchips('type',LTYPES,f.type);
+ h+=inp('lLender',t('lLender'),f.lender,'',t('lLenderPh'));
+ h+='<div class="g2"><div>'+lab(t('lAcct'))+pickBtn('acct',f.acct,t('me'))+'</div><div>'+lab(t('lUser'))+pickBtn('user',f.user,t('me'))+'</div></div>';
+ h+='<div class="hint" style="margin-top:8px">'+t('lUserHint')+'</div>';
+ h+=lab(t('lPct'))+'<div class="g3"><input id="lPd" class="inp" type="number" inputmode="decimal" placeholder="'+t('pD')+'" value="'+esc(f.pd)+'"><input id="lPs" class="inp" type="number" inputmode="decimal" placeholder="'+t('pS')+'" value="'+esc(f.ps)+'"><input id="lPp" class="inp" type="number" inputmode="decimal" placeholder="'+t('pP')+'" value="'+esc(f.pp)+'"></div>';
+ h+='<div class="g2"><div>'+inp('lOpen',t('lOpen'),f.open,'number','₹')+'</div><div>'+inp('lRate',t('lRate'),f.rate,'number','%')+'</div></div>';
+ h+='<div class="g2"><div>'+inp('lEmi',t('lEmi'),f.emi,'number','₹')+'</div><div>'+inp('lDay',t('lDay'),f.day,'number',t('lDayPh'))+'</div></div>';
+ h+=inp('lEnd',t('lEnd'),f.end,'date');
+ h+='<div class="card" style="margin-top:14px"><div class="ch">'+t('lHist')+'</div><div class="small">'+t('lAsofHint')+'</div><div class="g2"><div>'+inp('lStart',t('lStart'),f.start,'date')+'</div><div>'+inp('lAsof',t('lAsof'),f.asof||(S.lfEdit?'':tdy()),'date')+'</div></div><div class="g2"><div>'+inp('lOrig',t('lOrig'),f.orig,'number','₹')+'</div><div>'+inp('lTenure',t('lTenure'),f.tenure,'number','')+'</div></div></div>';
+ h+='<div class="g2"><div>'+inp('lJewel',t('lJewel'),f.jewel,'',t('lJewelPh'))+'</div><div>'+lab(t('lJOwner'))+pickBtn('jewelOwner',f.jewelOwner,'—')+'</div></div>';
+ h+=lab(t('lStatus'))+lchips('status',LSTAT,f.status)+inp('lNote',t('note'),f.note);
+ h+='<button class="save" data-act="saveloan">'+t('lSave')+'</button>';
+ if(l&&l.list&&l.list.length)h+='<div class="gt">'+t('recentTx')+'</div><div class="card">'+l.list.map(function(x){x.loanName='';return recRow(x,false);}).join('')+'</div>';
+ openSheet(h);}
+function grabLoan(){var m={lName:'name',lLender:'lender',lPd:'pd',lPs:'ps',lPp:'pp',lOpen:'open',lRate:'rate',lEmi:'emi',lDay:'day',lEnd:'end',lJewel:'jewel',lNote:'note',lStart:'start',lAsof:'asof',lOrig:'orig',lTenure:'tenure'};for(var id in m){var el=$(id);if(el)S.lf[m[id]]=el.value.trim();}
+ S.lf.acct=meOut(S.lf.acct);S.lf.user=meOut(S.lf.user);if(S.lf.jewelOwner)S.lf.jewelOwner=meOut(S.lf.jewelOwner);}
+function saveLoan(){grabLoan();var f=S.lf;if(!f.name){toast('⚠ '+t('e_lname'),true);return;}
+ var o={id:f.id||'',name:f.name,type:f.type,lender:f.lender,acct:f.acct,user:f.user,pd:f.pd,ps:f.ps,pp:f.pp,open:f.open,rate:f.rate,emi:f.emi,day:f.day,end:f.end,jewel:f.jewel,jewelOwner:f.jewelOwner,status:f.status,note:f.note,start:f.start,asof:f.asof,orig:f.orig,tenure:f.tenure};
+ call('saveLoan',[o],function(){closeSheet();toast(t('savedOk'));call('getInit',[],function(r){S.init=r;fillPlist();});loadLoans();});}
+
+/* ---- பதிவுகள் ---- */
+function loadRec(){var m=$('recMonth').value||tdy().slice(0,7);call('getRecords',[m],function(list){
+ $('recBox').innerHTML=list.length?'<div class="sub" style="margin-top:0">'+t('tapEdit')+'</div>'+list.map(function(x){return recRow(x,true);}).join(''):'<div class="empty">'+t('noMonth')+'</div>';});}
+function delRec(id){if(!confirm(t('delQ')))return;call('deleteEntry',[id],function(){toast(t('deleted'));
+ if(S.editId===id){var back=S.backTo||'add';S.backTo=null;S.type=null;S.editId=null;if(back==='add')renderGrid();else go(back);}else{closeSheet();refreshAfterEdit();}});}
+
+/* ---- அமைப்பு ---- */
+function loadSet(){call('getPockets',[],function(list){var h='<div class="card"><div class="ch">'+t('setPk')+'</div><div class="hint">'+t('setPkHint')+'</div>';
+ function gsel(cls,name,g){return '<select class="inp '+cls+'" data-name="'+esc(name)+'" style="width:118px;padding:10px 6px">'+GRPS.map(function(x){return '<option value="'+x+'"'+(x===g?' selected':'')+'>'+GICON[x]+' '+t('g_'+x)+'</option>';}).join('')+'</select>';}
+ list.forEach(function(p){h+='<div class="row" style="gap:6px"><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis">'+esc(tv(p.name))+'</span>'+gsel('pkg',p.name,p.group)+'<input class="inp pk" data-name="'+esc(p.name)+'" type="number" inputmode="decimal" style="width:104px;text-align:right" value="'+p.opening+'"></div>';});
+ h+='<div class="row" style="gap:6px;margin-top:8px"><input id="newPk" class="inp" style="flex:1" placeholder="'+t('newPk')+'">'+gsel('','',"cash").replace('<select class="inp ','<select id="newPkG" class="inp ')+'</div><button class="save" data-act="savepk">'+t('lSave')+'</button></div>';
+ h+='<div class="card"><div class="ch">📅 '+t('calT')+'</div><div class="small">'+t('calSteps')+'</div><button class="save" data-act="testcal">'+t('calTest')+'</button></div>';
+ h+='<div class="card"><div class="ch">💳 '+t('cardT')+'</div>'+lab(t('cardLim'))+'<input id="cardLim" class="inp" type="number" inputmode="decimal"><div class="small" style="margin-top:6px">'+t('cardHint')+'</div><button class="save sec" data-act="savecard">'+t('lSave')+'</button></div>';
+ h+='<div class="card"><div class="ch">'+t('know')+'</div><div class="small">'+t('knowBody')+'<br>• '+t('ver')+': '+esc(S.init.ver)+'</div></div>';
+ $('setBox').innerHTML=h;
+ call('getCard',[],function(c){$('cardLim').value=c.limit;});
+ });}
+
+function savePk(){var els=document.querySelectorAll('.pk'),list=[];for(var i=0;i<els.length;i++){var nm=els[i].getAttribute('data-name'),g=document.querySelector('.pkg[data-name="'+nm.replace(/"/g,'\\"')+'"]');list.push({name:nm,opening:els[i].value,group:g?g.value:''});}
+ var n=$('newPk').value.trim();if(n)list.push({name:n,opening:0,group:$('newPkG').value});
+ call('savePockets',[list],function(){toast(t('savedOk'));call('getInit',[],function(r){S.init=r;fillPlist();loadSet();});});}
+
+/* ---- v4: பணப்பைக் குழுக்கள், பெயர் தேர்வு, எண்ணுதல், நபர்கள், பிறர் சொத்து ---- */
+var GRPS=['cash','bank','card','invest','trade'],GICON={cash:'💵',bank:'🏦',card:'💳',invest:'💼',trade:'📈'};
+var RELS=['நண்பர்','உறவினர்','குடும்பம்','கடை','வாடிக்கையாளர்','தொழிலாளர்','மற்றவர்'];
+var DEN=[500,200,100,50,20,10];
+function gOf(p){return (S.init.pocketGroups||{})[p]||'bank';}
+function pkSorted(){var o={cash:0,bank:1,card:2,invest:3,trade:4};return S.init.pockets.map(function(p,i){return [p,i];}).sort(function(a,b){return (o[gOf(a[0])]-o[gOf(b[0])])||(a[1]-b[1]);}).map(function(x){return x[0];});}
+function pkChips(name,sel){var main=[],more=[];pkSorted().forEach(function(p){(gOf(p)==='invest'||gOf(p)==='trade'?more:main).push(p);});
+ var show=S.morePk||more.indexOf(sel)>=0,list=show?main.concat(more):main,h='<div class="chips">';
+ list.forEach(function(p){h+='<button class="chip'+(p===sel?' on':'')+'" data-chip="'+name+'" data-val="'+esc(p)+'">'+(GICON[gOf(p)]||'')+' '+esc(tv(p))+'</button>';});
+ if(!show&&more.length)h+='<button class="chip add" data-act="morepk">＋ '+t('morePk')+'</button>';return h+'</div>';}
+function pickBtn(tgt,val,ph){return '<button class="inp pickf" data-act="pick" data-t="'+tgt+'">'+(val?esc(val==='நான்'?t('me'):val):'<span class="ph">'+esc(ph)+'</span>')+'<span class="pkar">▾</span></button>';}
+
+/* பெயர் தேர்வு */
+function pickPerson(tgt){if(tgt==='f')grab();else grabLoan();S.pk={t:tgt,q:'',rel:''};
+ var rels=[];(S.init.pinfo||[]).forEach(function(p){if(p.rel&&rels.indexOf(p.rel)<0)rels.push(p.rel);});
+ var h='<div class="shead"><b>👤 '+t('pickT')+'</b><button class="x" data-act="'+(tgt==='f'?'close':'pkback')+'">✕</button></div><input id="pkQ" class="inp" placeholder="'+t('search')+'" autocomplete="off">';
+ if(rels.length)h+='<div class="chips" style="margin:10px 0 0"><button class="chip on" data-act="pkrel" data-val="">'+t('allL')+'</button>'+rels.map(function(r){return '<button class="chip" data-act="pkrel" data-val="'+esc(r)+'">'+esc(tv(r))+'</button>';}).join('')+'</div>';
+ h+='<div id="pkList" class="card" style="margin-top:10px"></div>';openSheet(h);renderPick();
+ $('pkQ').addEventListener('input',function(){S.pk.q=this.value;renderPick();});}
+function renderPick(){var q=S.pk.q.trim(),ql=q.toLowerCase(),h='';
+ var list=(S.init.pinfo||[]).filter(function(p){return (!S.pk.rel||p.rel===S.pk.rel)&&p.name.toLowerCase().indexOf(ql)>=0;});
+ if(S.pk.t!=='f'&&!q)h+='<div class="prow" data-act="pkset" data-name="நான்"><div><b>'+t('me')+'</b></div></div>';
+ if(S.pk.t==='f'&&S.f.person&&!q)h+='<div class="prow" data-act="pkset" data-name=""><div class="s">✕ '+t('pkClear')+'</div></div>';
+ list.slice(0,100).forEach(function(p){h+='<div class="prow" data-act="pkset" data-name="'+esc(p.name)+'"><div><b>'+esc(p.name)+'</b>'+(p.rel?'<div class="s">'+esc(tv(p.rel))+'</div>':'')+'</div>'+(p.last?'<span class="s">'+dmy(p.last)+'</span>':'')+'</div>';});
+ if(q&&!list.some(function(p){return p.name.toLowerCase()===ql;}))h+='<div class="prow" data-act="pkset" data-name="'+esc(q)+'"><b class="in">＋ "'+esc(q)+'" — '+t('pkNew')+'</b></div>';
+ $('pkList').innerHTML=h||'<div class="empty">'+t('noOne')+'</div>';}
+function pkSet(name){if(S.pk.t==='f'){S.f.person=name;closeSheet();renderForm();}else{S.lf[S.pk.t]=name||'நான்';renderLoanForm();}
+ if(name&&name!=='நான்')rememberPerson(name);}
+
+/* 🧮 எண்ணுதல் / மதிப்பு புதுப்பி */
+function tallySheet(name){var p=null;S.sum.pockets.forEach(function(x){if(x.name===name)p=x;});if(!p)return;S.tl={name:name,bal:p.bal,group:p.group};
+ var g=p.group,h='<div class="shead"><b>'+(g==='cash'?'🧮 '+t('countT'):g==='invest'||g==='trade'?'📈 '+t('revalT'):'✔ '+t('checkT'))+' · '+esc(tv(name))+'</b><button class="x" data-act="close">✕</button></div><div class="card">';
+ if(g==='cash'){DEN.forEach(function(d){h+='<div class="row"><span>₹'+d+' ×</span><input class="inp den" data-d="'+d+'" type="number" inputmode="numeric" style="width:90px;text-align:right" placeholder="0"><b id="dv'+d+'" style="width:84px;text-align:right">₹0</b></div>';});
+  h+='<div class="row"><span>'+t('coins')+'</span><input id="tlCoins" class="inp tlin" type="number" inputmode="decimal" style="width:120px;text-align:right" placeholder="₹"></div>';}
+ else h+=lab(g==='card'?t('cardDueQ'):(g==='invest'||g==='trade')?t('curValue'):t('actualBal'))+'<input id="tlAmt" class="amt tlin" type="number" inputmode="decimal" placeholder="₹">';
+ h+='</div><div class="card"><div class="row"><span>'+t('appBal')+'</span><b>'+money(g==='card'?-p.bal:p.bal)+'</b></div><div class="row"><span>'+t('counted')+'</span><b id="tlTot">—</b></div><div class="row"><span><b>'+t('diffL')+'</b></span><b id="tlDiff">—</b></div>';
+ h+='<div class="small" style="margin-top:8px">'+t(g==='invest'?'tlHintInv':g==='trade'?'tlHintTrade':'tlHintCash')+'</div></div><button class="save" data-act="tlsave">'+t('lSave')+'</button>';
+ openSheet(h);var els=document.querySelectorAll('#sbox input');for(var i=0;i<els.length;i++)els[i].addEventListener('input',tallyCalc);}
+function tallyActual(){var g=S.tl.group;if(g==='cash'){var tot=0,any=false,els=document.querySelectorAll('.den');for(var i=0;i<els.length;i++){var c=Number(els[i].value)||0,d=+els[i].getAttribute('data-d');if(els[i].value!=='')any=true;tot+=c*d;$('dv'+d).textContent=money(c*d);}
+  if($('tlCoins').value!==''){any=true;tot+=Number($('tlCoins').value)||0;}return any?tot:null;}
+ var v=$('tlAmt').value;if(v==='')return null;v=Number(v)||0;return g==='card'?-v:v;}
+function tallyCalc(){var a=tallyActual();if(a===null){$('tlTot').textContent='—';$('tlDiff').textContent='—';return;}
+ var d=Math.round((a-S.tl.bal)*100)/100,g=S.tl.group;$('tlTot').textContent=money(g==='card'?-a:a);
+ $('tlDiff').textContent=(d>0?'+':'')+money(d).replace('− ','−');$('tlDiff').className=d>0?'in':d<0?'out':'';}
+function tallySave(){var a=tallyActual();if(a===null){toast('⚠ '+t('e_amt'),true);return;}var note='';
+ if(S.tl.group==='cash'){var parts=[];document.querySelectorAll('.den').forEach(function(e){if(Number(e.value))parts.push(e.getAttribute('data-d')+'×'+e.value);});if(Number($('tlCoins').value))parts.push(t('coins')+' '+$('tlCoins').value);note=parts.join(', ');}
+ call('saveTally',[S.tl.name,a,note],function(r){closeSheet();toast(r.diff?t('tlSaved')+' '+(r.diff>0?'+':'')+money(r.diff):t('tlSame'));loadSum();});}
+
+/* 👥 நபர் படிவம் */
+function personForm(p){S.pf=p?{name:p.name,phone:p.phone||'',note:p.note||'',rel:p.rel||'',inc:p.inc!==false,isNew:false,openDir:'give'}:{name:'',rel:'நண்பர்',inc:true,isNew:true,openDir:'give'};renderPF();}
+function renderPF(){var f=S.pf,h='<div class="shead"><b>'+(f.isNew?'＋ '+t('newPer'):'✏️ '+esc(f.name))+'</b><button class="x" data-act="close">✕</button></div>';
+ if(f.isNew)h+=lab(t('pName'))+'<input id="pfName" class="inp" value="'+esc(f.name)+'">';
+ h+=lab(t('pRel'))+'<div class="chips">'+RELS.map(function(r){return '<button class="chip'+(f.rel===r?' on':'')+'" data-act="pfset" data-f="rel" data-val="'+esc(r)+'">'+esc(tv(r))+'</button>';}).join('')+'</div>';
+ h+='<div class="g2"><div>'+lab(t('pPhone'))+'<input id="pfPhone" class="inp" type="tel" value="'+esc(f.phone||'')+'"></div><div>'+lab(t('note'))+'<input id="pfNote" class="inp" value="'+esc(f.note||'')+'"></div></div>';
+ h+=lab(t('pInc'))+'<div class="chips"><button class="chip'+(f.inc?' on':'')+'" data-act="pfset" data-f="inc" data-val="1">'+t('yes')+'</button><button class="chip'+(!f.inc?' on':'')+'" data-act="pfset" data-f="inc" data-val="0">'+t('no')+'</button></div><div class="small" style="margin-top:6px">'+t('pIncHint')+'</div>';
+ h+='<div class="card" style="margin-top:14px"><div class="ch">📋 '+t('openT')+'</div><div class="small">'+t('openHint')+'</div>'+lab('')+'<div class="chips"><button class="chip'+(f.openDir==='give'?' on':'')+'" data-act="pfset" data-f="openDir" data-val="give">'+t('openGive')+'</button><button class="chip'+(f.openDir==='get'?' on':'')+'" data-act="pfset" data-f="openDir" data-val="get">'+t('openGet')+'</button></div>';
+ h+=lab(t('openAmt'))+'<input id="pfAmt" class="inp" type="number" inputmode="decimal" placeholder="₹"><div class="g2"><div>'+lab(t('openAsOf'))+'<input id="pfDate" class="inp" type="date" value="'+tdy()+'"></div><div>'+lab(t('openDue'))+'<input id="pfDue" class="inp" type="date"></div></div></div>';
+ h+='<button class="save" data-act="pfsave">'+t('lSave')+'</button>';openSheet(h);}
+function pfSave(){var f=S.pf;if(f.isNew)f.name=$('pfName').value.trim();f.phone=$('pfPhone').value.trim();f.note=$('pfNote').value.trim();
+ f.openAmt=$('pfAmt').value;f.openDate=$('pfDate').value;f.openDue=$('pfDue').value;
+ if(!f.name){toast('⚠ '+t('e_person'),true);return;}
+ call('savePerson',[f],function(){closeSheet();toast(t('savedOk'));call('getInit',[],function(r){S.init=r;fillPlist();});loadPer();});}
+
+/* 🤝 பிறர் சொத்து */
+function othForm(o){S.of=o?JSON.parse(JSON.stringify(o)):{type:'RD',status:'செயலில்'};var f=S.of;
+ function inp(id,l,v,ty,ph){return lab(l)+'<input id="'+id+'" class="inp" '+(ty?'type="'+ty+'" ':'')+(ty==='number'?'inputmode="decimal" ':'')+'placeholder="'+(ph||'')+'" value="'+esc(v==null?'':v)+'">';}
+ var h='<div class="shead"><b>🤝 '+(o?t('editT'):t('othNew'))+'</b><button class="x" data-act="close">✕</button></div><div class="small">'+t('othHint')+'</div>';
+ h+=inp('oName',t('oName'),f.name,'',t('oNamePh'))+inp('oOwner',t('oOwner'),f.owner,'',t('oOwnerPh'));
+ h+=lab(t('lType'))+lchipsO('type',['RD','FD','நகை','மற்றவை'],f.type)+inp('oAmt',t('oAmt'),f.amount,'number','₹');
+ h+='<div class="g2"><div>'+inp('oStart',t('oStart'),f.start,'date')+'</div><div>'+inp('oMature',t('oMature'),f.mature,'date')+'</div></div>';
+ h+=lab(t('lStatus'))+lchipsO('status',['செயலில்','முடிந்தது'],f.status)+inp('oNote',t('note'),f.note)+'<button class="save" data-act="othsave">'+t('lSave')+'</button>';openSheet(h);}
+function lchipsO(name,opts,sel){return '<div class="chips">'+opts.map(function(o){return '<button class="chip'+(o===sel?' on':'')+'" data-act="oset" data-f="'+name+'" data-val="'+esc(o)+'">'+esc(tv(o))+'</button>';}).join('')+'</div>';}
+function othSave(){var m={oName:'name',oOwner:'owner',oAmt:'amount',oStart:'start',oMature:'mature',oNote:'note'},f=S.of;for(var id in m)f[m[id]]=$(id).value.trim();
+ if(!f.name){toast('⚠ '+t('e_lname'),true);return;}call('saveOther',[f],function(){closeSheet();toast(t('savedOk'));loadSum();});}
+
+/* 📋 பழைய நிலுவை திருத்தம் */
+function openEdit(x){if(!navigator.onLine){toast('⚠ '+t('e_offline'),true);return;}S.oe={id:x.id,k:x.k,person:x.person};
+ var h='<div class="shead"><b>📋 '+t('openT')+' · '+esc(x.person)+'</b><button class="x" data-act="close">✕</button></div><div class="chips"><button class="chip'+(x.k==='OPEN_GIVE'?' on':'')+'" data-act="oedir" data-val="OPEN_GIVE">'+t('openGive')+'</button><button class="chip'+(x.k==='OPEN_GET'?' on':'')+'" data-act="oedir" data-val="OPEN_GET">'+t('openGet')+'</button></div>';
+ h+=lab(t('openAmt'))+'<input id="oeAmt" class="amt" type="number" inputmode="decimal" value="'+esc(x.amt)+'"><div class="g2"><div>'+lab(t('openAsOf'))+'<input id="oeDate" class="inp" type="date" value="'+esc(x.date)+'"></div><div>'+lab(t('openDue'))+'<input id="oeDue" class="inp" type="date" value="'+esc(x.due||'')+'"></div></div>'+lab(t('note'))+'<input id="oeNote" class="inp" value="'+esc(x.note||'')+'">';
+ h+='<button class="save" data-act="oesave">'+t('update')+'</button><button class="save sec" data-act="delrec" data-id="'+esc(x.id)+'">🗑 '+(LANG==='en'?'Delete':'நீக்கு')+'</button>';openSheet(h);}
+function oeSave(){var f=S.oe,a=$('oeAmt').value;if(!(Number(a)>0)){toast('⚠ '+t('e_amt'),true);return;}
+ call('updateEntry',[f.id,{type:f.k,amount:a,date:$('oeDate').value,person:f.person,due:$('oeDue').value,note:$('oeNote').value.trim()}],function(){closeSheet();toast(t('updated'));refreshAfterEdit();});}
+function refreshAfterEdit(){if(S.page==='per')loadPer();else if(S.page==='rec')loadRec();else if(S.page==='sum')loadSum();}
+/* ---- பணிகள் ---- */
+var DAYN={ta:['ஞா','தி','செ','பு','வி','வெ','ச'],en:['Su','Mo','Tu','We','Th','Fr','Sa']};
+function loadTasks(){call('getTasks',[],renderTasks);}
+function tN(x){return LANG==='en'&&x.en?x.en:x.name;}
+function dur(m){m=Math.round(Number(m)||0);var h=Math.floor(m/60),mm=m%60;return LANG==='en'?(h?h+'h ':'')+mm+'m':(h?h+' மணி ':'')+mm+' நிமி';}
+function sinceMin(s){if(!s)return 0;var p=s.split(/[- :]/);var d=new Date(+p[0],+p[1]-1,+p[2],+p[3],+p[4]);return Math.max(0,Math.round((Date.now()-d.getTime())/60000));}
+function stBadge(st){var c={pending:'p',started:'o',done:'',skipped:'n',missed:'r'}[st];return '<span class="badge '+c+'">'+t('st_'+st)+'</span>';}
+function renderTasks(r){S.tasks=r;var h='';
+ if(r.dnd&&r.dnd>r.now){var d=new Date(r.dnd);h+='<div class="pend"><span>🔕 '+fmt(t('dndOn'),pad(d.getHours())+':'+pad(d.getMinutes()))+'</span><button data-act="dndoff">'+t('dndOff')+'</button></div>';}
+ else h+='<button class="done" data-act="dnd">🔕 '+t('dndBtn')+'</button>';
+ h+='<div class="covrow"><span>🛵 '+t('coverQ')+'</span><div class="chips"><button class="chip'+(r.cover.today?' on':'')+'" data-act="cover" data-d="'+r.today+'" data-on="'+(r.cover.today?0:1)+'">'+t('today')+'</button><button class="chip'+(r.cover.tomorrow?' on':'')+'" data-act="cover" data-d="'+r.tomorrow+'" data-on="'+(r.cover.tomorrow?0:1)+'">'+t('tomorrow')+'</button></div></div>';
+ h+='<div class="gt">'+t('todayTasks')+'</div>';
+ if(!r.items.length)h+='<div class="card empty">'+t('noTasksToday')+'</div>';
+ else{h+='<div class="card">';r.items.forEach(function(x){h+=taskRow(x,false);});h+='</div>';}
+ h+='<div class="gt">🗂 '+t('flexT')+'</div><div class="card">';
+ if(!r.flex.length)h+='<div class="small" style="padding:4px 2px">'+t('noFlex')+'</div>';
+ r.flex.forEach(function(x){h+=taskRow(x,true);});
+ h+='<div class="tools" style="margin:10px 0 0"><input id="flexNew" class="inp" placeholder="'+t('flexPh')+'"><button class="addbtn" data-act="flexadd">＋</button></div></div>';
+ h+='<div class="g2"><button class="save sec" data-act="newtask">＋ '+t('newTask')+'</button><button class="save sec" data-act="alltasks">⚙ '+t('editTasks')+'</button></div><button class="save sec" style="margin-top:0" data-act="report">📈 '+t('report')+'</button>';
+ $('taskBox').innerHTML=h;}
+function taskRow(x,flex){var st=x.st,sub=[],b='',k=' data-key="'+esc(x.key)+'"';
+ if(!flex&&x.snooze&&st==='pending')sub.push('⏸ '+x.snooze);
+ if(st==='started')sub.push(fmt(t('startedAt'),x.start.slice(11))+' · '+dur(sinceMin(x.start)));
+ if(st==='done'){sub.push((x.start?x.start.slice(11)+'–':'')+x.end.slice(11)+(x.mins!==''&&x.mins!=null?' · '+dur(x.mins):''));if(Number(x.late)>15)sub.push(fmt(t('lateBy'),dur(x.late)));}
+ if(st==='skipped'&&x.note)sub.push(x.note);
+ if(st==='pending'||st==='missed'){b+='<button class="tb go" data-act="tstart"'+k+'>▶ '+t('tStart')+'</button><button class="tb ok" data-act="tdone"'+k+'>✓</button>';if(!flex)b+='<button class="tb" data-act="tsnooze"'+k+'>⏸</button><button class="tb" data-act="tskip"'+k+'>✕</button>';}
+ else if(st==='started')b+='<button class="tb ok" data-act="tdone"'+k+'>✓ '+t('tDone')+'</button>';
+ else b+='<button class="tb" data-act="treset"'+k+'>↺</button>';
+ return '<div class="task'+(st==='done'||st==='skipped'?' dim':'')+'"><div class="th"><span class="tm">'+(flex?'🗂':esc(x.time))+'</span><b>'+esc(tN(x))+'</b>'+(x.imp?' ⭐':'')+' '+stBadge(st)+'</div>'+(sub.length?'<div class="ts">'+esc(sub.join(' · '))+'</div>':'')+'<div class="tbs">'+b+'</div></div>';}
+function tAct(key,act,arg){call('taskAct',[key,act,arg==null?'':String(arg)],function(r){renderTasks(r);toast(t('savedOk'));});}
+function pickSheet(title,act,key,opts){openSheet('<div class="shead"><b>'+title+'</b><button class="x" data-act="close">✕</button></div><div class="chips">'+opts.map(function(o){return '<button class="chip" data-act="'+act+'" data-key="'+esc(key||'')+'" data-min="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div>');}
+function minOpts(){return [[30,'30 '+t('minS')],[60,'1 '+t('hourS')],[120,'2 '+t('hourS')],[180,'3 '+t('hourS')]];}
+function allTasks(){call('getAllTasks',[],function(list){S.allT=list;var h='<div class="shead"><b>⚙ '+t('editTasks')+'</b><button class="x" data-act="close">✕</button></div><div class="card">';
+ list.forEach(function(x){var d=x.mode==='fixed'?x.days.split('').map(function(i){return DAYN[LANG][+i];}).join(' '):t('m_'+x.mode)+(x.mode==='once'?' · '+dmy(x.date):'');
+  h+='<div class="prow" data-act="edittask" data-id="'+esc(x.id)+'" style="'+(x.active?'':'opacity:.45')+'"><div><b>'+esc(tN(x))+'</b>'+(x.imp?' ⭐':'')+'<div class="s">'+esc(d)+(x.active?'':' · '+t('inactive'))+'</div></div><b>'+esc(x.time||'—')+'</b></div>';});
+ h+='</div><button class="save" data-act="newtask">＋ '+t('newTask')+'</button>';openSheet(h);});}
+function taskForm(x){S.tf=x?JSON.parse(JSON.stringify(x)):{mode:'fixed',time:'',days:'0123456',nag:60,imp:false,active:true};renderTaskForm();}
+function renderTaskForm(){var f=S.tf,h='<div class="shead"><b>'+(f.id?'✏️ '+t('editT'):'＋ '+t('newTask'))+'</b><button class="x" data-act="close">✕</button></div>';
+ h+=lab(t('tName'))+'<input id="tfName" class="inp" value="'+esc(f.name||'')+'">';
+ h+=lab(t('tNameEn'))+'<input id="tfEn" class="inp" value="'+esc(f.en||'')+'">';
+ h+=lab(t('tMode'))+'<div class="chips">'+['fixed','once','flex','cover'].map(function(m){return '<button class="chip'+(f.mode===m?' on':'')+'" data-act="tfmode" data-val="'+m+'">'+t('m_'+m)+'</button>';}).join('')+'</div>';
+ if(f.mode==='cover')h+='<div class="hint" style="margin-top:8px">'+t('coverHint')+'</div>';
+ if(f.mode!=='flex')h+=lab(t('tTime'))+'<input id="tfTime" class="inp" type="time" value="'+esc(f.time||'')+'">';
+ if(f.mode==='fixed')h+=lab(t('tDays'))+'<div class="chips">'+[1,2,3,4,5,6,0].map(function(i){return '<button class="chip'+(String(f.days||'').indexOf(String(i))>=0?' on':'')+'" data-act="tfday" data-val="'+i+'">'+DAYN[LANG][i]+'</button>';}).join('')+'</div>';
+ if(f.mode==='once')h+=lab(t('date'))+'<input id="tfDate" class="inp" type="date" value="'+esc(f.date||'')+'">';
+ if(f.mode!=='flex'){
+  h+=lab(t('tNag'))+'<div class="chips">'+[[0,t('nag0')],[30,'30 '+t('minS')],[60,'1 '+t('hourS')],[120,'2 '+t('hourS')]].map(function(o){return '<button class="chip'+(Number(f.nag)===o[0]?' on':'')+'" data-act="tfset" data-f="nag" data-val="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div><div class="small" style="margin-top:6px">'+t('nagHint')+'</div>';
+  h+=lab(t('tImp'))+'<div class="chips"><button class="chip'+(f.imp?' on':'')+'" data-act="tfset" data-f="imp" data-val="1">⭐ '+t('yes')+'</button><button class="chip'+(!f.imp?' on':'')+'" data-act="tfset" data-f="imp" data-val="0">'+t('no')+'</button></div><div class="small" style="margin-top:6px">'+t('impHint')+'</div>';}
+ h+=lab(t('tActive'))+'<div class="chips"><button class="chip'+(f.active?' on':'')+'" data-act="tfset" data-f="active" data-val="1">'+t('yes')+'</button><button class="chip'+(!f.active?' on':'')+'" data-act="tfset" data-f="active" data-val="0">'+t('no')+'</button></div>';
+ h+=lab(t('note'))+'<input id="tfNote" class="inp" value="'+esc(f.note||'')+'">';
+ h+='<button class="save" data-act="savetask">'+t('lSave')+'</button>';openSheet(h);}
+function grabTF(){var m={tfName:'name',tfEn:'en',tfTime:'time',tfDate:'date',tfNote:'note'};for(var id in m){var el=$(id);if(el)S.tf[m[id]]=el.value.trim();}}
+function saveTaskF(){grabTF();var f=S.tf;if(!f.name){toast('⚠ '+t('e_tname'),true);return;}
+ if(f.mode!=='flex'&&!f.time){toast('⚠ '+t('e_ttime'),true);return;}
+ if(f.mode==='fixed'&&!String(f.days||'').length){toast('⚠ '+t('e_tdays'),true);return;}
+ call('saveTask',[f],function(){closeSheet();toast(t('savedOk'));loadTasks();});}
+function report(){call('getTaskReport',[30],function(list){var h='<div class="shead"><b>📈 '+t('report')+' · 30 '+t('daysS')+'</b><button class="x" data-act="close">✕</button></div>';
+ if(!list.length)h+='<div class="card empty">'+t('noRep')+'</div>';
+ else{h+='<div class="card">';list.forEach(function(r){h+='<div class="row" style="display:block"><b>'+esc(tN(r))+'</b> <span class="small">'+esc(r.time||'')+'</span><div class="small">✓ '+r.onTime+' · ⏰ '+r.late+' · ✕ '+r.missed+' · ⤼ '+r.skipped+(r.avg!==''?' · ⌀ '+dur(r.avg):'')+'</div></div>';});
+  h+='<div class="small" style="margin-top:8px">'+t('repLegend')+'</div></div>';}
+ openSheet(h);});}
+
+/* ---- நிகழ்வுகள் ---- */
+var ACT={back:function(){var back=S.backTo;S.backTo=null;if(back&&back!=='add'){S.type=null;S.editId=null;go(back);}else renderGrid();},save:doSave,newcat:newCat,close:closeSheet,newloan:function(){loanForm(null);},saveloan:saveLoan,savepk:savePk,
+ lang:toggleLang,done:markDone,flush:flush,
+ dnd:function(){pickSheet('🔕 '+t('dndQ'),'dndset','',[[60,'1 '+t('hourS')],[120,'2 '+t('hourS')],[180,'3 '+t('hourS')]]);},
+ dndset:function(b){closeSheet();call('setDnd',[b.getAttribute('data-min')],renderTasks);},
+ dndoff:function(){call('setDnd',[0],renderTasks);},
+ cover:function(b){call('toggleCover',[b.getAttribute('data-d'),b.getAttribute('data-on')==='1'],renderTasks);},
+ tstart:function(b){tAct(b.getAttribute('data-key'),'start');},
+ tdone:function(b){tAct(b.getAttribute('data-key'),'done');},
+ treset:function(b){tAct(b.getAttribute('data-key'),'reset');},
+ tsnooze:function(b){pickSheet('⏸ '+t('snoozeQ'),'tsnz',b.getAttribute('data-key'),minOpts());},
+ tsnz:function(b){closeSheet();tAct(b.getAttribute('data-key'),'snooze',b.getAttribute('data-min'));},
+ tskip:function(b){var w=prompt(t('skipQ'),'');if(w===null)return;tAct(b.getAttribute('data-key'),'skip',w);},
+ flexadd:function(){var n=$('flexNew').value.trim();if(!n)return;call('saveTask',[{name:n,mode:'flex',active:true}],function(){toast(t('savedOk'));loadTasks();});},
+ newtask:function(){taskForm(null);},alltasks:allTasks,report:report,savetask:saveTaskF,
+ edittask:function(b){var id=b.getAttribute('data-id');(S.allT||[]).forEach(function(x){if(x.id===id)taskForm(x);});},
+ tfmode:function(b){grabTF();S.tf.mode=b.getAttribute('data-val');renderTaskForm();},
+ tfday:function(b){var v=b.getAttribute('data-val'),d=String(S.tf.days||'');d=d.indexOf(v)>=0?d.replace(v,''):d+v;S.tf.days=d.split('').sort().join('');b.classList.toggle('on');},
+ tfset:function(b){var f=b.getAttribute('data-f'),v=b.getAttribute('data-val');S.tf[f]=f==='nag'?Number(v):v==='1';var sib=b.parentNode.querySelectorAll('.chip');for(var i=0;i<sib.length;i++)sib[i].classList.toggle('on',sib[i]===b);},
+ testcal:function(){call('testCalendar',[],function(r){alert(fmt(t('calOk'),r.at,r.cal));});},
+ savecard:function(){call('saveCard',[$('cardLim').value],function(){toast(t('savedOk'));});},
+ morepk:function(){grab();S.morePk=true;renderForm();},
+ pick:function(b){pickPerson(b.getAttribute('data-t'));},
+ pkset:function(b){pkSet(b.getAttribute('data-name'));},
+ pkback:function(){renderLoanForm();},
+ pkrel:function(b){S.pk.rel=b.getAttribute('data-val');var sib=b.parentNode.querySelectorAll('.chip');for(var i=0;i<sib.length;i++)sib[i].classList.toggle('on',sib[i]===b);renderPick();},
+ tally:function(b){tallySheet(b.getAttribute('data-name'));},tlsave:tallySave,
+ oesave:oeSave,oedir:function(b){S.oe.k=b.getAttribute('data-val');var sib=b.parentNode.querySelectorAll('.chip');for(var i=0;i<sib.length;i++)sib[i].classList.toggle('on',sib[i]===b);},
+ pernew:function(){personForm(null);},peredit:function(){personForm(S.perCur);},pfsave:pfSave,
+ pfset:function(b){var f=b.getAttribute('data-f'),v=b.getAttribute('data-val');['pfName','pfPhone','pfNote'].forEach(function(id){var e=$(id);if(e){var k={pfName:'name',pfPhone:'phone',pfNote:'note'}[id];S.pf[k]=e.value;}});S.pf[f]=f==='inc'?v==='1':v;var sib=b.parentNode.querySelectorAll('.chip');for(var i=0;i<sib.length;i++)sib[i].classList.toggle('on',sib[i]===b);},
+ othnew:function(){othForm(null);},othedit:function(b){var id=b.getAttribute('data-id');(S.sum.others||[]).forEach(function(o){if(o.id===id)othForm(o);});},othsave:othSave,
+ oset:function(b){S.of[b.getAttribute('data-f')]=b.getAttribute('data-val');var sib=b.parentNode.querySelectorAll('.chip');for(var i=0;i<sib.length;i++)sib[i].classList.toggle('on',sib[i]===b);},
+ per:function(b){openPer(b.getAttribute('data-name'));},
+ edit:function(b){editRec(b.getAttribute('data-id'));},
+ loan:function(b){var id=b.getAttribute('data-id');for(var i=0;i<S.loans.length;i++)if(S.loans[i].id===id)loanForm(S.loans[i]);},
+ delrec:function(b){delRec(b.getAttribute('data-id'));}};
+document.addEventListener('click',function(e){
+ if(e.target===$('sheet')){closeSheet();return;}
+ var b=e.target.closest('[data-type],[data-chip],[data-lchip],[data-act],[data-go]');if(!b)return;
+ if(b.hasAttribute('data-go')){closeSheet();if(S.page==='add'&&S.type&&b.getAttribute('data-go')==='add')return;S.type=null;S.editId=null;S.backTo=null;go(b.getAttribute('data-go'));return;}
+ if(b.hasAttribute('data-type')){openForm(b.getAttribute('data-type'));return;}
+ if(b.hasAttribute('data-chip')){grab();var n=b.getAttribute('data-chip');S.f[n]=b.getAttribute('data-val');if(n==='div')S.f.cat='';renderForm();return;}
+ if(b.hasAttribute('data-lchip')){var n2=b.getAttribute('data-lchip'),v=b.getAttribute('data-val');S.lf[n2]=v;var sib=b.parentNode.querySelectorAll('.chip');for(var i=0;i<sib.length;i++)sib[i].classList.toggle('on',sib[i]===b);return;}
+ var a=b.getAttribute('data-act');if(ACT[a])ACT[a](b);
+});
+$('sumMonth').addEventListener('change',loadSum);$('recMonth').addEventListener('change',loadRec);
+$('perQ').addEventListener('input',renderPer);$('perAll').addEventListener('change',renderPer);
+window.addEventListener('online',function(){$('net').className='';flush();});
+window.addEventListener('offline',function(){$('net').className='on';});
+document.addEventListener('visibilitychange',function(){if(!document.hidden){if(CFG.pin&&lsGet('unlock')!==tdy()&&started){showPin();return;}renderChrome();flush();if(S.page==='task'&&S.init)loadTasks();}});
+renderChrome();
+/* ---- கடிகாரம் ---- */
+var lastDay=tdy();
+function tickClock(){var d=new Date(),h=d.getHours(),ap=h<12?'AM':'PM',h12=h%12||12;$('hClock').innerHTML=pad(h12)+':'+pad(d.getMinutes())+':'+pad(d.getSeconds())+'<small>'+ap+'</small>';
+ if(tdy()!==lastDay){lastDay=tdy();renderChrome();if(S.init&&S.page==='task')loadTasks();}}
+tickClock();setInterval(tickClock,1000);
+/* ---- 🔒 இணைப்பு & PIN (தினம் ஒருமுறை) ---- */
+function phash(pin){var s=String(pin)+'|'+(CFG.key||'').slice(0,12);
+ if(window.crypto&&crypto.subtle&&window.TextEncoder)return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});
+ var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return Promise.resolve('d'+h);}
+function L(ta,en){return LANG==='en'?en:ta;}
+function showSetup(msg,key){var lk=$('lock');lk.classList.remove('hidden');
+ lk.innerHTML='<div style="font-size:44px">📒</div><h2>'+esc(t('app'))+'</h2><div class="msg">'+esc(msg||'')+'</div><div class="box">'
+  +'<div class="lab">'+L('ரகசியக் குறி (Sheet ▸ கணக்கு ▸ 📱 போனில் இணை)','Secret key (Sheet ▸ கணக்கு ▸ 📱 போனில் இணை)')+'</div><input id="suKey" class="inp" autocomplete="off" value="'+esc(key||CFG.key||'')+'">'
+  +'<div class="g2"><div><div class="lab">'+L('புதிய PIN (4 இலக்கம்)','New PIN (4 digits)')+'</div><input id="suPin" class="inp" type="password" inputmode="numeric" maxlength="4"></div><div><div class="lab">'+L('மீண்டும் PIN','PIN again')+'</div><input id="suPin2" class="inp" type="password" inputmode="numeric" maxlength="4"></div></div>'
+  +'<details style="margin-top:10px"><summary class="small">'+L('மேம்பட்டது','Advanced')+'</summary><div class="lab">API URL</div><input id="suApi" class="inp" value="'+esc(CFG.api)+'"></details>'
+  +'<button class="save" id="suGo">'+L('✓ இணை','✓ Connect')+'</button></div>';
+ $('suGo').onclick=function(){var k=$('suKey').value.trim(),p1=$('suPin').value,p2=$('suPin2').value,api=$('suApi').value.trim();
+  if(k.length<20){toast('⚠ '+L('ரகசியக் குறி சரியில்லை','Key looks wrong'),true);return;}
+  if(!/^\d{4}$/.test(p1)||p1!==p2){toast('⚠ '+L('PIN 4 இலக்கம், இரண்டும் ஒன்றாக இருக்க வேண்டும்','PIN must be 4 digits and match'),true);return;}
+  CFG.key=k;CFG.api=api||CFG.api;busy(true);
+  apiCall('ping',[]).then(function(){busy(false);return phash(p1);}).then(function(hs){CFG.pin=hs;saveCfg();lsSet('unlock',tdy());lk.classList.add('hidden');startApp();})
+  .catch(function(e){busy(false);var m=String(e.message||e);CFG.key='';showSetup(m==='AUTH'?L('ரகசியக் குறி தவறு','Wrong key'):L('இணைக்க முடியவில்லை: ','Could not connect: ')+m,k);});};}
+function showPin(msg){var lk=$('lock'),entry='';lk.classList.remove('hidden');
+ function draw(){var d='';for(var i=0;i<4;i++)d+='<i class="'+(i<entry.length?'f':'')+'"></i>';$('pinDots').innerHTML=d;}
+ lk.innerHTML='<div style="font-size:44px">🔒</div><h2>'+esc(t('app'))+'</h2><div class="msg" id="pinMsg">'+esc(msg||L('PIN-ஐ உள்ளிடவும்','Enter PIN'))+'</div><div class="dots" id="pinDots"></div><div class="pad">'
+  +[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(function(n){return n===''?'<span></span>':'<button data-k="'+n+'">'+n+'</button>';}).join('')+'</div><button class="lnk" id="pinForgot">'+L('PIN மறந்துவிட்டதா?','Forgot PIN?')+'</button>';
+ draw();
+ lk.querySelector('.pad').onclick=function(e){var b=e.target.closest('button');if(!b)return;var k=b.getAttribute('data-k');
+  if(k==='⌫'){entry=entry.slice(0,-1);draw();return;}if(entry.length>=4)return;entry+=k;draw();
+  if(entry.length===4)phash(entry).then(function(hs){if(hs===CFG.pin){lsSet('unlock',tdy());lk.classList.add('hidden');startApp();}
+   else{entry='';draw();$('pinDots').classList.remove('shake');void $('pinDots').offsetWidth;$('pinDots').classList.add('shake');$('pinMsg').textContent=L('PIN தவறு','Wrong PIN');}});};
+ $('pinForgot').onclick=function(){showSetup(L('ரகசியக் குறியை மீண்டும் போட்டு புதிய PIN அமைக்கவும்','Enter the key again and set a new PIN'),'');};}
+window.onAuthFail=function(){CFG.key='';saveCfg();showSetup(L('ரகசியக் குறி மாற்றப்பட்டுள்ளது — புதிய குறியை உள்ளிடவும்','The key was changed — enter the new key'));};
+window.freshInit=function(r){S.init=r;fillPlist();renderChrome();};
+var started=false;
+function startApp(){if(started)return;started=true;renderChrome();
+ call('getInit',[],function(r){var first=!S.init;S.init=r;if(!lsGet('lang')&&r.lang){LANG=r.lang;}renderChrome();fillPlist();
+  if(first){var m=tdy().slice(0,7);$('sumMonth').value=m;$('recMonth').value=m;if(START==='add')renderGrid();else go(START);}flush();});}
+function boot(){var h=location.hash||'';
+ if(h.indexOf('#k=')===0){var k=decodeURIComponent(h.slice(3));try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}showSetup(L('புதிய PIN அமைக்கவும்','Set a PIN'),k);return;}
+ if(!CFG.key){showSetup('');return;}
+ if(CFG.pin&&lsGet('unlock')!==tdy()){showPin();return;}
+ startApp();}
+window.addEventListener('hashchange',function(){if((location.hash||'').indexOf('#k=')===0)boot();});
+if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(function(){});}
+boot();
+</script>
+</body></html>
