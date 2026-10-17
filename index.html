@@ -6,7 +6,6 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--g:#2e7d32;--g2:#e8f5e9;--bg:#f3f5f2;--card:#fff;--tx:#1d2a1f;--mut:#6b776d;--in:#1b8a3a;--out:#c62828;--bd:#e2e8e1;--warn:#ef6c00}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -35,6 +34,9 @@ header .ttl{font-weight:700;font-size:18px;line-height:1.2}
 .qb{font-size:12px;background:rgba(255,255,255,.22);border-radius:10px;padding:2px 8px;margin-left:8px;font-weight:600;vertical-align:middle}
 .qb:empty{display:none}
 .abar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.free{background:#fff8e1;border:1px solid #ffe082;border-radius:14px;padding:12px;margin-top:10px}
+.sprow{border-top:1px dashed var(--bd);margin-top:12px;padding-top:4px}.sph{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+.done.bad{background:#fdecea;color:var(--out);border-color:#f5c2c0}
 .abar button{border:0;border-radius:14px;padding:13px 8px;font:inherit;font-weight:700;font-size:15px;color:#fff}
 .emgb{background:#e65100}.planb{background:#283593}
 .save.emgs{background:#e65100;box-shadow:none}
@@ -163,6 +165,15 @@ select.inp{background:#fff}
 .badge.p{background:#eef1ed;color:var(--mut)}
 .badge.r{background:#fdecea;color:var(--out)}
 .badge.n{background:#eef1ed;color:var(--mut)}
+.cov{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px 12px;margin:10px 0 0}
+.cov.lv{border:2px solid var(--warn);background:#fff8e1}
+.cov .cq{font-weight:700;font-size:15px;margin-bottom:8px}
+.cov .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cov .seg button{border:1px solid var(--bd);background:#f7f9f6;border-radius:12px;padding:11px 6px;font:inherit;font-size:14px;font-weight:600;color:var(--tx)}
+.cov .seg button.on{background:var(--g);border-color:var(--g);color:#fff}
+.cov.lv .seg button.on{background:var(--warn);border-color:var(--warn)}
+.cov .cs{font-size:13px;margin-top:8px;color:var(--mut)}
+.cov.lv .cs{color:#8a4b00;font-weight:600}
 .covrow{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:10px 2px 0;font-size:14px}
 details.card>summary{cursor:pointer;list-style:none}
 details.card>summary::-webkit-details-marker{display:none}
@@ -194,21 +205,25 @@ details.card>summary::-webkit-details-marker{display:none}
 <datalist id="plist"></datalist>
 <div id="toast"></div>
 <script>
-var APP_VER='v6.1 · 12-10-2026';
+var APP_VER='v6.2 · 17-10-2026';
 var START=(function(){var p='';try{p=new URLSearchParams(location.search).get('p')||'';}catch(e){}return /^(task|add|sum|per|loan|rec)$/.test(p)?p:'task';})();
 /* ---- API இணைப்பு (Apps Script) + cache: கடைசி data உடனே தெரியும், பின்னணியில் புதுப்பிக்கும் ---- */
 var CFG={};try{CFG=JSON.parse(localStorage.getItem('cfg')||'{}')||{};}catch(e){CFG={};}
 if(!CFG.api)CFG.api='https://script.google.com/macros/s/AKfycbxYPZ95siv1prlc1s6fxXQmj5LU4Pp0F29-Kse5MCmJEvpFMMg_T7PyfQRzIflf1xXRPw/exec';
-var READ={getInit:1,getTasks:1,getSummary:1,getPersons:1,getPerson:1,getLoans:1,getRecords:1,getPockets:1,getCard:1,getAllTasks:1,getTaskReport:1,getReview:1,getPlan:1};
-function saveCfg(){try{localStorage.setItem('cfg',JSON.stringify(CFG));}catch(e){}}
-function apiCall(fn,args){return fetch(CFG.api,{method:'POST',body:JSON.stringify({key:CFG.key||'',fn:fn,args:args||[]}),redirect:'follow'})
- .then(function(r){if(!r.ok)throw new Error('NetworkError HTTP '+r.status);return r.json();})
- .then(function(j){if(!j||!j.ok){var m=(j&&j.err)||'?';if(m==='AUTH'&&window.onAuthFail)window.onAuthFail();throw new Error(m);}return j.r;});}
+var READ={getAssets:1,getInit:1,getTasks:1,getSummary:1,getPersons:1,getPerson:1,getLoans:1,getRecords:1,getPockets:1,getCard:1,getAllTasks:1,getTaskReport:1,getReview:1,getPlan:1};
+function saveCfg(){lsSet('cfg',JSON.stringify(CFG));}
+// 20 வினாடிக்குள் பதில் இல்லையென்றால் விட்டுவிடும் (பலவீனமான signal-ல் முடிவில்லாமல் காத்திருக்காது); பதில் JSON இல்லையென்றால் = net பிழை (பதிவு அழியாது, மீண்டும் முயலும்)
+function apiCall(fn,args){var ac=null,tm=0;try{ac=new AbortController();tm=setTimeout(function(){try{ac.abort();}catch(e){}},20000);}catch(e){ac=null;}
+ return fetch(CFG.api,{method:'POST',body:JSON.stringify({key:CFG.key||'',fn:fn,args:args||[]}),redirect:'follow',signal:ac?ac.signal:undefined})
+ .then(function(r){if(!r.ok)throw new Error('NetworkError HTTP '+r.status);return r.text();})
+ .then(function(txt){clearTimeout(tm);var j;try{j=JSON.parse(txt);}catch(e){throw new Error('NetworkError bad response');}
+   if(!j||!j.ok){var m=(j&&j.err)||'?';if(m==='AUTH'&&window.onAuthFail)window.onAuthFail();throw new Error(m);}return j.r;},
+  function(e){clearTimeout(tm);var m=String((e&&e.message)||e);throw new Error(/^NetworkError/.test(m)?m:'NetworkError '+(e&&e.name==='AbortError'?'timeout':m));});}
 function mkRun(){var ok=null,fail=null,px;var h={get:function(_,k){if(k==='withSuccessHandler')return function(f){ok=f;return px;};if(k==='withFailureHandler')return function(f){fail=f;return px;};
  return function(){var args=Array.prototype.slice.call(arguments),ck=READ[k]?'c:'+k+':'+JSON.stringify(args):null,cached=null;
   if(ck){try{cached=localStorage.getItem(ck);}catch(e){}if(cached)setTimeout(function(){ok&&ok(JSON.parse(cached));},0);}
   apiCall(k,args).then(function(res){var str=JSON.stringify(res===undefined?null:res);
-    if(ck){try{localStorage.setItem(ck,str);}catch(e){}if(cached&&str===cached)return;
+    if(ck){lsSet(ck,str);if(cached&&str===cached)return;
       if(cached&&k==='getInit'&&window.freshInit){window.freshInit(JSON.parse(str));return;}}
     ok&&ok(JSON.parse(str));})
   .catch(function(e){var m=String((e&&e.message)||e);if(cached&&/NetworkError|Failed to fetch|network|Load failed/i.test(m))return;fail&&fail(e);});};}};px=new Proxy({},h);return px;}
@@ -266,7 +281,7 @@ setPk:'பணப்பைகள் — தொடக்க இருப்பு'
 know:'தெரிந்துகொள்ள',knowBody:'• பதிவைத் திருத்த, அதைத் தட்டவும்.<br>• புதிய வகையைப் பதிவுப் படிவத்திலேயே "＋ புதியது" மூலம் சேர்க்கலாம்.<br>• பழைய கைமாற்றுகளை, பழைய தேதியுடன் "கைமாற்று வாங்கினேன் / கொடுத்தேன்" என்று பதியவும்.<br>• பழைய கடன்களை 🏦 பக்கத்தில், இன்றைய நிலுவையுடன் சேர்க்கவும்.<br>• App திறந்திருக்கும்போது net போனால், பதிவுகள் போனில் சேமிக்கப்பட்டு net வந்ததும் அனுப்பப்படும்.<br>• 💾 ஒவ்வொரு ஞாயிறும் Google Drive "My Accounts Backup" folder-ல் தானாக backup.',ver:'பதிப்பு',me:'நான்',
 st_paused:'இடைநிறுத்தம்',nextL:'அடுத்து',nowRun:'இப்போது நடப்பவை',emgBtn:'அவசர வேலை',planBtn:'மதிப்பாய்வு & திட்டம்',
 plNotYet:'நாளைய திட்டம் இன்னும் உறுதி செய்யவில்லை',cfN:'{0} பணிகள் 🛵 விநியோக நேரத்துடன் மோதுகின்றன',cfWith:'{0} நேரத்தில்',
-blT:'நேரம் குறிக்காத வேலைகள்',blHint:'திட்டமிடும்போது காலியான நேரத்தில், இடத்துக்கு ஏற்ப, முன்னுரிமைப்படி (கடைசித் தேதி → ⭐ → டெய்ரி → சித்தா → சொந்தம்) தானாக இடம் பெறும்.',blAdd:'＋ வேலை சேர்',blNone:'இல்லை 👍',tDueS:'கடைசி',
+blT:'நேரம் குறிக்காத வேலைகள்',blHint:'இவற்றுக்கு நினைவூட்டல் இல்லை. நீங்கள் காலியாக இருக்கும்போது (எந்த வேலையும் நடக்காதபோது, அடுத்த பணிக்கு நேரம் இருக்கும்போது) மேலே பரிந்துரை வரும் — முன்னுரிமை: கடைசித் தேதி → ⭐ → டெய்ரி → சித்தா → சொந்தம். நிச்சயமாக நேரம் வேண்டுமென்றால் 🌙 இரவுத் திட்டத்தில் ＋ அழுத்தி நேரம் குறிக்கவும்.',blAdd:'＋ வேலை சேர்',blNone:'இல்லை 👍',tDueS:'கடைசி',
 tPause:'இடைநிறுத்து',tResume:'தொடர்',tStart:'தொடங்கு',pauseQ:'ஏன் இடைநிறுத்தம்?',pw_patient:'நோயாளி',pw_dairy:'டெய்ரி அவசரம்',pw_home:'சொந்த வேலை',pw_call:'அழைப்பு',pw_other:'மற்றவை',rsPh:'அல்லது இங்கே type செய்யவும்',
 skipT:'இன்று செய்யவில்லை — காரணம்',sw_time:'நேரமில்லை',sw_emg:'அவசர வேலை',sw_notneed:'தேவையில்லை',sw_rain:'மழை',tmrw:'⏩ நாளைக்கு மாற்று',tmrwS:'நாளைக்கு',
 subConfirm:'{0} உள்வேலைகள் tick செய்யவில்லை. முடிந்ததாகக் குறிக்கவா?',subMissL:'விடுபட்டது',snoozedFrom:'முதலில்',undo:'↺ தவறு — திரும்பப் பெறு',snoozeQ:'எவ்வளவு நேரம் கழித்து?',
@@ -275,11 +290,13 @@ eq_cow:'மாடு உடல்நலம்',eq_farm:'பண்ணை அவ�
 planT:'இன்றைய மதிப்பாய்வு & நாளைய திட்டம்',rvT:'இன்று',rvDone:'முடிந்தது',rvMissed:'தவறியது',rvSkip:'தவிர்த்தது',rvImp:'⭐ / டெய்ரி — தவறியவை',rvSub:'உள்வேலை விடுபட்டவை',rvDiv:'வேலை நேரம் (பிரிவு வாரியாக)',rvPause:'இடையூறுகள்',rvEmg:'அவசர வேலைகள்',rvLate:'தாமதமாகத் தொடங்கியவை',rvTrend:'கடந்த 7 நாள் (முடிந்த %)',rvAll:'📈 30 நாள் விவரம்',rvGood:'சிறப்பு! முக்கியப் பணி எதுவும் தவறவில்லை 👍',
 plT:'நாளைய திட்டம்',plDone:'உறுதி செய்யப்பட்டது — நினைவூட்டல்கள் Calendar-ல் உள்ளன (signal இல்லாவிட்டாலும் ஒலிக்கும்). மாற்றினால் மீண்டும் உறுதி செய்யவும்.',plNot:'இன்னும் உறுதி செய்யவில்லை. 21:30-க்குள் உறுதி செய்யாவிட்டால் வழக்கமான அட்டவணைப்படி தானாக.',
 plCover:'பிரதீப் விடுப்பு — நான் விநியோகம்',plAuto:'தானாக',plLeft:'இடம் கிடைக்காதவை (＋ அழுத்தி நேரம் போடவும்)',plOnce:'＋ நாளைக்கு மட்டும் ஒரு வேலை',plGo:'✓ நாளைய திட்டம் உறுதி',plOk:'✓ உறுதி — {0} பணிகளுக்கு நினைவூட்டல் Calendar-ல் வைக்கப்பட்டது',plQueued:'Net வந்ததும் உறுதி செய்யப்படும்',
-m_flex:'நேரம் குறிக்காதது',tDur:'எவ்வளவு நேரம் ஆகும்',tDiv:'பிரிவு',tLoc:'எங்கே செய்யலாம்',tSubs:'உள்வேலைகள் (வரிக்கு ஒன்று; நேரம் விருப்பம்: 04:35 சாணம் சுத்தம்)',tRem:'Calendar நினைவூட்டல்',tFill:'இந்த நேரத்தில் வேறு வேலைகளும் செய்யலாம் (எ.கா. Clinic நேரம்)',tDue:'கடைசித் தேதி (விருப்பம்)',
+m_flex:'நேரம் குறிக்காதது (காலியாக இருக்கும்போது)',tDur:'எவ்வளவு நேரம் ஆகும்',tDiv:'பிரிவு',tLoc:'எங்கே செய்யலாம்',tSubs:'உள்வேலைகள் (வரிக்கு ஒன்று; நேரம் விருப்பம்: 04:35 சாணம் சுத்தம்)',tRem:'Calendar நினைவூட்டல்',tFill:'இந்த நேரத்தில் வேறு வேலைகளும் செய்யலாம் (எ.கா. Clinic நேரம்)',tDue:'கடைசித் தேதி (விருப்பம்)',
 impHint:'⭐ முக்கியம்: 5 நிமிடம் கழித்து இன்னொரு நினைவூட்டல்; 🔕 நேரத்திலும் வரும்.',coverHint:'"பிரதீப் விடுப்பு" என்று குறித்த நாட்களில் மட்டும் வரும்; அந்த நேரத்தில் தொடங்கும் மற்ற பணிகளுக்கு ⚠ எச்சரிக்கை வரும்.',
 loT:'வெளியேறு',loHint:'இந்த போனிலிருந்து ரகசியக் குறி, PIN, சேமித்த data அழிக்கப்படும். Google Sheet-ல் உள்ள data பாதுகாப்பாக இருக்கும்.',loQ:'வெளியேறவா?',loQ2:'{0} பதிவுகள் இன்னும் Sheet-க்கு அனுப்பப்படவில்லை — அழிந்துவிடும்! வெளியேறவா?',loDone:'வெளியேறியது. மீண்டும் இணைக்க ரகசியக் குறி தேவை.',
 saved:'✓ சேமிக்கப்பட்டது',queued:'✓ சேமிக்கப்பட்டது',dndBtn:'வேலையில் இருக்கிறேன் (நினைவூட்டல் நிறுத்து)',
-lkT:'பூட்டு',lkHint:'மேலே 🔒 அழுத்தினால் உடனே பூட்டப்படும்; நீங்கள் பூட்டாதவரை திறந்தே இருக்கும். பூட்டியிருக்கும்போதும் பதிவுகள் பின்னணியில் Sheet-க்குப் போகும் — எதுவும் அழியாது.',bioT:'கைரேகை / போன் பூட்டால் திறத்தல்',bioBtn:'இயக்கு',bioHint:'போன் கைரேகை கேட்கும் (இல்லையென்றால் போனின் PIN / pattern). App PIN மாற்று வழியாக இருக்கும்.',bioOn:'கைரேகை / போன் பூட்டு இயக்கப்பட்டது',bioOff:'கைரேகை நிறுத்து',bioNo:'இந்த போன் / browser-ல் கைரேகை வசதி இல்லை — PIN பயன்படுத்தவும்',bioFail:'இயக்க முடியவில்லை',nlT:'இரவு தானாகப் பூட்டு',pinCh:'PIN மாற்று',pinOld:'பழைய PIN',pinNew:'புதிய PIN',pinNew2:'மீண்டும் புதிய PIN',loBlock:'{0} பதிவுகள் இன்னும் Sheet-க்குப் போகவில்லை — sync ஆன பிறகு வெளியேறவும்',loHint:'போனை நிரந்தரமாக வேறொருவருக்குக் கொடுக்கும்போது மட்டும். (தினசரிப் பாதுகாப்புக்கு 🔒 பூட்டு போதும்.) Sheet data பாதுகாப்பாக இருக்கும்.'
+lkT:'பூட்டு',lkHint:'மேலே 🔒 அழுத்தினால் உடனே பூட்டப்படும்; நீங்கள் பூட்டாதவரை திறந்தே இருக்கும். பூட்டியிருக்கும்போதும் பதிவுகள் பின்னணியில் Sheet-க்குப் போகும் — எதுவும் அழியாது.',bioT:'கைரேகை / போன் பூட்டால் திறத்தல்',bioBtn:'இயக்கு',bioHint:'போன் கைரேகை கேட்கும் (இல்லையென்றால் போனின் PIN / pattern). App PIN மாற்று வழியாக இருக்கும்.',bioOn:'கைரேகை / போன் பூட்டு இயக்கப்பட்டது',bioOff:'கைரேகை நிறுத்து',bioNo:'இந்த போன் / browser-ல் கைரேகை வசதி இல்லை — PIN பயன்படுத்தவும்',bioFail:'இயக்க முடியவில்லை',nlT:'இரவு தானாகப் பூட்டு',pinCh:'PIN மாற்று',pinOld:'பழைய PIN',pinNew:'புதிய PIN',pinNew2:'மீண்டும் புதிய PIN',loBlock:'{0} பதிவுகள் இன்னும் Sheet-க்குப் போகவில்லை — sync ஆன பிறகு வெளியேறவும்',loHint:'போனை நிரந்தரமாக வேறொருவருக்குக் கொடுக்கும்போது மட்டும். (தினசரிப் பாதுகாப்புக்கு 🔒 பூட்டு போதும்.) Sheet data பாதுகாப்பாக இருக்கும்.',
+ty_CAPEX:'மூலதனச் செலவு',ty_ASELL:'சொத்து விற்பனை',h_CAPEX:'நிலம், கட்டடம், இயந்திரம், வாகனம், மாடு வாங்குதல் — இவை செலவு அல்ல, சொத்து. மாத லாப-நஷ்டத்தில் வராது; 💎 நிகர சொத்தில் சொத்தாகச் சேரும். கடன் பணத்தில் வாங்கினால் "கடன் பணம்" தேர்ந்தெடுங்கள்.',g_cap:'மூலதனம் & சொத்து',astT:'சொத்துப் பட்டியல்',capCat:'வகை',capItem:'பொருள் / மாட்டின் பெயர்',capItemPh:'எ.கா. Chaff cutter, லட்சுமி பசு',capSrc:'பணம் எங்கிருந்து',capLoanQ:'எந்தக் கடன் பணம்',e_item:'பொருளின் பெயரை உள்ளிடவும்',e_spdup:'ஒவ்வொரு பகுதிக்கும் வேறு பணப்பை தேர்ந்தெடுக்கவும்',spAdd:'இன்னொரு பணப்பையிலிருந்தும் (பிரித்துப் போட)',spMore:'பணப்பை',spFirst:'முதல் பணப்பையில் தொகை',spTot:'மொத்தம் {0} = {1}',spNote:'பிரித்த பணம்',toCapex:'இதை மூலதனச் செலவாக மாற்று',nwAsset:'🏗 சொத்துகள் (வாங்கிய விலை)',capT:'மூலதனம் & சொத்து',capAsset:'இப்போது உள்ள சொத்து',capLoan:'மூலதனத்துக்கான கடன் நிலுவை',capOwn:'உங்கள் சொந்த முதலீடு',capMonth:'இந்த மாத மூலதனச் செலவு',capGone:'விற்றது / இழப்பு (முன்பு)',debtT:'கடன் — எதற்காக (நிலுவை)',dbCap:'🏗 மூலதனம்',dbWc:'🔄 Working capital',dbOwn:'🏠 சொந்தச் செலவு',dbOth:'🤝 பிறருக்கு',dbNone:'❔ குறிக்காதது',dbHint:'❔ குறிக்காதவை: 🏦 கடன்கள் ▸ கடனைத் தொட்டு ▸ "கடன் பணம் எதற்குப் பயன்பட்டது" நிரப்பவும்.',capexM:'மூலதனச் செலவு',asellM:'சொத்து விற்ற வரவு',astNow:'இப்போது உள்ளது',astAll:'மொத்தம் போட்ட மூலதனம்',astOld:'முன்பு இருந்தவை / விற்றவை / இழப்பு',astNone:'சொத்து எதுவும் இல்லை',astSell:'🏷 விற்றேன்',astLost:'💀 இழப்பு (இறந்தது / பழுது)',astUndo:'↺ இன்னும் உள்ளது',astLostQ:'"{0}" — இழப்பு என்று குறிக்கவா? சொத்திலிருந்து நீங்கும்.',astSellAmt:'விற்ற தொகை',astSoldTo:'பணம் வந்த பணப்பை',astCost:'வாங்கிய விலை',astPL:'லாபம் / நஷ்டம்',astSoldHint:'விற்பனையை மாற்ற: 📜 பதிவுகளில் அந்த "சொத்து விற்பனை" பதிவைத் திருத்தவும் / நீக்கவும்.',lUseT:'கடன் பணம் எதற்குப் பயன்பட்டது',lUseHint:'பழைய கடன்களுக்கு மட்டும் நீங்களே நிரப்பவும். இனிமேல் "🏗 மூலதனச் செலவு ▸ கடன் பணம்" என்று பதிந்தால் தானாகச் சேரும் (இதுவரை {0}). மீதி = குறிக்காதது.',lUCap:'🏗 மூலதனம் ₹',lUWc:'🔄 Working capital ₹',lUOwn:'🏠 சொந்தச் செலவு ₹',lUOth:'🤝 பிறருக்கு ₹',loanUse:'பயன்',loanUseNo:'பயன்பாடு குறிக்கவில்லை',freeQ:'அடுத்த பணிக்கு {0} உள்ளது — இதைச் செய்யலாமா?',notNow:'இப்போது வேண்டாம்',resumeQ:'⏸ நிறுத்திய வேலையைத் தொடரவா? ▶ அழுத்தவும்.',tdelQ:'இந்த அவசர வேலையை நீக்கவா?',delTask:'🗑 பணியை நீக்கு',delTaskQ:'"{0}" பணியை நீக்கவா? இன்றும் இனியும் உள்ள நினைவூட்டல்கள் நீங்கும்; பழைய வரலாறு அப்படியே இருக்கும்.',tkOffline:'பணிப் பட்டியல் Net வந்ததும் தானாக வரும். ⚡ அவசர வேலை இப்போதே பதியலாம்.',needNet:'இதற்கு Net தேவை',qfN:'{0} பதிவுகள் சேமிக்க முடியவில்லை — பாருங்கள்',qfT:'சேமிக்க முடியாதவை',qfEdit:'✏️ திருத்தி மீண்டும் சேமி',storeFull:'⚠ போனில் இடம் இல்லை — பதிவு சேமிக்க முடியவில்லை. சில photos / app-களை நீக்கி மீண்டும் முயலவும்.',
+cvToday:'பிரதீப் இன்று',cvTom:'பிரதீப் நாளை',cvDay2:'பிரதீப்',cvNone:'✓ வேலைக்கு வருகிறார்',cvAm:'🌅 காலை மட்டும் விடுப்பு',cvPm:'🌇 மாலை மட்டும் விடுப்பு',cvAll:'🏠 முழு நாள் விடுப்பு',cvS_none:'பிரதீப் விநியோகம் செய்வார் — உங்களுக்கு விநியோக வேலை இல்லை.',cvS_am:'⚠ காலை பால் packing & விநியோகம் நீங்கள் செய்ய வேண்டும் (மாலை பிரதீப்).',cvS_pm:'⚠ மாலை பால் packing & விநியோகம் நீங்கள் செய்ய வேண்டும் (காலை பிரதீப்).',cvS_day:'⚠ காலையும் மாலையும் விநியோகம் நீங்கள் செய்ய வேண்டும்.',cvSaved:'✓ பிரதீப் விடுப்பு சேமிக்கப்பட்டது'
 },en:{
 ty_OPEN_GET:'Old balance (they owe me)',ty_OPEN_GIVE:'Old balance (I owe)',ty_REVAL:'Value change',morePk:'More (investments / trading)',
 pickT:'Choose a name',pkNew:'add as new person',pkClear:'No name',allL:'All',noEdit:'This cannot be edited — delete it on the Records page and enter again',
@@ -332,7 +349,7 @@ setPk:'Accounts — opening balance',setPkHint:'The amount in each account on th
 know:'Good to know',knowBody:'• Tap an entry to edit it.<br>• Add a new category from the entry form with "＋ New".<br>• Enter old hand loans with their old date as "Borrowed / Lent".<br>• Add old loans on the 🏦 page with today\'s outstanding.<br>• If the internet drops while the app is open, entries are kept on the phone and sent later.<br>• 💾 Every Sunday an automatic backup goes to the Google Drive folder "My Accounts Backup".',ver:'Version',me:'Me',
 st_paused:'Paused',nextL:'Next',nowRun:'In progress',emgBtn:'Emergency',planBtn:'Review & plan',
 plNotYet:"Tomorrow's plan is not confirmed yet",cfN:'{0} task(s) clash with 🛵 delivery',cfWith:'during {0}',
-blT:'Unscheduled tasks',blHint:'When planning, these are placed automatically into free time that suits the place, by priority (due date → ⭐ → dairy → siddha → personal).',blAdd:'＋ Add task',blNone:'None 👍',tDueS:'due',
+blT:'Unscheduled tasks',blHint:'No reminders for these. When you are free (nothing running and time before the next task) a suggestion appears at the top — priority: due date → ⭐ → dairy → siddha → personal. To fix a time, tap ＋ in the 🌙 night plan.',blAdd:'＋ Add task',blNone:'None 👍',tDueS:'due',
 tPause:'Pause',tResume:'Resume',tStart:'Start',pauseQ:'Why pause?',pw_patient:'Patient',pw_dairy:'Dairy urgent',pw_home:'Personal',pw_call:'Phone call',pw_other:'Other',rsPh:'or type here',
 skipT:'Not today — reason',sw_time:'No time',sw_emg:'Emergency',sw_notneed:'Not needed',sw_rain:'Rain',tmrw:'⏩ Move to tomorrow',tmrwS:'tomorrow',
 subConfirm:'{0} sub-step(s) not ticked. Mark done anyway?',subMissL:'missed',snoozedFrom:'was',undo:'↺ Undo',snoozeQ:'Remind me again in',
@@ -341,13 +358,15 @@ eq_cow:'Cow health',eq_farm:'Farm urgent',eq_patient:'Patient call',eq_home:'Hom
 planT:"Today's review & tomorrow's plan",rvT:'Today',rvDone:'Done',rvMissed:'Missed',rvSkip:'Skipped',rvImp:'⭐ / dairy — missed',rvSub:'Sub-steps missed',rvDiv:'Work time by section',rvPause:'Interruptions',rvEmg:'Emergencies',rvLate:'Started late',rvTrend:'Last 7 days (% done)',rvAll:'📈 30-day detail',rvGood:'Great — no key task missed 👍',
 plT:"Tomorrow's plan",plDone:'Confirmed — reminders are in Calendar (they ring even without signal). Re-confirm after changes.',plNot:'Not confirmed yet. If not confirmed by 21:30 the usual schedule is used.',
 plCover:'Pradeep on leave — I deliver',plAuto:'auto',plLeft:'Could not place (tap ＋ and set a time)',plOnce:'＋ One-time task for tomorrow',plGo:"✓ Confirm tomorrow's plan",plOk:'✓ Confirmed — reminders set in Calendar for {0} tasks',plQueued:'Will confirm when online',
-m_flex:'Unscheduled',tDur:'How long it takes',tDiv:'Section',tLoc:'Where it can be done',tSubs:'Sub-steps (one per line; optional time: 04:35 Dung cleaning)',tRem:'Calendar reminder',tFill:'Other tasks can be done during this time (e.g. clinic hours)',tDue:'Due date (optional)',
+m_flex:'Unscheduled (when free)',tDur:'How long it takes',tDiv:'Section',tLoc:'Where it can be done',tSubs:'Sub-steps (one per line; optional time: 04:35 Dung cleaning)',tRem:'Calendar reminder',tFill:'Other tasks can be done during this time (e.g. clinic hours)',tDue:'Due date (optional)',
 impHint:'⭐ Important: a second reminder 5 minutes later; also rings while busy 🔕.',coverHint:'Appears only on days marked "Pradeep on leave"; other tasks starting during it get a ⚠ warning.',
 loT:'Log out',loHint:'Removes the key, PIN and saved data from this phone. Your data in the Google Sheet stays safe.',loQ:'Log out?',loQ2:'{0} entries are not yet sent to the Sheet — they will be lost! Log out?',loDone:'Logged out. You need the secret key to connect again.',
 saved:'✓ Saved',queued:'✓ Saved',dndBtn:"I'm busy (pause reminders)",
-lkT:'Lock',lkHint:'Tap 🔒 at the top to lock right away; it stays open until you lock it. While locked, entries still sync to the Sheet in the background — nothing is lost.',bioT:'Unlock with fingerprint / screen lock',bioBtn:'Turn on',bioHint:'The phone asks for your fingerprint (or its PIN / pattern). The app PIN stays as a backup.',bioOn:'Fingerprint / screen lock is on',bioOff:'Turn off fingerprint',bioNo:'Fingerprint is not available on this phone / browser — use the PIN',bioFail:'Could not turn on',nlT:'Auto-lock at night',pinCh:'Change PIN',pinOld:'Old PIN',pinNew:'New PIN',pinNew2:'New PIN again',loBlock:'{0} entries are not yet in the Sheet — log out after they sync',loHint:'Only when giving this phone away for good. (For daily privacy, 🔒 Lock is enough.) Sheet data stays safe.'
+lkT:'Lock',lkHint:'Tap 🔒 at the top to lock right away; it stays open until you lock it. While locked, entries still sync to the Sheet in the background — nothing is lost.',bioT:'Unlock with fingerprint / screen lock',bioBtn:'Turn on',bioHint:'The phone asks for your fingerprint (or its PIN / pattern). The app PIN stays as a backup.',bioOn:'Fingerprint / screen lock is on',bioOff:'Turn off fingerprint',bioNo:'Fingerprint is not available on this phone / browser — use the PIN',bioFail:'Could not turn on',nlT:'Auto-lock at night',pinCh:'Change PIN',pinOld:'Old PIN',pinNew:'New PIN',pinNew2:'New PIN again',loBlock:'{0} entries are not yet in the Sheet — log out after they sync',loHint:'Only when giving this phone away for good. (For daily privacy, 🔒 Lock is enough.) Sheet data stays safe.',
+ty_CAPEX:'Capital expense',ty_ASELL:'Asset sold',h_CAPEX:'Land, buildings, machines, vehicles, buying cows — not an expense but an asset. Not in monthly profit/loss; it is added to 💎 net worth as an asset. If bought with loan money, choose "Loan money".',g_cap:'Capital & assets',astT:'Asset list',capCat:'Type',capItem:'Item / cow name',capItemPh:'e.g. Chaff cutter, cow Lakshmi',capSrc:'Paid from',capLoanQ:'Which loan',e_item:'Enter the item name',e_spdup:'Use a different account for each part',spAdd:'Also from another account (split)',spMore:'Account',spFirst:'Amount from the first account',spTot:'Total {0} = {1}',spNote:'Split',toCapex:'Change this to a capital expense',nwAsset:'🏗 Assets (at cost)',capT:'Capital & assets',capAsset:'Assets now',capLoan:'Loans used for capital (outstanding)',capOwn:'Your own investment',capMonth:'Capital spent this month',capGone:'Sold / lost (earlier)',debtT:'Loans — used for (outstanding)',dbCap:'🏗 Capital',dbWc:'🔄 Working capital',dbOwn:'🏠 Personal spending',dbOth:'🤝 For others',dbNone:'❔ Not marked',dbHint:'❔ Not marked: 🏦 Loans ▸ tap the loan ▸ fill "What the loan money was used for".',capexM:'Capital expense',asellM:'Asset sale money',astNow:'In hand now',astAll:'Total capital put in',astOld:'Earlier / sold / lost',astNone:'No assets yet',astSell:'🏷 Sold it',astLost:'💀 Lost (died / broken)',astUndo:'↺ Still have it',astLostQ:'Mark "{0}" as lost? It leaves your assets.',astSellAmt:'Sale amount',astSoldTo:'Money came into',astCost:'Cost',astPL:'Gain / loss',astSoldHint:'To change the sale: edit / delete that "Asset sold" entry in 📜 Records.',lUseT:'What the loan money was used for',lUseHint:'Fill this only for old loans. From now on, "🏗 Capital expense ▸ Loan money" entries add here automatically ({0} so far). The rest = not marked.',lUCap:'🏗 Capital ₹',lUWc:'🔄 Working capital ₹',lUOwn:'🏠 Personal ₹',lUOth:'🤝 For others ₹',loanUse:'Used for',loanUseNo:'Use not marked',freeQ:'{0} free before the next task — do this now?',notNow:'Not now',resumeQ:'⏸ Resume the paused task? Tap ▶.',tdelQ:'Delete this emergency task?',delTask:'🗑 Delete task',delTaskQ:'Delete "{0}"? Today\'s and future reminders go; past history stays.',tkOffline:'Your task list will appear when the net is back. You can log ⚡ emergency work now.',needNet:'Needs the net',qfN:'{0} entries could not be saved — check',qfT:'Not saved',qfEdit:'✏️ Fix and save again',storeFull:'⚠ Phone storage is full — entry not saved. Delete some photos / apps and try again.',
+cvToday:'Pradeep today',cvTom:'Pradeep tomorrow',cvDay2:'Pradeep',cvNone:'✓ Coming to work',cvAm:'🌅 Morning leave only',cvPm:'🌇 Evening leave only',cvAll:'🏠 Full-day leave',cvS_none:'Pradeep will deliver — no delivery work for you.',cvS_am:'⚠ You do the morning milk packing & delivery (Pradeep does the evening).',cvS_pm:'⚠ You do the evening milk packing & delivery (Pradeep does the morning).',cvS_day:'⚠ You do both morning and evening delivery.',cvSaved:'✓ Pradeep leave saved'
 }};
-var VAL_EN={'நண்பர்':'Friend','உறவினர்':'Relative','குடும்பம்':'Family','கடை':'Shop','வாடிக்கையாளர்':'Customer','தொழிலாளர்':'Worker','மற்றவர்':'Other','நகை':'Jewel','வங்கிக் கடன்':'Bank loan','நகைக் கடன்':'Gold loan','நபர் கடன்':'Personal loan','மற்றவை':'Other','செயலில்':'Active','முடிந்தது':'Closed','ரொக்கம்':'Cash','நான்':'Me'};
+var VAL_EN={'நண்பர்':'Friend','உறவினர்':'Relative','குடும்பம்':'Family','கடை':'Shop','வாடிக்கையாளர்':'Customer','தொழிலாளர்':'Worker','மற்றவர்':'Other','நகை':'Jewel','வங்கிக் கடன்':'Bank loan','நகைக் கடன்':'Gold loan','நபர் கடன்':'Personal loan','மற்றவை':'Other','செயலில்':'Active','முடிந்தது':'Closed','ரொக்கம்':'Cash','நான்':'Me','நிலம் & கட்டடம்':'Land & buildings','இயந்திரம் & வாகனம்':'Machinery & vehicles','தண்ணீர்':'Water','கால்நடை':'Livestock','சொந்தப் பணம்':'Own money','தொழில் பணம்':'Business money (working capital)','கடன் பணம்':'Loan money','உள்ளது':'In hand','விற்றது':'Sold','இழப்பு':'Lost','முன்பு இருந்தது':'Earlier (gone)','பழைய மூலதனம்':'Old capital'};
 var LTYPES=['வங்கிக் கடன்','நகைக் கடன்','நபர் கடன்','மற்றவை'],LSTAT=['செயலில்','முடிந்தது'];
 function t(k){var v=TX[LANG][k];if(v==null)v=TX.ta[k];return v==null?k:v;}
 function fmt(s){var a=arguments;return s.replace(/\{(\d)\}/g,function(m,i){return a[+i+1];});}
@@ -357,9 +376,10 @@ function catN(div,name){if(LANG!=='en')return name;var c=S.init.cats;for(var i=0
 
 var S={init:null,type:null,f:{},lf:{},per:[],loans:[],editId:null,recMap:{},page:'add'};
 var PERSON=['BORROW','REPAY','LEND','RECOVER','PASS_IN','PASS_OUT'];
-var PSIGN={EXP:-1,INC:1,BORROW:1,LEND:-1,REPAY:-1,RECOVER:1,PASS_IN:1,PASS_OUT:-1,LOAN_IN:1,EMI:-1,SAVE:-1,XFER:0,OPEN_GET:0,OPEN_GIVE:0,REVAL:0};
-var GROUPS=[{t:'g_daily',big:true,items:[['EXP','💸'],['INC','💰']]},{t:'g_people',items:[['BORROW','🤝'],['REPAY','↩️'],['LEND','🫴'],['RECOVER','📥'],['PASS_IN','📨'],['PASS_OUT','📤']]},{t:'g_loan',items:[['LOAN_IN','🏦'],['EMI','🧾']]},{t:'g_other',items:[['XFER','🔁'],['SAVE','🐷']]}];
-var ICON={EXP:'💸',INC:'💰',BORROW:'🤝',REPAY:'↩️',LEND:'🫴',RECOVER:'📥',PASS_IN:'📨',PASS_OUT:'📤',LOAN_IN:'🏦',EMI:'🧾',XFER:'🔁',SAVE:'🐷',OPEN_GET:'📋',OPEN_GIVE:'📋',REVAL:'📈'};
+var PSIGN={CAPEX:-1,ASELL:1,EXP:-1,INC:1,BORROW:1,LEND:-1,REPAY:-1,RECOVER:1,PASS_IN:1,PASS_OUT:-1,LOAN_IN:1,EMI:-1,SAVE:-1,XFER:0,OPEN_GET:0,OPEN_GIVE:0,REVAL:0};
+var GROUPS=[{t:'g_daily',big:true,items:[['EXP','💸'],['INC','💰']]},{t:'g_cap',items:[['CAPEX','🏗'],['ASSETS','📦']]},{t:'g_people',items:[['BORROW','🤝'],['REPAY','↩️'],['LEND','🫴'],['RECOVER','📥'],['PASS_IN','📨'],['PASS_OUT','📤']]},{t:'g_loan',items:[['LOAN_IN','🏦'],['EMI','🧾']]},{t:'g_other',items:[['XFER','🔁'],['SAVE','🐷']]}];
+var CAPCL=['நிலம் & கட்டடம்','இயந்திரம் & வாகனம்','தண்ணீர்','கால்நடை','மற்றவை'],FUNDL=['சொந்தப் பணம்','தொழில் பணம்','கடன் பணம்'],SPLIT={EXP:1,INC:1,CAPEX:1};
+var ICON={CAPEX:'🏗',ASELL:'🏷',EXP:'💸',INC:'💰',BORROW:'🤝',REPAY:'↩️',LEND:'🫴',RECOVER:'📥',PASS_IN:'📨',PASS_OUT:'📤',LOAN_IN:'🏦',EMI:'🧾',XFER:'🔁',SAVE:'🐷',OPEN_GET:'📋',OPEN_GIVE:'📋',REVAL:'📈'};
 
 function $(i){return document.getElementById(i);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -368,7 +388,16 @@ function dmy(s){if(!s)return '';var p=s.split('-');return p[2]+'-'+p[1]+'-'+p[0]
 function pad(n){return (n<10?'0':'')+n;}
 function tdy(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
-function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+// போனில் இடம் நிரம்பினால்: பழைய cache பக்கங்களை நீக்கி இடம் எடு (பதிவுகள், அமைப்பு, இன்றைய பணிகள், முதல் தகவல் நீக்கப்படாது)
+var KEEP_C={'c:getInit:[]':1,'c:getTasks:[]':1};
+function lsSet(k,v){try{localStorage.setItem(k,v);return true;}catch(e){}
+ try{var ks=[];for(var i=0;i<localStorage.length;i++){var x=localStorage.key(i);if(x&&x.indexOf('c:')===0&&!KEEP_C[x]&&x!==k)ks.push(x);}
+  ks.sort(function(a,b){return (localStorage.getItem(b)||'').length-(localStorage.getItem(a)||'').length;});
+  for(var j=0;j<ks.length;j++){localStorage.removeItem(ks[j]);try{localStorage.setItem(k,v);return true;}catch(e2){}}}catch(e3){}
+ if(k==='queue'||k==='qfail'||k==='cfg'){try{toast(t('storeFull'),true);}catch(e4){}}return false;}
+function retryErr(m){return /NetworkError|Failed to fetch|network|Load failed|lock|timed out|timeout|Service|Exceeded|quota|too many|Internal|try again|தாள் இல்லை/i.test(String(m||''));}
+function qfGet(){try{return JSON.parse(lsGet('qfail')||'[]');}catch(e){return [];}}
+function qFail(item,m){var f=qfGet();item.err=String(m||'').slice(0,200);f.push(item);lsSet('qfail',JSON.stringify(f));}
 function emsg(e){return (e&&e.message)||String(e||'');}
 function isNet(e){var m=emsg(e);return !navigator.onLine||!m||/NetworkError|Failed to fetch|network error|ERR_INTERNET|ERR_NETWORK/i.test(m);}
 var loadN=0;
@@ -413,61 +442,85 @@ var flushing=false;
 function flush(){if(flushing)return;var q=qGet();if(!q.length){qBadge();return;}flushing=true;var item=q[0],fn=item.fn||'saveEntry',args=item.fn?item.args:[item];
  var drop=function(){var q2=qGet().filter(function(x){return x.cid!==item.cid;});qSet(q2);flushing=false;qBadge();return q2;};
  google.script.run.withSuccessHandler(function(res){var q2=drop();
-   if(res&&res.items&&(fn==='taskAct'||fn==='emergency'||fn==='backlogAct')){S.tasksRaw=res;lsSet('c:getTasks:[]',JSON.stringify(res));}
+   if(res&&res.items&&(fn==='taskAct'||fn==='emergency'||fn==='backlogAct'||fn==='setCover')){S.tasksRaw=res;lsSet('c:getTasks:[]',JSON.stringify(res));}
    if(q2.length)flush();else onSynced(fn);})
-  .withFailureHandler(function(e){var m=emsg(e);if(isNet(e)||m==='AUTH'){flushing=false;qBadge();return;}
-   var q2=drop();toast('⚠ '+m,true);if(q2.length)setTimeout(flush,200);else onSynced(fn);})[fn].apply(null,args);}
-function onSynced(fn){if(!S.init)return;if(S.page==='task'&&!sheetOpen()){if(fn==='taskAct'||fn==='emergency'||fn==='backlogAct')renderTasks();else loadTasks();}
+  .withFailureHandler(function(e){var m=emsg(e);if(isNet(e)||m==='AUTH'||retryErr(m)){flushing=false;qBadge();return;}
+   // சரிசெய்ய வேண்டிய பிழை: பதிவு அழியாது — "சேமிக்க முடியாதவை" பட்டியலுக்குப் போகும்
+   var q2=drop();qFail(item,m);toast('⚠ '+m,true);if(S.page==='add'&&!S.type)renderTop();if(q2.length)setTimeout(flush,200);else onSynced(fn);})[fn].apply(null,args);}
+function onSynced(fn){if(!S.init)return;if(S.page==='task'&&!sheetOpen()){if(fn==='taskAct'||fn==='emergency'||fn==='backlogAct'||fn==='setCover')renderTasks();else loadTasks();}
  if(S.page==='add'&&!S.type)renderGrid();}
 function queueIt(o){var q=qGet();if(!q.some(function(x){return x.cid===o.cid;}))q.push(o);qSet(q);qBadge();afterSave(o,true);setTimeout(flush,0);}
 
 /* ---- பதிவு ---- */
-function renderTop(){var h='';
+function renderTop(){var h='',qf=qfGet();
+ if(qf.length)h+='<button class="done bad" data-act="qfshow">⚠ '+fmt(t('qfN'),qf.length)+'</button>';
  h+=S.init.doneToday?'<div class="done ok">'+t('doneOk')+'</div>':'<button class="done" data-act="done">'+t('doneBtn')+'</button>';
  $('addTop').innerHTML=h;}
-function renderGrid(){S.type=null;S.editId=null;S.f={};renderTop();var h='';GROUPS.forEach(function(g){h+='<div class="gt">'+t(g.t)+'</div><div class="grid'+(g.big?' big2':'')+'">';g.items.forEach(function(it){h+='<button class="tbtn" data-type="'+it[0]+'"><span class="ic">'+it[1]+'</span>'+t('ty_'+it[0])+'</button>';});h+='</div>';});$('addBox').innerHTML=h;loadRecent();}
+function renderGrid(){S.type=null;S.editId=null;S.f={};renderTop();var h='';GROUPS.forEach(function(g){h+='<div class="gt">'+t(g.t)+'</div><div class="grid'+(g.big?' big2':'')+'">';g.items.forEach(function(it){h+='<button class="tbtn" '+(it[0]==='ASSETS'?'data-act="assets"':'data-type="'+it[0]+'"')+'><span class="ic">'+it[1]+'</span>'+t(it[0]==='ASSETS'?'astT':'ty_'+it[0])+'</button>';});h+='</div>';});$('addBox').innerHTML=h;loadRecent();}
 function openForm(k,rec){S.type=k;S.morePk=false;S.editId=rec?rec.id:null;
- if(rec)S.f={amount:rec.amt,date:rec.date,div:rec.div,cat:rec.cat,pocket:rec.pocket,to:rec.to,person:rec.person,loan:rec.loan,interest:rec.interest||'',due:rec.due,note:rec.note};
- else{S.f={date:tdy()};var lp=lsGet('pocket');if(lp&&S.init.pockets.indexOf(lp)>=0)S.f.pocket=lp;
-  var ld=lsGet('div');if((k==='EXP'||k==='INC')&&ld&&S.init.divs.indexOf(ld)>=0)S.f.div=ld;}
+ if(rec)S.f={amount:rec.amt,date:rec.date,div:rec.div,cat:rec.cat,pocket:rec.pocket,to:rec.to,person:rec.person,loan:rec.loan,interest:rec.interest||'',due:rec.due,note:rec.note,item:rec.item||'',src:rec.src||'',grp:rec.grp||'',nsp:0};
+ else{S.f={date:tdy(),nsp:0};if(k==='CAPEX')S.f.src='சொந்தப் பணம்';var lp=lsGet('pocket');if(lp&&S.init.pockets.indexOf(lp)>=0)S.f.pocket=lp;
+  var ld=lsGet('div');if((k==='EXP'||k==='INC'||k==='CAPEX')&&ld&&S.init.divs.indexOf(ld)>=0)S.f.div=ld;}
  go('add');S.type=k;$('addTop').innerHTML='';$('recentBox').innerHTML='';renderForm();window.scrollTo(0,0);
  if(!rec)setTimeout(function(){var a=$('fAmt');if(a)a.focus();},50);}
-function renderForm(){var k=S.type,f=S.f,h='',ic=ICON[k];
+function renderForm(){var k=S.type,f=S.f,h='',ic=ICON[k],cap=k==='CAPEX';f.nsp=f.nsp||0;
  h+='<div class="fhead"><button class="back" data-act="back">‹</button><span class="ic">'+(S.editId?'✏️':ic)+'</span><b>'+(S.editId?t('editT')+' · ':'')+t('ty_'+k)+'</b></div>';
  if(TX.ta['h_'+k])h+='<div class="hint">'+t('h_'+k)+'</div>';
- h+='<input id="fAmt" class="amt" type="number" inputmode="decimal" placeholder="'+t('amount')+'" value="'+esc(f.amount||'')+'">';
- if(k==='EXP'||k==='INC'){h+=lab(t('division'))+chips('div',S.init.divs.map(function(d){return [d,divN(d)];}),f.div);
-  if(f.div)h+=lab(t('category'))+chips('cat',catsFor(f.div,k==='EXP'?'செலவு':'வரவு'),f.cat,true);}
+ h+='<input id="fAmt" class="amt" type="number" inputmode="decimal" placeholder="'+(f.nsp?t('spFirst'):t('amount'))+'" value="'+esc(f.amount||'')+'">';
+ if(k==='EXP'||k==='INC'||cap){h+=lab(t('division'))+chips('div',S.init.divs.map(function(d){return [d,divN(d)];}),f.div);
+  if(cap){h+=lab(t('capCat'))+chips('cat',CAPCL.map(function(c){return [c,tv(c)];}),f.cat)
+   +lab(t('capItem'))+'<input id="fItem" class="inp" placeholder="'+t('capItemPh')+'" value="'+esc(f.item||'')+'">'
+   +lab(t('capSrc'))+chips('src',FUNDL.map(function(c){return [c,tv(c)];}),f.src||'சொந்தப் பணம்');
+   if(f.src==='கடன் பணம்'){var ls2=S.init.loans.filter(function(l){return l.active||l.id===f.loan;});h+=lab(t('capLoanQ'));
+    h+=ls2.length?chips('loan',ls2.map(function(l){return [l.id,l.name+(l.user&&l.user!=='நான்'?' ('+l.user+')':'')];}),f.loan):'<div class="hint warn">'+t('noLoan')+'</div>';}}
+  else if(f.div)h+=lab(t('category'))+chips('cat',catsFor(f.div,k==='EXP'?'செலவு':'வரவு'),f.cat,true);}
  if(k==='SAVE')h+=lab(t('saveIn'))+chips('cat',catsFor('சொந்தம்','சேமிப்பு'),f.cat,true);
  if(k==='LOAN_IN'||k==='EMI'){var ls=S.init.loans.filter(function(l){return l.active||l.id===f.loan;});h+=lab(t('whichLoan'));
   if(!ls.length)h+='<div class="hint warn">'+t('noLoan')+'</div>';
   else h+=chips('loan',ls.map(function(l){return [l.id,l.name+(l.user&&l.user!=='நான்'?' ('+l.user+')':'')];}),f.loan);}
  if(k==='XFER')h+=lab(t('from'))+pkChips('pocket',f.pocket)+lab(t('to'))+pkChips('to',f.to);
  else h+=lab(PSIGN[k]>0?t('cameIn'):t('wentFrom'))+pkChips('pocket',f.pocket);
+ if(SPLIT[k]&&!S.editId){for(var si=0;si<f.nsp;si++){h+='<div class="sprow"><div class="sph">'+lab(t('spMore')+' '+(si+2))+'<button class="tb mini" data-act="sprm" data-i="'+si+'">✕</button></div><input id="spA'+si+'" class="inp" type="number" inputmode="decimal" placeholder="₹" value="'+esc(f['spa'+si]||'')+'">'+pkChips('sp'+si,f['sp'+si])+'</div>';}
+  h+='<button class="chip add" style="margin-top:10px" data-act="spadd">＋ '+t('spAdd')+'</button>';if(f.nsp)h+='<div class="hint" id="spTot">'+spTot()+'</div>';}
  var pt=PERSON.indexOf(k)>=0;
  if(pt||k==='EXP'||k==='INC')h+=lab(pt?(k==='PASS_IN'||k==='PASS_OUT'?t('whose'):t('who')):t('whoOpt'))+pickBtn('f',f.person,t('personPh'));
  if(k==='EMI')h+=lab(t('interestQ'))+'<input id="fInt" class="inp" type="number" inputmode="decimal" placeholder="'+t('interestPh')+'" value="'+esc(f.interest||'')+'">';
  if(k==='BORROW'||k==='LEND')h+=lab(t('dueQ'))+'<input id="fDue" class="inp" type="date" value="'+esc(f.due||'')+'">';
  h+='<div class="g2"><div>'+lab(t('date'))+'<input id="fDate" class="inp" type="date" value="'+esc(f.date)+'"></div><div>'+lab(t('note'))+'<input id="fNote" class="inp" placeholder="'+(k==='PASS_OUT'?t('toWhomPh'):t('notePh'))+'" value="'+esc(f.note||'')+'"></div></div>';
  h+='<button class="save" data-act="save">'+(S.editId?t('update'):t('save'))+'</button>';
+ if(S.editId&&k==='EXP')h+='<button class="save sec" data-act="tocapex">🏗 '+t('toCapex')+'</button>';
  if(S.editId)h+='<button class="save sec" data-act="delrec" data-id="'+esc(S.editId)+'">🗑 '+(LANG==='en'?'Delete':'நீக்கு')+'</button>';
  $('addBox').innerHTML=h;}
-function grab(){var ids={fAmt:'amount',fInt:'interest',fDue:'due',fDate:'date',fNote:'note'};for(var id in ids){var el=$(id);if(el)S.f[ids[id]]=el.value.trim();}}
-function doSave(){grab();var f=S.f,k=S.type,err='';
+function grab(){var ids={fAmt:'amount',fInt:'interest',fDue:'due',fDate:'date',fNote:'note',fItem:'item'};for(var id in ids){var el=$(id);if(el)S.f[ids[id]]=el.value.trim();}
+ for(var i=0;i<(S.f.nsp||0);i++){var a=$('spA'+i);if(a)S.f['spa'+i]=a.value.trim();}}
+function spParts(){var f=S.f,p=[{pocket:f.pocket,amount:f.amount}];for(var i=0;i<(f.nsp||0);i++)p.push({pocket:f['sp'+i],amount:f['spa'+i]});return p;}
+function spTot(){var tot=0,txt=[];spParts().forEach(function(p){var a=Number(p.amount)||0;tot+=a;txt.push((p.pocket?tv(p.pocket):'?')+' '+money(a));});return fmt(t('spTot'),money(tot),txt.join(' + '));}
+function doSave(){grab();var f=S.f,k=S.type,err='',parts=(SPLIT[k]&&!S.editId)?spParts():[{pocket:f.pocket,amount:f.amount}];
  if(!(Number(f.amount)>0))err='e_amt';
- else if((k==='EXP'||k==='INC')&&!f.div)err='e_div';
- else if((k==='EXP'||k==='INC'||k==='SAVE')&&!f.cat)err='e_cat';
- else if((k==='LOAN_IN'||k==='EMI')&&!f.loan)err='e_loan';
+ else if((k==='EXP'||k==='INC'||k==='CAPEX')&&!f.div)err='e_div';
+ else if((k==='EXP'||k==='INC'||k==='SAVE'||k==='CAPEX')&&!f.cat)err='e_cat';
+ else if(k==='CAPEX'&&!f.item)err='e_item';
+ else if((k==='LOAN_IN'||k==='EMI'||(k==='CAPEX'&&f.src==='கடன் பணம்'))&&!f.loan)err='e_loan';
+ else if(parts.some(function(p){return !(Number(p.amount)>0);}))err='e_amt';
+ else if(parts.some(function(p){return !p.pocket;}))err='e_pocket';
+ else if(parts.some(function(p,i){return parts.some(function(q,j){return j<i&&q.pocket===p.pocket;});}))err='e_spdup';
  else if(!f.pocket)err='e_pocket';
  else if(k==='XFER'&&(!f.to||f.to===f.pocket))err='e_to';
  else if(PERSON.indexOf(k)>=0&&!f.person)err='e_person';
  else if(k==='EMI'&&f.interest&&Number(f.interest)>Number(f.amount))err='e_int';
  if(err){toast('⚠ '+t(err),true);return;}
- var o={type:k,amount:f.amount,date:f.date||tdy(),div:f.div||'',cat:f.cat||'',pocket:f.pocket,to:f.to||'',person:f.person||'',loan:f.loan||'',interest:f.interest||'',due:f.due||'',note:f.note||''};
+ var o={type:k,amount:f.amount,date:f.date||tdy(),div:f.div||'',cat:f.cat||'',pocket:f.pocket,to:f.to||'',person:f.person||'',loan:(k==='CAPEX'&&f.src!=='கடன் பணம்')?'':(f.loan||''),interest:f.interest||'',due:f.due||'',note:f.note||'',item:(k==='CAPEX'||k==='ASELL')?(f.item||''):'',src:k==='CAPEX'?(f.src||'சொந்தப் பணம்'):''};
  if(S.editId){if(!navigator.onLine){toast('⚠ '+t('e_offline'),true);return;}
+  if(S.f.grp)o.grp=S.f.grp;
   call('updateEntry',[S.editId,o],function(){toast(t('updated'));rememberPerson(o.person);var back=S.backTo||'add';S.backTo=null;S.type=null;S.editId=null;if(back==='add')renderGrid();else go(back);});return;}
  o.cid='C'+Date.now()+Math.random().toString(36).slice(2,6);
- queueIt(o);}
+ if(parts.length<2){queueIt(o);return;}
+ // ரொக்கம் + வங்கி பிரித்த பணம்: ஒவ்வொரு பணப்பைக்கும் தனிப் பதிவு, ஒரே "குழு"
+ var grp='G'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),tot=0,txt=[];
+ parts.forEach(function(p){tot+=Number(p.amount);txt.push(tv(p.pocket)+' '+money(p.amount));});
+ var nt=(o.note?o.note+' · ':'')+t('spNote')+': '+txt.join(' + '),q=qGet();
+ parts.forEach(function(p,i){var x=JSON.parse(JSON.stringify(o));x.amount=p.amount;x.pocket=p.pocket;x.note=nt;x.grp=grp;x.cid=o.cid+'abcdefgh'.charAt(i);q.push(x);});
+ qSet(q);qBadge();var sum=JSON.parse(JSON.stringify(o));sum.amount=tot;afterSave(sum,true);setTimeout(flush,0);}
 function rememberPerson(p){if(!p)return;if(S.init.persons.indexOf(p)<0){S.init.persons.push(p);fillPlist();}var pi=S.init.pinfo||(S.init.pinfo=[]),o=null;pi.forEach(function(x,i){if(x.name===p)o=pi.splice(i,1)[0];});pi.unshift(o||{name:p,rel:'',last:tdy(),n:1});}
 function afterSave(o,queued){lsSet('pocket',o.pocket);if((o.type==='EXP'||o.type==='INC')&&o.div)lsSet('div',o.div);rememberPerson(o.person);
  toast(t('saved')+' — '+money(o.amount));renderGrid();}
@@ -475,7 +528,7 @@ function newCat(){grab();var k=S.type,div=k==='SAVE'?'சொந்தம்':S.f
  var n=prompt(fmt(t('newCatQ'),divN(div),t('k_'+kind)));if(!n||!n.trim())return;n=n.trim();var en=LANG==='en'?n:'';
  call('addCategory',[div,kind,n,en],function(){S.init.cats.push({div:div,kind:kind,name:n,en:en});S.f.cat=n;renderForm();toast(t('catAdded'));});}
 function markDone(){qPush('markDone',[nowStrL()]);S.init.doneToday=true;renderTop();toast(t('doneToast'));}
-function loadRecent(){var q=qGet(),qh=q.slice().reverse().map(function(o){return recRow({id:o.cid,k:o.type,amt:Number(o.amount),date:o.date,div:o.div,cat:o.cat,pocket:o.pocket,to:o.to,person:o.person,loanName:'',interest:o.interest,due:o.due,note:o.note},false,true);}).join('');
+function loadRecent(){var q=qGet().filter(function(o){return !o.fn;}),qh=q.slice().reverse().map(function(o){return recRow({id:o.cid,k:o.type,amt:Number(o.amount),date:o.date,div:o.div,cat:o.cat,pocket:o.pocket,to:o.to,person:o.person,loanName:'',interest:o.interest,due:o.due,note:o.note,item:o.item,src:o.src},false,true);}).join('');
  var show=function(list){if(S.type)return;var h=qh+list.slice(0,5).map(function(x){return recRow(x,false);}).join('');
   $('recentBox').innerHTML=h?'<div class="gt">'+t('recent')+'</div><div class="card">'+h+'</div>':'';};
  show([]);if(navigator.onLine)call('getRecords',[tdy().slice(0,7)],show,function(){});}
@@ -487,6 +540,8 @@ function recRow(x,del,queued){var k=x.k,ti='',s=[];if(!queued)S.recMap[x.id]=x;
  else if(k==='LOAN_IN'||k==='EMI'){ti=t('ty_'+k)+(x.loanName?' · '+x.loanName:'');if(x.interest)s.push(t('interestW')+' '+money(x.interest));}
  else if(k==='XFER'){ti=tv(x.pocket)+' → '+tv(x.to);}
  else if(k==='SAVE'){ti=t('savings')+' · '+catN('சொந்தம்',x.cat);}
+ else if(k==='CAPEX'){ti=(x.item||t('ty_CAPEX'))+' · '+tv(x.cat);s.push(divN(x.div));if(x.src)s.push(tv(x.src));}
+ else if(k==='ASELL'){ti=t('ty_ASELL')+' · '+(x.item||'');}
  else ti=x.type||k;
  s.unshift((queued?'⏳ ':'')+dmy(x.date));if(k!=='XFER'&&k!=='REVAL'&&x.pocket)s.push(tv(x.pocket));if(x.note)s.push(x.note);if(x.due)s.push(t('repayBy')+': '+dmy(x.due));
  var sg=k==='REVAL'?(x.amt>0?1:-1):PSIGN[k],cls=sg>0?'in':sg<0?'out':'neu';
@@ -502,9 +557,19 @@ function bars(obj,cls,title,div){var ks=Object.keys(obj);if(!ks.length)return ''
  var h='<div class="sub">'+title+'</div>';ks.forEach(function(k){h+='<div class="barrow"><span>'+esc(catN(div,k))+'</span><span>'+money(obj[k])+'</span><div class="bt"><i class="'+cls+'" style="width:'+Math.max(3,Math.round(obj[k]/mx*100))+'%"></i></div></div>';});return h;}
 function renderSum(r){S.sum=r;var h='',n=r.net;
  if(n){h+='<div class="card"><div class="ch">💎 '+t('netT')+'</div><div class="bignum '+(n.net<0?'out':'in')+'">'+money(n.net)+'</div>';
-  [['nwCash',n.cashBank],['nwInv',n.invest],['nwCard',n.card],['nwGet',n.get],['nwGive',-n.give],['nwLoan',-n.loan]].forEach(function(a){if(a[1])h+='<div class="row"><span>'+t(a[0])+'</span><b class="'+(a[1]<0?'out':'')+'">'+money(a[1])+'</b></div>';});
+  [['nwCash',n.cashBank],['nwInv',n.invest],['nwAsset',n.asset],['nwCard',n.card],['nwGet',n.get],['nwGive',-n.give],['nwLoan',-n.loan]].forEach(function(a){if(a[1])h+='<div class="row"><span>'+t(a[0])+'</span><b class="'+(a[1]<0?'out':'')+'">'+money(a[1])+'</b></div>';});
   if(n.excluded)h+='<div class="small" style="margin-top:6px">'+fmt(t('nwExcl'),money(n.excluded))+'</div>';h+='</div>';}
  if(r.dues.length){h+='<div class="card"><div class="ch">'+t('upcoming')+'</div>';r.dues.forEach(function(d){h+='<div class="due '+(d.diff<0?'late':(d.diff<=2?'soon':''))+'"><span>'+esc(dueText(d))+'</span><span class="dd">'+dueLbl(d)+'</span></div>';});h+='</div>';}
+ if(r.capital&&r.capital.length){h+='<div class="card"><div class="ch">🏗 '+t('capT')+'</div>';
+  r.capital.forEach(function(c){h+='<div class="sub">'+(DIVI[c.div]||'')+' '+esc(divN(c.div))+'</div><div class="row"><span>'+t('capAsset')+'</span><b>'+money(c.asset)+'</b></div>'
+   +(c.capLoan?'<div class="row"><span>'+t('capLoan')+'</span><b class="out">'+money(-c.capLoan)+'</b></div>':'')
+   +'<div class="row"><span>'+t('capOwn')+'</span><b class="'+(c.own<0?'out':'in')+'">'+money(c.own)+'</b></div>'
+   +(c.gone?'<div class="row small"><span>'+t('capGone')+'</span><span>'+money(c.gone)+'</span></div>':'')
+   +(c.month?'<div class="row small"><span>'+t('capMonth')+'</span><span>'+money(c.month)+'</span></div>':'');});
+  h+='<button class="save sec" data-act="assets">📦 '+t('astT')+'</button></div>';}
+ var db=r.debt;if(db&&(db.cap+db.wc+db.own+db.oth+db.none)>0){h+='<details class="card"><summary class="ch"><span>🏦 '+t('debtT')+'</span><b class="out">'+money(db.cap+db.wc+db.own+db.oth+db.none)+'</b></summary>';
+  [['dbCap',db.cap],['dbWc',db.wc],['dbOwn',db.own],['dbOth',db.oth],['dbNone',db.none]].forEach(function(a){if(a[1])h+='<div class="row"><span>'+t(a[0])+'</span><b>'+money(a[1])+'</b></div>';});
+  if(db.none)h+='<div class="small" style="margin-top:6px">'+t('dbHint')+'</div>';h+='</details>';}
  GRPS.forEach(function(g){var list=r.pockets.filter(function(p){return p.group===g;});if(!list.length)return;var tot=0;list.forEach(function(p){tot+=p.bal;});
   var closed=g==='invest'||g==='trade';h+='<details class="card"'+(closed?'':' open')+'><summary class="ch"><span>'+GICON[g]+' '+t('g_'+g)+'</span><b class="'+(tot<0?'out':'')+'">'+money(tot)+'</b></summary>';
   list.forEach(function(p){h+='<div class="row"><span>'+esc(tv(p.name))+'</span><span><b class="'+(p.bal<0?'out':'')+'">'+money(p.bal)+'</b> <button class="tb mini" data-act="tally" data-name="'+esc(p.name)+'">'+(g==='cash'?'🧮':g==='invest'||g==='trade'?'📈':'✔')+'</button></span></div>';});
@@ -516,7 +581,7 @@ function renderSum(r){S.sum=r;var h='',n=r.net;
   if(d.int)h+='<div class="sub">'+t('intShare')+': '+money(d.int)+'</div>';
   if(!own&&p<0&&(d.inc||d.exp))h+='<div class="hint warn" style="margin-top:10px">'+fmt(t('ownMoney'),money(-p))+'</div>';
   h+=bars(d.expCats,'out',t('expDet'),d.name)+bars(d.incCats,'in',t('incDet'),d.name)+'</div>';});
- h+='<div class="card"><div class="ch">'+t('monthOther')+'</div><div class="row"><span>'+t('saveInv')+'</span><b>'+money(r.save)+'</b></div><div class="row"><span>'+t('principal')+'</span><b>'+money(r.principal)+'</b></div></div>';
+ h+='<div class="card"><div class="ch">'+t('monthOther')+'</div>'+(r.capex?'<div class="row"><span>🏗 '+t('capexM')+'</span><b>'+money(r.capex)+'</b></div>':'')+(r.asell?'<div class="row"><span>🏷 '+t('asellM')+'</span><b>'+money(r.asell)+'</b></div>':'')+'<div class="row"><span>'+t('saveInv')+'</span><b>'+money(r.save)+'</b></div><div class="row"><span>'+t('principal')+'</span><b>'+money(r.principal)+'</b></div></div>';
  h+='<details class="card"><summary class="ch"><span>🤝 '+t('othT')+'</span><span class="s">'+(r.others||[]).filter(function(o){return o.status!=='முடிந்தது';}).length+'</span></summary><div class="small" style="margin-bottom:6px">'+t('othHint')+'</div>';
  (r.others||[]).forEach(function(o){h+='<div class="prow" data-act="othedit" data-id="'+esc(o.id)+'" style="'+(o.status==='முடிந்தது'?'opacity:.5':'')+'"><div><b>'+esc(o.name)+'</b><div class="s">'+esc([o.owner,tv(o.type),o.mature?t('oMature')+': '+dmy(o.mature):''].filter(Boolean).join(' · '))+'</div></div><b>'+(o.amount!==''?money(o.amount):'')+'</b></div>';});
  h+='<button class="save sec" data-act="othnew">＋ '+t('othNew')+'</button></details>';
@@ -546,9 +611,12 @@ function renderLoans(){if(!S.loans.length){$('loanBox').innerHTML='<div class="c
   var emi='';if(l.day){emi=l.paidThisMonth?t('emiPaid'):fmt(t('emiDay'),l.day)+(l.emi?' · '+money(l.emi):'');}
   h+='<div class="card loanc" data-act="loan" data-id="'+esc(l.id)+'" style="'+(l.status==='முடிந்தது'?'opacity:.55':'')+'"><div><span class="badge">'+esc(tv(l.type))+'</span>'+(l.user!=='நான்'?'<span class="badge o">'+t('forOthers')+'</span>':'')+(l.status==='முடிந்தது'?'<span class="badge">'+tv('முடிந்தது')+'</span>':'')+'</div>'
    +'<div style="font-weight:700;margin-top:6px">'+esc(l.name)+'</div><div class="big">'+money(l.outstanding)+'</div>'
-   +(s1.length?'<div class="s">'+esc(s1.join(' · '))+'</div>':'')+(emi?'<div class="s">'+emi+'</div>':'')
+   +(s1.length?'<div class="s">'+esc(s1.join(' · '))+'</div>':'')+(emi?'<div class="s">'+emi+'</div>':'')+useLine(l.use)
    +(l.remaining?'<div class="s">⏳ '+fmt(t('remEmi'),l.remaining,l.endEst?l.endEst.slice(5)+'/'+l.endEst.slice(0,4):'')+'</div>':'')+(l.end?'<div class="s">📅 '+(l.type==='நகைக் கடன்'?t('goldEnd'):t('endD'))+': '+dmy(l.end)+'</div>':'')+(l.jewel?'<div class="s">💍 '+esc(l.jewel)+(l.jewelOwner?' ('+esc(l.jewelOwner)+')':'')+'</div>':'')+'</div>';});
  $('loanBox').innerHTML=h;}
+function useLine(u){if(!u||!(u.cap||u.wc||u.own||u.oth))return u&&u.base?'<div class="s">❔ '+t('loanUseNo')+'</div>':'';var a=[];
+ if(u.cap)a.push('🏗 '+money(u.cap));if(u.wc)a.push('🔄 '+money(u.wc));if(u.own)a.push('🏠 '+money(u.own));if(u.oth)a.push('🤝 '+money(u.oth));if(u.none)a.push('❔ '+money(u.none));
+ return '<div class="s">'+t('loanUse')+': '+a.join(' · ')+'</div>';}
 function meIn(v){return v==='நான்'?t('me'):(v||'');}
 function meOut(v){v=(v||'').trim();return (!v||v.toLowerCase()==='me'||v==='நான்')?'நான்':v;}
 function loanForm(l){S.lf=l?JSON.parse(JSON.stringify(l)):{type:'வங்கிக் கடன்',acct:'நான்',user:'நான்',status:'செயலில்'};S.lfEdit=!!l;renderLoanForm();}
@@ -565,15 +633,16 @@ function renderLoanForm(){var f=S.lf,l=S.lfEdit?f:null;
  h+='<div class="g2"><div>'+inp('lEmi',t('lEmi'),f.emi,'number','₹')+'</div><div>'+inp('lDay',t('lDay'),f.day,'number',t('lDayPh'))+'</div></div>';
  h+=inp('lEnd',t('lEnd'),f.end,'date');
  h+='<div class="card" style="margin-top:14px"><div class="ch">'+t('lHist')+'</div><div class="small">'+t('lAsofHint')+'</div><div class="g2"><div>'+inp('lStart',t('lStart'),f.start,'date')+'</div><div>'+inp('lAsof',t('lAsof'),f.asof||(S.lfEdit?'':tdy()),'date')+'</div></div><div class="g2"><div>'+inp('lOrig',t('lOrig'),f.orig,'number','₹')+'</div><div>'+inp('lTenure',t('lTenure'),f.tenure,'number','')+'</div></div></div>';
+ h+='<div class="card" style="margin-top:14px"><div class="ch">'+t('lUseT')+'</div><div class="small">'+fmt(t('lUseHint'),money(f.use?f.use.capLinked:0))+'</div><div class="g2"><div>'+inp('lUCap',t('lUCap'),f.uCap,'number','₹')+'</div><div>'+inp('lUWc',t('lUWc'),f.uWc,'number','₹')+'</div></div><div class="g2"><div>'+inp('lUOwn',t('lUOwn'),f.uOwn,'number','₹')+'</div><div>'+inp('lUOth',t('lUOth'),f.uOth,'number','₹')+'</div></div></div>';
  h+='<div class="g2"><div>'+inp('lJewel',t('lJewel'),f.jewel,'',t('lJewelPh'))+'</div><div>'+lab(t('lJOwner'))+pickBtn('jewelOwner',f.jewelOwner,'—')+'</div></div>';
  h+=lab(t('lStatus'))+lchips('status',LSTAT,f.status)+inp('lNote',t('note'),f.note);
  h+='<button class="save" data-act="saveloan">'+t('lSave')+'</button>';
  if(l&&l.list&&l.list.length)h+='<div class="gt">'+t('recentTx')+'</div><div class="card">'+l.list.map(function(x){x.loanName='';return recRow(x,false);}).join('')+'</div>';
  openSheet(h);}
-function grabLoan(){var m={lName:'name',lLender:'lender',lPd:'pd',lPs:'ps',lPp:'pp',lOpen:'open',lRate:'rate',lEmi:'emi',lDay:'day',lEnd:'end',lJewel:'jewel',lNote:'note',lStart:'start',lAsof:'asof',lOrig:'orig',lTenure:'tenure'};for(var id in m){var el=$(id);if(el)S.lf[m[id]]=el.value.trim();}
+function grabLoan(){var m={lName:'name',lLender:'lender',lPd:'pd',lPs:'ps',lPp:'pp',lOpen:'open',lRate:'rate',lEmi:'emi',lDay:'day',lEnd:'end',lJewel:'jewel',lNote:'note',lStart:'start',lAsof:'asof',lOrig:'orig',lTenure:'tenure',lUCap:'uCap',lUWc:'uWc',lUOwn:'uOwn',lUOth:'uOth'};for(var id in m){var el=$(id);if(el)S.lf[m[id]]=el.value.trim();}
  S.lf.acct=meOut(S.lf.acct);S.lf.user=meOut(S.lf.user);if(S.lf.jewelOwner)S.lf.jewelOwner=meOut(S.lf.jewelOwner);}
 function saveLoan(){grabLoan();var f=S.lf;if(!f.name){toast('⚠ '+t('e_lname'),true);return;}
- var o={id:f.id||'',name:f.name,type:f.type,lender:f.lender,acct:f.acct,user:f.user,pd:f.pd,ps:f.ps,pp:f.pp,open:f.open,rate:f.rate,emi:f.emi,day:f.day,end:f.end,jewel:f.jewel,jewelOwner:f.jewelOwner,status:f.status,note:f.note,start:f.start,asof:f.asof,orig:f.orig,tenure:f.tenure};
+ var o={id:f.id||'',name:f.name,type:f.type,lender:f.lender,acct:f.acct,user:f.user,pd:f.pd,ps:f.ps,pp:f.pp,open:f.open,rate:f.rate,emi:f.emi,day:f.day,end:f.end,jewel:f.jewel,jewelOwner:f.jewelOwner,status:f.status,note:f.note,start:f.start,asof:f.asof,orig:f.orig,tenure:f.tenure,uCap:f.uCap,uWc:f.uWc,uOwn:f.uOwn,uOth:f.uOth};
  call('saveLoan',[o],function(){closeSheet();toast(t('savedOk'));call('getInit',[],function(r){S.init=r;fillPlist();});loadLoans();});}
 
 /* ---- பதிவுகள் ---- */
@@ -718,12 +787,17 @@ function applyTask(R,fn,a){
  if(fn==='backlogAct'){var tid=a[0],b=null;(R.backlog||[]).forEach(function(z,i){if(z.tid===tid)b=R.backlog.splice(i,1)[0];});var at2=a[2]||nowStrL();
   if(b&&!R.items.some(function(x){return x.tid===tid;}))R.items.push({key:R.today+'|'+tid,tid:tid,name:b.name,en:b.en,time:at2.slice(11),ptime:at2.slice(11),st:'pending',div:b.div,loc:b.loc,dur:b.dur,imp:b.imp,backlog:true,subs:[],subsDone:[],pauses:[]});
   a=[R.today+'|'+tid,a[1],'',at2];fn='taskAct';}
+ if(fn==='setCover'){var cm=a[1],cv={am:cm==='am'||cm==='day',pm:cm==='pm'||cm==='day'};if(a[0]===R.today)R.cover.today=cv;else if(a[0]===R.tomorrow)R.cover.tomorrow=cv;return;}
  if(fn==='markDone'){a=[R.today+'|ACC','done','',a[0]];fn='taskAct';}
  if(fn!=='taskAct')return;
  var key=a[0],act=a[1],arg=a[2],at=a[3]||nowStrL(),x=null;R.items.forEach(function(y){if(y.key===key)x=y;});if(!x)return;
  function close(){var p=x.pauses||[];if(p.length&&!p[p.length-1].t)p[p.length-1].t=at;}
  function begin(){if(x.st==='pending'||x.st==='missed'){x.start=at;x.late=Math.max(0,hm2m(at.slice(11))-hm2m(x.ptime||x.time));}}
  function fin(){if(x.st==='paused')close();if(!x.start)x.start=at;x.st='done';x.end=at;x.mins=workM(x,at);}
+ if(act==='del'){if(x.emg)R.items.splice(R.items.indexOf(x),1);return;}
+ // புதிய வேலை தொடங்கினால் நடக்கும் மற்றது தானாக ⏸
+ if((act==='start'||act==='resume'||(act==='sub'&&/:1$/.test(String(arg))))&&x.st!=='done'&&x.st!=='started')
+  R.items.forEach(function(z){if(z!==x&&z.st==='started'){z.st='paused';z.pauses=(z.pauses||[]).concat([{f:at,t:'',w:'→ '+x.name}]);}});
  if(act==='start'||act==='resume'){begin();if(x.st==='paused')close();if(x.st!=='done')x.st='started';}
  else if(act==='pause'){if(x.st==='started'){x.st='paused';x.pauses=(x.pauses||[]).concat([{f:at,t:'',w:arg}]);}}
  else if(act==='done'){if(x.st!=='done')fin();}
@@ -738,8 +812,15 @@ function conflictsL(items){var bl=items.filter(function(i){return i.cover&&!i.sk
  items.forEach(function(i){delete i.conflict;if(i.cover||i.skip||!i.time||i.st==='done')return;var s=hm2m(i.time);
   bl.forEach(function(z){if(!i.conflict&&s>=z.s&&s<z.e)i.conflict={name:z.name,en:z.en,to:m2hm(z.e)};});});}
 function sortT(a,b){return (a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0;}
+/* 🛵 பிரதீப் விடுப்பு — வருகிறார் / காலை / மாலை / முழு நாள் */
+function covNorm(c){if(c===true)return {am:true,pm:true};if(!c||typeof c!=='object')return {am:false,pm:false};return {am:!!c.am,pm:!!c.pm};}
+function covMode(c){c=covNorm(c);return c.am&&c.pm?'day':c.am?'am':c.pm?'pm':'none';}
+function covRow(ds,c,lbl,act){var m=covMode(c);
+ return '<div class="cov'+(m==='none'?'':' lv')+'"><div class="cq">🛵 '+esc(lbl)+'</div><div class="seg">'+[['none','cvNone'],['am','cvAm'],['pm','cvPm'],['day','cvAll']].map(function(o){
+  return '<button class="'+(m===o[0]?'on':'')+'" data-act="'+act+'" data-d="'+ds+'" data-m="'+o[0]+'">'+t(o[1])+'</button>';}).join('')+'</div><div class="cs">'+t('cvS_'+m)+'</div></div>';}
 function replay(r){var R=JSON.parse(JSON.stringify(r));qGet().forEach(function(q){if(q.fn)applyTask(R,q.fn,q.args);});R.items.sort(sortT);conflictsL(R.items);return R;}
-function loadTasks(){call('getTasks',[],renderTasks);}
+function emptyTasks(){return {today:tdy(),tomorrow:addDayL(tdy(),1),items:[],backlog:[],cover:{today:{am:false,pm:false},tomorrow:{am:false,pm:false}},planned:{today:true,tomorrow:true},dnd:0,now:Date.now(),empty:true};}
+function loadTasks(){call('getTasks',[],renderTasks,function(e){if(!S.tasksRaw){S.tasksRaw=emptyTasks();renderTasks();}if(!isNet(e))toast('⚠ '+emsg(e),true);});}
 function tAct(key,act,arg){qPush('taskAct',[key,act,arg==null?'':String(arg),nowStrL()]);
  if(act==='done'||act==='skip'||act==='tomorrow'){S.undo[key]=Date.now()+60000;setTimeout(function(){if(S.page==='task'&&!sheetOpen())renderTasks();},61000);}
  if(act==='reset')delete S.undo[key];
@@ -750,11 +831,13 @@ function renderTasks(r){if(r)S.tasksRaw=r;if(!S.tasksRaw||!S.init)return;var R=r
  h+='<div class="abar"><button class="emgb" data-act="emg">⚡ '+t('emgBtn')+'</button><button class="planb" data-act="plan">🌙 '+t('planBtn')+'</button></div>';
  if(R.dnd&&R.dnd>Date.now()){var d=new Date(R.dnd);h+='<div class="pend"><span>🔕 '+fmt(t('dndOn'),pad(d.getHours())+':'+pad(d.getMinutes()))+'</span><button data-act="dndoff">'+t('dndOff')+'</button></div>';}
  else h+='<button class="done" data-act="dnd">🔕 '+t('dndBtn')+'</button>';
- h+='<div class="covrow"><span>🛵 '+t('coverQ')+'</span><div class="chips"><button class="chip'+(R.cover.today?' on':'')+'" data-act="cover" data-d="'+R.today+'" data-on="'+(R.cover.today?0:1)+'">'+t('today')+'</button></div></div>';
+ h+=covRow(R.today,R.cover.today,t('cvToday'),'cover')+covRow(R.tomorrow,R.cover.tomorrow,t('cvTom'),'cover');
  if(!R.planned.tomorrow&&nm>=19*60)h+='<div class="hint warn" data-act="plan" style="margin-top:10px">🌙 '+t('plNotYet')+' ›</div>';
  var cf=R.items.filter(function(x){return x.conflict&&x.st==='pending';});if(cf.length)h+='<div class="hint warn" style="margin-top:10px">⚠ '+fmt(t('cfN'),cf.length)+'</div>';
+ if(R.empty)h+='<div class="hint warn" style="margin-top:10px">'+t('tkOffline')+'</div>';
+ var fs=freeSlot(R);if(fs)h+='<div class="free"><div class="s">🕐 '+fmt(t('freeQ'),dur(fs.free))+'</div><div style="margin-top:4px"><b>'+(DIVI[fs.b.div]||'')+' '+esc(tN(fs.b))+'</b>'+(fs.b.imp?' ⭐':'')+' <span class="s">· '+dur(fs.b.dur)+(fs.b.loc?' · '+esc(locN(fs.b.loc)):'')+'</span></div><div class="tbs"><button class="tb go" data-act="blstart" data-tid="'+esc(fs.b.tid)+'">▶ '+t('tStart')+'</button><button class="tb" data-act="freeskip" data-tid="'+esc(fs.b.tid)+'">'+t('notNow')+'</button></div></div>';
  var run=R.items.filter(function(x){return x.st==='started'||x.st==='paused';}),rest=R.items.filter(function(x){return run.indexOf(x)<0;});
- if(run.length)h+='<div class="gt">'+t('nowRun')+'</div><div class="card">'+run.map(function(x){return taskCard(x,false);}).join('')+'</div>';
+ if(run.length)h+='<div class="gt">'+t('nowRun')+'</div>'+(!run.some(function(x){return x.st==='started';})?'<div class="hint" style="margin-bottom:8px">'+t('resumeQ')+'</div>':'')+'<div class="card">'+run.map(function(x){return taskCard(x,false);}).join('')+'</div>';
  var nx=null;rest.forEach(function(x){if(!nx&&x.st==='pending'&&!isOver(x)&&x.time&&hm2m(x.time)+(x.dur||0)>=nm)nx=x.key;});
  h+='<div class="gt">'+t('todayTasks')+'</div>';
  h+=rest.length?'<div class="card">'+rest.map(function(x){return taskCard(x,x.key===nx);}).join('')+'</div>':'<div class="card empty">'+t('noTasksToday')+'</div>';
@@ -766,6 +849,19 @@ function renderTasks(r){if(r)S.tasksRaw=r;if(!S.tasksRaw||!S.init)return;var R=r
  h+='<div class="g2"><button class="save sec" data-act="newtask">＋ '+t('newTask')+'</button><button class="save sec" data-act="alltasks">⚙ '+t('editTasks')+'</button></div>';
  $('taskBox').innerHTML=h;}
 
+// 📥 நீங்கள் உண்மையில் காலியாக இருக்கும்போது மட்டும் (எந்த வேலையும் நடக்கவில்லை, அடுத்த பணிக்கு நேரம் உள்ளது)
+S.freeSkip={};
+function freeSlot(R){var nm=nowML();if(R.empty||nm<240||nm>=1260||R.today!==tdy())return null;
+ if(R.dnd&&R.dnd>Date.now())return null;
+ if(R.items.some(function(x){return x.st==='started'&&!x.fill;}))return null;
+ if(R.items.some(function(x){return x.st==='pending'&&!x.fill&&x.time&&hm2m(x.time)<=nm&&hm2m(x.time)+(x.dur||0)>nm;}))return null;
+ var fillRun=null;R.items.forEach(function(x){if(x.st==='started'&&x.fill)fillRun=x;});
+ var nb=1260;R.items.forEach(function(x){if(x.st!=='pending'||x.fill||!x.time)return;var s0=hm2m(x.time);if(s0>nm&&s0<nb)nb=s0;});
+ var free=nb-nm,rk={'அமிர்தம் டெய்ரி':0,'நலம் சித்தா':1,'சொந்தம்':2};
+ var bl=(R.backlog||[]).filter(function(b){return !S.freeSkip[b.tid]&&(b.dur||30)<=free;});if(!bl.length)return null;
+ bl.sort(function(a,b){var da=a.due||'9999',dd=b.due||'9999';if(da!==dd)return da<dd?-1:1;if(!!b.imp!==!!a.imp)return b.imp?1:-1;
+  if(fillRun){var la=(a.loc===fillRun.loc||a.loc==='எங்கும்')?0:1,lb=(b.loc===fillRun.loc||b.loc==='எங்கும்')?0:1;if(la!==lb)return la-lb;}return (rk[a.div]||0)-(rk[b.div]||0);});
+ return {free:free,b:bl[0]};}
 function taskCard(x,isNext){var st=x.st,over=isOver(x),stv=over?'missed':st,k=' data-key="'+esc(x.key)+'"',sub=[],b='',h='';
  var s0=hm2m(x.time),e0=s0+(x.dur||0);
  if(st==='pending'){sub.push(x.time+(x.dur?'–'+m2hm(e0):'')+(x.loc?' · '+locN(x.loc):''));if(x.ptime&&x.time!==x.ptime)sub.push('⏰ '+t('snoozedFrom')+' '+x.ptime);}
@@ -784,6 +880,7 @@ function taskCard(x,isNext){var st=x.st,over=isOver(x),stv=over?'missed':st,k=' 
  else if(st==='paused')b+='<button class="tb go" data-act="tresume"'+k+'>▶ '+t('tResume')+'</button><button class="tb ok" data-act="tdone"'+k+'>✓ '+t('tDone')+'</button>';
  else if(S.undo[x.key]&&S.undo[x.key]>Date.now())b+='<button class="tb" data-act="treset"'+k+'>'+t('undo')+'</button>';
  if(x.tid==='ACC'&&st!=='done')b+='<button class="tb" data-act="plan">🌙</button>';
+ if(x.emg)b+='<button class="tb" data-act="tdel"'+k+'>🗑</button>';
  if(b)h+='<div class="tbs">'+b+'</div>';
  return '<div class="task '+st+(over?' over':'')+(isNext?' nxt':'')+(x.emg?' emgt':'')+(st==='done'||st==='skipped'?' dim':'')+'">'+h+'</div>';}
 
@@ -825,7 +922,7 @@ function planItems(){var p=S.plan,ed=S.planEd||{};var items=p.items.filter(funct
  items.sort(sortT);conflictsL(items);return items;}
 function renderPlan(){var e=$('plBox'),p=S.plan;if(!e||!p)return;var items=planItems(),h='<div class="card"><div class="ch">📅 '+t('plT')+' · '+esc(dayName(p.date))+' '+dmy(p.date)+'</div>';
  h+=p.planned?'<div class="hint">✓ '+t('plDone')+'</div>':'<div class="hint warn">'+t('plNot')+'</div>';
- h+='<div class="covrow" style="margin:10px 0"><span>🛵 '+t('plCover')+'</span><div class="chips"><button class="chip'+(p.cover?' on':'')+'" data-act="plcover" data-on="'+(p.cover?0:1)+'">'+(p.cover?t('yes'):t('no'))+'</button></div></div>';
+ h+=covRow(p.date,p.cover,p.date===addDayL(tdy(),1)?t('cvTom'):t('cvDay2')+' '+dmy(p.date),'plcover');
  var ncf=items.filter(function(i){return i.conflict&&!i.skip;}).length;if(ncf)h+='<div class="hint warn">⚠ '+fmt(t('cfN'),ncf)+'</div>';
  items.forEach(function(i){h+='<div class="pli'+(i.skip?' sk':'')+(i.conflict&&!i.skip?' cf':'')+'"><input type="time" class="pt" data-tid="'+esc(i.tid)+'" value="'+esc(i.time||'')+'"><div class="pn"><b>'+(DIVI[i.div]||'')+' '+esc(tN(i))+'</b>'+(i.imp?' ⭐':'')+(i.auto||i.added?' <span class="badge">📥 '+t('plAuto')+'</span>':'')
   +'<div class="s">'+(i.dur?dur(i.dur):'')+(i.loc?' · '+esc(locN(i.loc)):'')+(i.nsubs?' · ☐×'+i.nsubs:'')+'</div>'
@@ -865,7 +962,8 @@ function renderTaskForm(){var f=S.tf,h='<div class="shead"><b>'+(f.id?'✏️ '+
  if(f.mode==='fixed')h+=lab(t('tFill'))+fchips('fill',['1','0'],f.fill?'1':'0',function(v){return v==='1'?t('yes'):t('no');});
  h+=lab(t('tActive'))+fchips('active',['1','0'],f.active?'1':'0',function(v){return v==='1'?t('yes'):t('no');});
  h+=lab(t('note'))+'<input id="tfNote" class="inp" value="'+esc(f.note||'')+'">';
- h+='<button class="save" data-act="savetask">'+t('lSave')+'</button>';openSheet(h);}
+ h+='<button class="save" data-act="savetask">'+t('lSave')+'</button>';
+ if(f.id)h+='<button class="save sec" data-act="deltask">'+t('delTask')+'</button>';openSheet(h);}
 function grabTF(){var m={tfName:'name',tfEn:'en',tfTime:'time',tfDate:'date',tfNote:'note',tfSubs:'subsText',tfDur:'dur'};for(var id in m){var el=$(id);if(el)S.tf[m[id]]=id==='tfDur'?Number(el.value)||'':el.value.trim();}}
 function saveTaskF(){grabTF();var f=S.tf;if(!f.name){toast('⚠ '+t('e_tname'),true);return;}
  if(f.mode!=='flex'&&!f.time){toast('⚠ '+t('e_ttime'),true);return;}
@@ -917,8 +1015,8 @@ var TACT={
  dnd:function(){pickSheet('🔕 '+t('dndQ'),'dndset','',[[60,'1 '+t('hourS')],[120,'2 '+t('hourS')],[180,'3 '+t('hourS')]]);},
  dndset:function(b){closeSheet();call('setDnd',[b.getAttribute('data-min')],renderTasks);},
  dndoff:function(){call('setDnd',[0],renderTasks);},
- cover:function(b){call('toggleCover',[b.getAttribute('data-d'),b.getAttribute('data-on')==='1'],renderTasks);},
- plcover:function(b){call('toggleCover',[S.planD,b.getAttribute('data-on')==='1','plan'],function(p){S.plan=p;renderPlan();});},
+ cover:function(b){qPush('setCover',[b.getAttribute('data-d'),b.getAttribute('data-m')]);renderTasks();toast(t('cvSaved'));},
+ plcover:function(b){call('setCover',[S.planD,b.getAttribute('data-m'),'plan'],function(p){S.plan=p;renderPlan();toast(t('cvSaved'));});},
  plmove:function(b){planSet(b.getAttribute('data-tid'),'time',b.getAttribute('data-to'));renderPlan();},
  plskip:function(b){var tid=b.getAttribute('data-tid'),it=null;planItems().forEach(function(i){if(i.tid===tid)it=i;});
   if(it&&it.added){delete S.planEd[tid];}else planSet(tid,'skip',!(it&&it.skip));renderPlan();},
@@ -943,7 +1041,7 @@ var ACT={back:function(){var back=S.backTo;S.backTo=null;if(back&&back!=='add'){
  dnd:function(){pickSheet('🔕 '+t('dndQ'),'dndset','',[[60,'1 '+t('hourS')],[120,'2 '+t('hourS')],[180,'3 '+t('hourS')]]);},
  dndset:function(b){closeSheet();call('setDnd',[b.getAttribute('data-min')],renderTasks);},
  dndoff:function(){call('setDnd',[0],renderTasks);},
- cover:function(b){call('toggleCover',[b.getAttribute('data-d'),b.getAttribute('data-on')==='1'],renderTasks);},
+ cover:function(b){qPush('setCover',[b.getAttribute('data-d'),b.getAttribute('data-m')]);renderTasks();toast(t('cvSaved'));},
  tstart:function(b){tAct(b.getAttribute('data-key'),'start');},
  tdone:function(b){tAct(b.getAttribute('data-key'),'done');},
  treset:function(b){tAct(b.getAttribute('data-key'),'reset');},
@@ -974,6 +1072,58 @@ var ACT={back:function(){var back=S.backTo;S.backTo=null;if(back&&back!=='add'){
  loan:function(b){var id=b.getAttribute('data-id');for(var i=0;i<S.loans.length;i++)if(S.loans[i].id===id)loanForm(S.loans[i]);},
  delrec:function(b){delRec(b.getAttribute('data-id'));}};
 Object.keys(TACT).forEach(function(k){ACT[k]=TACT[k];});
+/* ---- v6.2 ---- */
+function openAssets(){openSheet('<div class="shead"><b>📦 '+t('astT')+'</b><button class="x" data-act="close">✕</button></div><div id="astBox"><div class="empty">…</div></div>');
+ call('getAssets',[],renderAssets,function(e){var b=$('astBox');if(b)b.innerHTML='<div class="card empty">'+esc(isNet(e)?t('e_offline'):emsg(e))+'</div>';});}
+function astRow(a){var s1=[(DIVI[a.div]||''),tv(a.cat)];if(a.date)s1.push(dmy(a.date));if(a.src)s1.push(tv(a.src));if(!a.active)s1.push(tv(a.status)+(a.end?' '+dmy(a.end):''));if(a.sold)s1.push(t('astSellAmt')+' '+money(a.sold));
+ return '<div class="prow" data-act="astone" data-id="'+esc(a.id)+'"'+(a.active?'':' style="opacity:.6"')+'><div><b>'+esc(a.name||'—')+'</b><div class="s">'+esc(s1.join(' · '))+'</div></div><b>'+money(a.cost)+'</b></div>';}
+function renderAssets(list){S.assets=list;var b=$('astBox');if(!b)return;var on=0,all=0,h='';list.forEach(function(a){all+=a.cost;if(a.active)on+=a.cost;});
+ h+='<div class="card"><div class="row"><span>'+t('astNow')+'</span><b class="in">'+money(on)+'</b></div><div class="row"><span>'+t('astAll')+'</span><b>'+money(all)+'</b></div>'+(all-on?'<div class="row"><span>'+t('capGone')+'</span><b>'+money(all-on)+'</b></div>':'')+'</div>';
+ if(!list.length)h+='<div class="card empty">'+t('astNone')+'</div>';
+ CAPCL.forEach(function(c){var l=list.filter(function(a){return a.active&&(a.cat===c||(c==='மற்றவை'&&CAPCL.indexOf(a.cat)<0));});if(!l.length)return;var tot=0;l.forEach(function(a){tot+=a.cost;});
+  h+='<details class="card"'+(c==='கால்நடை'?' open':'')+'><summary class="ch"><span>'+esc(tv(c))+' ('+l.length+')</span><b>'+money(tot)+'</b></summary>'+l.map(astRow).join('')+'</details>';});
+ var old=list.filter(function(a){return !a.active;});if(old.length){var ot=0;old.forEach(function(a){ot+=a.cost;});h+='<details class="card"><summary class="ch"><span>'+t('astOld')+' ('+old.length+')</span><b>'+money(ot)+'</b></summary>'+old.map(astRow).join('')+'</details>';}
+ h+='<button class="save" data-act="astnew">🏗 '+t('ty_CAPEX')+'</button>';b.innerHTML=h;}
+function findA(id){var r=null;(S.assets||[]).forEach(function(a){if(a.id===id)r=a;});return r;}
+function astOne(id){var a=findA(id);if(!a)return;var h='<div class="shead"><b>📦 '+esc(a.name)+'</b><button class="x" data-act="close">✕</button></div><div class="card"><div class="row"><span>'+t('astCost')+'</span><b>'+money(a.cost)+'</b></div><div class="s">'+esc([divN(a.div),tv(a.cat),a.date?dmy(a.date):'',tv(a.src),tv(a.status)].filter(Boolean).join(' · '))+'</div>'+(a.note?'<div class="s">'+esc(a.note)+'</div>':'')
+  +(a.sold?'<div class="row"><span>'+t('astSellAmt')+'</span><b>'+money(a.sold)+'</b></div><div class="row"><span>'+t('astPL')+'</span><b class="'+(a.sold-a.cost<0?'out':'in')+'">'+money(a.sold-a.cost)+'</b></div>':'')+'</div>';
+ if(a.active)h+='<button class="save" data-act="astsell" data-id="'+esc(a.id)+'">'+t('astSell')+'</button><button class="save sec" data-act="astlost" data-id="'+esc(a.id)+'">'+t('astLost')+'</button>';
+ else if(a.status==='இழப்பு'||a.status==='முன்பு இருந்தது')h+='<button class="save sec" data-act="astundo" data-id="'+esc(a.id)+'">'+t('astUndo')+'</button>';
+ else if(a.sold)h+='<div class="hint">'+t('astSoldHint')+'</div>';
+ h+='<button class="save sec" data-act="assets">‹ '+t('astT')+'</button>';openSheet(h);}
+function astSell(id){var a=findA(id);if(!a)return;S.lf={};openSheet('<div class="shead"><b>🏷 '+esc(a.name)+'</b><button class="x" data-act="close">✕</button></div>'+lab(t('astSellAmt'))+'<input id="asAmt" class="amt" type="number" inputmode="decimal" placeholder="₹">'
+ +lab(t('astSoldTo'))+lchips('apk',S.init.pockets,'')+'<div class="g2"><div>'+lab(t('date'))+'<input id="asDate" class="inp" type="date" value="'+tdy()+'"></div><div>'+lab(t('note'))+'<input id="asNote" class="inp"></div></div><div class="small" style="margin-top:8px">'+t('astCost')+': '+money(a.cost)+'</div><button class="save" data-act="astsellgo" data-id="'+esc(a.id)+'">'+t('save')+'</button>');}
+function astLocal(id,f){(S.assets||[]).forEach(function(a){if(a.id===id)f(a);});try{lsSet('c:getAssets:[]',JSON.stringify(S.assets));}catch(e){}}
+var V62={
+ assets:function(){openAssets();},astone:function(b){astOne(b.getAttribute('data-id'));},
+ astnew:function(){closeSheet();openForm('CAPEX');},
+ astsell:function(b){astSell(b.getAttribute('data-id'));},
+ astsellgo:function(b){var id=b.getAttribute('data-id'),a=findA(id),amt=$('asAmt').value.trim(),pk=S.lf.apk;
+  if(!(Number(amt)>0)){toast('⚠ '+t('e_amt'),true);return;}if(!pk){toast('⚠ '+t('e_pocket'),true);return;}
+  var o={type:'ASELL',amount:amt,date:$('asDate').value||tdy(),div:a.div,cat:a.cat,item:a.name,grp:a.id,pocket:pk,note:$('asNote').value.trim(),cid:'C'+Date.now()+Math.random().toString(36).slice(2,6)};
+  var q=qGet();q.push(o);qSet(q);qBadge();setTimeout(flush,0);astLocal(id,function(x){x.status='விற்றது';x.active=false;x.sold=(x.sold||0)+Number(amt);x.end=o.date;});
+  toast(t('saved')+' — '+money(amt));renderAssetsSheet();},
+ astlost:function(b){var id=b.getAttribute('data-id'),a=findA(id);if(!confirm(fmt(t('astLostQ'),a.name)))return;
+  qPush('assetAct',[id,'lost',{date:tdy()}]);astLocal(id,function(x){x.status='இழப்பு';x.active=false;x.end=tdy();});renderAssetsSheet();},
+ astundo:function(b){var id=b.getAttribute('data-id');qPush('assetAct',[id,'undo',{}]);astLocal(id,function(x){x.status='உள்ளது';x.active=true;x.end='';});renderAssetsSheet();},
+ spadd:function(){grab();S.f.nsp=(S.f.nsp||0)+1;renderForm();},
+ sprm:function(b){grab();var i=+b.getAttribute('data-i'),f=S.f;for(var j=i;j<f.nsp-1;j++){f['sp'+j]=f['sp'+(j+1)];f['spa'+j]=f['spa'+(j+1)];}f.nsp--;delete f['sp'+f.nsp];delete f['spa'+f.nsp];renderForm();},
+ tocapex:function(){grab();S.type='CAPEX';S.f.cat='';S.f.item=S.f.item||S.f.note||'';S.f.src=S.f.src||'சொந்தப் பணம்';renderForm();window.scrollTo(0,0);},
+ tdel:function(b){if(!confirm(t('tdelQ')))return;tAct(b.getAttribute('data-key'),'del');},
+ deltask:function(){var f=S.tf;if(!f||!f.id)return;if(!confirm(fmt(t('delTaskQ'),f.name)))return;
+  call('deleteTask',[f.id],function(){closeSheet();toast(t('deleted'));loadTasks();},function(e){toast('⚠ '+(isNet(e)?t('needNet'):emsg(e)),true);});},
+ freeskip:function(b){S.freeSkip[b.getAttribute('data-tid')]=1;renderTasks();},
+ qfshow:function(){var f=qfGet(),h='<div class="shead"><b>⚠ '+t('qfT')+'</b><button class="x" data-act="close">✕</button></div>';
+  f.forEach(function(o,i){var d=o.fn?(o.fn+' '+JSON.stringify(o.args||[]).slice(0,80)):((ICON[o.type]||'')+' '+t('ty_'+o.type)+' · '+money(o.amount)+' · '+dmy(o.date)+(o.note?' · '+o.note:''));
+   h+='<div class="card"><div>'+esc(d)+'</div><div class="small out">'+esc(o.err||'')+'</div><div class="tbs">'+(o.fn?'':'<button class="tb go" data-act="qfedit" data-i="'+i+'">'+t('qfEdit')+'</button>')+'<button class="tb" data-act="qfdel" data-i="'+i+'">🗑</button></div></div>';});
+  if(!f.length)h+='<div class="card empty">✓</div>';openSheet(h);},
+ qfdel:function(b){if(!confirm(t('delQ')))return;var f=qfGet();f.splice(+b.getAttribute('data-i'),1);lsSet('qfail',JSON.stringify(f));ACT.qfshow();renderTop();},
+ qfedit:function(b){var f=qfGet(),o=f.splice(+b.getAttribute('data-i'),1)[0];lsSet('qfail',JSON.stringify(f));closeSheet();
+  openForm(o.type,{amt:o.amount,date:o.date,div:o.div,cat:o.cat,pocket:o.pocket,to:o.to,person:o.person,loan:o.loan,interest:o.interest,due:o.due,note:o.note,item:o.item,src:o.src});S.editId=null;renderForm();}
+};
+function renderAssetsSheet(){if(S.assets){openSheet('<div class="shead"><b>📦 '+t('astT')+'</b><button class="x" data-act="close">✕</button></div><div id="astBox"></div>');renderAssets(S.assets);}}
+Object.keys(V62).forEach(function(k){ACT[k]=V62[k];});
+document.addEventListener('input',function(e){var id=e.target&&e.target.id||'';if(S.f&&S.f.nsp&&(id==='fAmt'||id.indexOf('spA')===0)){grab();var el=$('spTot');if(el)el.textContent=spTot();}});
 document.addEventListener('click',function(e){
  if(e.target===$('sheet')){closeSheet();return;}
  var b=e.target.closest('[data-type],[data-chip],[data-lchip],[data-act],[data-go]');if(!b)return;
@@ -985,7 +1135,7 @@ document.addEventListener('click',function(e){
 });
 $('sumMonth').addEventListener('change',loadSum);$('recMonth').addEventListener('change',loadRec);
 $('perQ').addEventListener('input',renderPer);$('perAll').addEventListener('change',renderPer);
-window.addEventListener('online',function(){flush();});
+window.addEventListener('online',function(){flush();if(S.page==='task'&&S.tasksRaw&&S.tasksRaw.empty)loadTasks();});
 document.addEventListener('visibilitychange',function(){if(!document.hidden){if(CFG.locked&&CFG.pin){showPin();return;}if(nightCheck())return;renderChrome();flush();if(S.page==='task'&&S.init)loadTasks();}});
 renderChrome();
 /* ---- கடிகாரம் ---- */
@@ -1024,9 +1174,17 @@ function showPin(msg){var lk=$('lock'),entry='';lk.classList.remove('hidden');
 window.onAuthFail=function(){CFG.key='';saveCfg();showSetup(L('ரகசியக் குறி மாற்றப்பட்டுள்ளது — புதிய குறியை உள்ளிடவும்','The key was changed — enter the new key'));};
 window.freshInit=function(r){S.init=r;fillPlist();renderChrome();};
 var started=false;
+var DEFINIT={"divs":["அமிர்தம் டெய்ரி","நலம் சித்தா","சொந்தம்"],"divEn":{"அமிர்தம் டெய்ரி":"Amirtham Dairy","நலம் சித்தா":"Nalam Siddha","சொந்தம்":"Personal"},"cats":[{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"தீவனம்","en":"Fodder"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"சம்பளம்","en":"Salary"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"மின்சாரம்","en":"Electricity"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"மருந்து","en":"Medicine"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"மருத்துவர் கட்டணம்","en":"Doctor fees"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"கருவூட்டல்","en":"Insemination"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"எரிபொருள்","en":"Fuel"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"பராமரிப்பு","en":"Maintenance"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"வங்கிக் கட்டணம்","en":"Bank charges"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"மற்றவை","en":"Others"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"பால்","en":"Milk"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"இயற்கை உரம்","en":"Organic manure"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"சாக்குப் பை","en":"Gunny bags"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"கன்று விற்பனை","en":"Calf sale"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"பசு விற்பனை","en":"Cow sale"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"மற்றவை","en":"Others"},{"div":"நலம் சித்தா","kind":"செலவு","name":"மூலப்பொருள்","en":"Raw materials"},{"div":"நலம் சித்தா","kind":"செலவு","name":"விறகு","en":"Firewood"},{"div":"நலம் சித்தா","kind":"செலவு","name":"மருந்து தயாரிப்புக் கூலி","en":"Medicine prep labour"},{"div":"நலம் சித்தா","kind":"செலவு","name":"அரைத்தல் / சாறு எடுத்தல்","en":"Grinding / extraction"},{"div":"நலம் சித்தா","kind":"செலவு","name":"மற்றவை","en":"Others"},{"div":"நலம் சித்தா","kind":"வரவு","name":"மருந்து விற்பனை – நோயாளிகள்","en":"Medicine sales – patients"},{"div":"நலம் சித்தா","kind":"வரவு","name":"மருந்து விற்பனை – கால்நடை","en":"Medicine sales – cattle"},{"div":"நலம் சித்தா","kind":"வரவு","name":"மற்றவை","en":"Others"},{"div":"சொந்தம்","kind":"செலவு","name":"ஹோட்டல்","en":"Hotel"},{"div":"சொந்தம்","kind":"செலவு","name":"வீட்டு வாடகை","en":"House rent"},{"div":"சொந்தம்","kind":"செலவு","name":"மின்சாரம்","en":"Electricity"},{"div":"சொந்தம்","kind":"செலவு","name":"மளிகை","en":"Groceries"},{"div":"சொந்தம்","kind":"செலவு","name":"துணிமணி","en":"Clothing"},{"div":"சொந்தம்","kind":"செலவு","name":"பராமரிப்பு","en":"Maintenance"},{"div":"சொந்தம்","kind":"செலவு","name":"வீட்டுத் தேவைகள்","en":"Household needs"},{"div":"சொந்தம்","kind":"செலவு","name":"அன்பளிப்பு / விசேஷம்","en":"Gifts / functions"},{"div":"சொந்தம்","kind":"செலவு","name":"வங்கிக் கட்டணம்","en":"Bank charges"},{"div":"சொந்தம்","kind":"செலவு","name":"முதலீட்டுக் கட்டணம் (Demat)","en":"Investment charges (Demat)"},{"div":"சொந்தம்","kind":"செலவு","name":"மற்றவை","en":"Others"},{"div":"சொந்தம்","kind":"வரவு","name":"அன்பளிப்பு","en":"Gift received"},{"div":"சொந்தம்","kind":"வரவு","name":"வட்டி வரவு","en":"Interest received"},{"div":"சொந்தம்","kind":"வரவு","name":"மற்றவை","en":"Others"},{"div":"சொந்தம்","kind":"சேமிப்பு","name":"Atal Pension","en":"Atal Pension"},{"div":"சொந்தம்","kind":"சேமிப்பு","name":"பங்குகள் / Demat","en":"Shares / Demat"},{"div":"சொந்தம்","kind":"சேமிப்பு","name":"சேமிப்புக் கணக்கு / RD","en":"Savings / RD"},{"div":"சொந்தம்","kind":"சேமிப்பு","name":"மற்றவை","en":"Others"}],"pockets":["ரொக்கம்","HDFC","SBI","IOB","PNB","TGB","Credit card"],"pocketGroups":{"ரொக்கம்":"cash","HDFC":"bank","SBI":"bank","IOB":"bank","PNB":"bank","TGB":"bank","Credit card":"card"},"persons":[],"pinfo":[],"loans":[],"doneToday":false,"lang":"ta","dflt":true};
+function defInit(){var d=JSON.parse(JSON.stringify(DEFINIT));d.today=tdy();d.ver=APP_VER;d.lang=LANG;return d;}
+function firstGo(){var m=tdy().slice(0,7);$('sumMonth').value=m;$('recMonth').value=m;if(START==='add')renderGrid();else go(START);}
+// Net இல்லாவிட்டாலும் உடனே திறக்கும்: சேமித்த data இருந்தால் அது, இல்லையென்றால் பொதுவான அமைப்பு; Net வந்ததும் தானாகப் புதுப்பிக்கும்
 function startApp(){if(started)return;started=true;renderChrome();
- call('getInit',[],function(r){var first=!S.init;S.init=r;if(!lsGet('lang')&&r.lang){LANG=r.lang;}renderChrome();fillPlist();
-  if(first){var m=tdy().slice(0,7);$('sumMonth').value=m;$('recMonth').value=m;if(START==='add')renderGrid();else go(START);}flush();});}
+ try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});}catch(e){}
+ if(!lsGet('c:getInit:[]')){S.init=defInit();renderChrome();fillPlist();firstGo();}
+ var got=function(r){var first=!S.init,wasDef=S.init&&S.init.dflt;S.init=r;if(!lsGet('lang')&&r.lang){LANG=r.lang;}renderChrome();fillPlist();
+  if(first)firstGo();else if(wasDef&&!S.type&&!sheetOpen())go(S.page);flush();};
+ var tryInit=function(){call('getInit',[],got,function(){if(!S.init){S.init=defInit();renderChrome();fillPlist();firstGo();}setTimeout(tryInit,30000);});};
+ tryInit();}
 /* பூட்டு */
 function b64e(buf){var s='',a=new Uint8Array(buf);for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s);}
 function b64d(str){var s=atob(str),a=new Uint8Array(s.length);for(var i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a;}
