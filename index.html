@@ -184,6 +184,40 @@ details.card>summary::-webkit-details-marker{display:none}
 .shead b{font-size:17px}
 .x{border:0;background:#fff;border-radius:10px;width:36px;height:36px;font-size:18px}
 #toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:#1d2a1f;color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;opacity:0;transition:.25s;z-index:10;pointer-events:none;max-width:90%;text-align:center}
+.msub{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.msub button{border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 4px;font:inherit;font-weight:700;font-size:14px;color:var(--tx)}
+.msub button.on{background:var(--g);border-color:var(--g);color:#fff}
+.mseg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.mseg button{border:1px solid var(--bd);background:#f7f9f6;border-radius:12px;padding:11px 6px;font:inherit;font-size:14px;font-weight:700;color:var(--tx)}
+.mseg button.on{background:var(--g);border-color:var(--g);color:#fff}.mseg button.on.bad{background:var(--out);border-color:var(--out)}
+.mcov{background:#EAF4F7;border:2px solid #1F6F7A;border-radius:18px;padding:12px 10px 10px;margin:2px 0 12px}
+.mcov .ttl{text-align:center;font-size:14px;font-weight:700;color:#1F6F7A;margin-bottom:8px}
+.mcov .cv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.mcov .cv div{background:#fff;border-radius:12px;padding:8px 4px}
+.mcov .cv b{display:block;font-size:30px;line-height:1.15;color:#12454C;font-variant-numeric:tabular-nums}
+.mcov .cv span{font-size:13px;color:var(--mut)}
+.mcov .tot{text-align:center;font-size:15px;margin-top:8px;color:#1F6F7A}
+.mveh{border-radius:14px;padding:11px;text-align:center;font-size:15.5px;font-weight:700;margin-bottom:12px;line-height:1.45}
+.mveh.y{background:#E7F4E8;color:#1B5E20;border:2px solid #2E7D32}.mveh.n{background:#FDECEA;color:#B71C1C;border:2px solid #C62828}
+.mdl{font-size:15px;line-height:1.7;background:#FBF8F2;border-radius:12px;padding:9px 12px}
+.mdl .hd{font-size:14px;color:#6D4C2F;font-weight:800;margin-top:10px;border-bottom:1.5px solid #E8D6C4;padding-bottom:2px}
+.mdl .hd:first-child{margin-top:0}
+.mdl .ln{padding:2px 0}.mdl .ln.red{color:var(--out);font-weight:700}.mdl .ln.dn{color:#1F5C99}.mdl .ln.up{color:var(--in)}
+.rtn{font-weight:700}
+.msch{margin-top:12px;border-top:1px solid var(--bd);padding-top:6px}.msch>summary{cursor:pointer;list-style:none;margin:0}.msch>summary::-webkit-details-marker{display:none}
+.mstop{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--bd);font-size:14px}
+.mstop:first-of-type{border-top:0}
+.mstop .q{font-weight:700;white-space:nowrap;text-align:right}.mstop .s{font-size:12px;color:var(--mut);font-weight:400}
+.mstop.z{opacity:.5}
+.mbig{font-size:24px;font-weight:700}
+.mnum{display:flex;gap:8px;align-items:center}.mnum input{width:120px;text-align:right;font-weight:700;font-size:18px;padding:8px 10px}
+.mpay{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 2px;border-top:1px solid var(--bd);cursor:pointer}
+.mpay:first-child{border-top:0}
+.mpay .s{font-size:12px;color:var(--mut)}
+.rts{display:flex;flex-wrap:wrap;gap:6px}
+.rts .chip{padding:7px 10px;font-size:13px}
+.mwa{white-space:pre-wrap;font-size:13px;background:#F7F9F6;border-radius:10px;padding:8px 10px;margin-top:8px;color:#33413A}
+a.tb{text-decoration:none;display:inline-block;text-align:center}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.bad{background:var(--out)}
 </style></head>
@@ -193,11 +227,12 @@ details.card>summary::-webkit-details-marker{display:none}
 <div id="lock" class="lock hidden"></div>
 <main>
   <section id="pg-task" class="pg"><div id="taskBox"><div class="empty">…</div></div></section>
+  <section id="pg-milk" class="pg"><div id="mTabs"></div><div id="mBox"><div class="empty">…</div></div></section>
   <section id="pg-add" class="pg on"><div id="addTop"></div><div id="addBox"><div class="empty">…</div></div><div id="recentBox"></div></section>
-  <section id="pg-sum" class="pg"><div class="tools"><input id="sumMonth" class="inp" type="month"></div><div id="sumBox"></div></section>
+  <section id="pg-sum" class="pg"><div class="tools"><input id="sumMonth" class="inp" type="month"><button class="addbtn" data-go="rec">📜 <span id="recBtnL"></span></button></div><div id="sumBox"></div></section>
   <section id="pg-per" class="pg"><div id="perTop"></div><div class="tools"><input id="perQ" class="inp"><label style="font-size:13px;white-space:nowrap"><input id="perAll" type="checkbox"> <span id="perAllL"></span></label></div><div id="perBox" class="card"></div></section>
   <section id="pg-loan" class="pg"><div class="tools"><div style="flex:1;font-weight:700" id="loanTtl"></div><button class="addbtn" data-act="newloan" id="newLoanBtn"></button></div><div id="loanBox"></div></section>
-  <section id="pg-rec" class="pg"><div class="tools"><input id="recMonth" class="inp" type="month"></div><div id="recBox" class="card"></div></section>
+  <section id="pg-rec" class="pg"><div class="tools"><button class="back" data-go="sum">‹</button><input id="recMonth" class="inp" type="month"></div><div id="recBox" class="card"></div></section>
   <section id="pg-set" class="pg"><div id="setBox"></div></section>
 </main>
 <nav id="nav"></nav>
@@ -205,8 +240,8 @@ details.card>summary::-webkit-details-marker{display:none}
 <datalist id="plist"></datalist>
 <div id="toast"></div>
 <script>
-var APP_VER='v6.2 · 17-10-2026';
-var START=(function(){var p='';try{p=new URLSearchParams(location.search).get('p')||'';}catch(e){}return /^(task|add|sum|per|loan|rec)$/.test(p)?p:'task';})();
+var APP_VER='v6.3 · 19-10-2026';
+var START=(function(){var p='';try{p=new URLSearchParams(location.search).get('p')||'';}catch(e){}return /^(task|milk|add|sum|per|loan|rec)$/.test(p)?p:'task';})();
 /* ---- API இணைப்பு (Apps Script) + cache: கடைசி data உடனே தெரியும், பின்னணியில் புதுப்பிக்கும் ---- */
 var CFG={};try{CFG=JSON.parse(localStorage.getItem('cfg')||'{}')||{};}catch(e){CFG={};}
 if(!CFG.api)CFG.api='https://script.google.com/macros/s/AKfycbxYPZ95siv1prlc1s6fxXQmj5LU4Pp0F29-Kse5MCmJEvpFMMg_T7PyfQRzIflf1xXRPw/exec';
@@ -259,7 +294,7 @@ calT:'Google Calendar நினைவூட்டல்',calSteps:'நினை�
 calTest:'🔔 Calendar சோதனை',calOk:'✓ {0}-க்கு "{1}" calendar-ல் சோதனை நினைவூட்டல் வைக்கப்பட்டது. 2 நிமிடம் காத்திருங்கள்.',
 cardT:'Credit card வரம்பு',cardLim:'பகிர்ந்த மொத்த வரம்பு (₹)',cardAvail:'பயன்படுத்தக்கூடியது',cardUsed:'நிலுவை',
 
-app:'என் பணிகள் & கணக்கு',nav_add:'பதிவு',nav_sum:'சுருக்கம்',nav_per:'நபர்கள்',nav_loan:'கடன்கள்',nav_rec:'பதிவுகள்',
+app:'என் பணிகள் & கணக்கு',nav_add:'பதிவு',nav_sum:'சுருக்கம்',nav_per:'நபர்கள்',nav_loan:'கடன்கள்',nav_rec:'பதிவுகள்',nav_milk:'பால்',
 g_daily:'அன்றாடம்',g_people:'நண்பர்கள் / நபர்கள்',g_loan:'கடன்',g_other:'மற்றவை',
 ty_EXP:'செலவு',ty_INC:'வரவு',ty_BORROW:'கைமாற்று வாங்கினேன்',ty_REPAY:'திருப்பிக் கொடுத்தேன்',ty_LEND:'கைமாற்று கொடுத்தேன்',ty_RECOVER:'திரும்பப் பெற்றேன்',ty_PASS_IN:'பிறர் பணம் வந்தது',ty_PASS_OUT:'பிறர் பணம் அனுப்பினேன்',ty_LOAN_IN:'கடன் பெற்றேன்',ty_EMI:'தவணை / வட்டி கட்டினேன்',ty_XFER:'பணப்பை மாற்றம்',ty_SAVE:'சேமிப்பு / முதலீடு',
 h_BORROW:'நண்பரிடம் தற்காலிகமாக வாங்கியது.',h_REPAY:'நீங்கள் வாங்கியதை நண்பருக்குத் திருப்பிக் கொடுத்தது.',h_LEND:'நண்பருக்குக் கொடுத்தது. உங்கள் பெயரில் கடன் எடுத்து அவருக்குக் கொடுத்தாலும் இதுவே.',h_RECOVER:'நண்பர் உங்களுக்குத் திருப்பித் தந்தது (அவருடைய கடன் தவணைப் பணம் உட்பட).',h_PASS_IN:'வேறொருவருக்கு மாற்றுவதற்காக நண்பர் அனுப்பியது. லாப-நஷ்டத்தில் வராது.',h_PASS_OUT:'நண்பர் சொன்னபடி வேறொருவருக்கு அனுப்பியது. லாப-நஷ்டத்தில் வராது.',h_LOAN_IN:'வங்கி / நகைக் கடன் தொகை கைக்கு வந்தது.',h_EMI:'கடன் தவணை அல்லது நகைக் கடன் வட்டி. வட்டி மட்டும் கட்டினால், "இதில் வட்டி" கட்டத்திலும் அதே தொகையைப் போடவும்.',h_XFER:'ATM-ல் எடுத்தல், Credit card bill கட்டுதல், ஒரு வங்கியிலிருந்து மற்றொன்றுக்கு அனுப்புதல்.',h_SAVE:'Atal Pension, பங்குகள், RD — இவை செலவு அல்ல, உங்கள் பணம் இடம் மாறுகிறது.',
@@ -327,7 +362,7 @@ calT:'Google Calendar reminders',calSteps:'Reminders appear in a separate Google
 calTest:'🔔 Calendar test',calOk:'✓ Test reminder set for {0} in the "{1}" calendar. Wait 2 minutes.',
 cardT:'Credit card limit',cardLim:'Shared total limit (₹)',cardAvail:'Available',cardUsed:'Due',
 
-app:'My Tasks & Accounts',nav_add:'Add',nav_sum:'Summary',nav_per:'People',nav_loan:'Loans',nav_rec:'Records',
+app:'My Tasks & Accounts',nav_add:'Add',nav_sum:'Summary',nav_per:'People',nav_loan:'Loans',nav_rec:'Records',nav_milk:'Milk',
 g_daily:'Daily',g_people:'Friends / people',g_loan:'Loans',g_other:'Others',
 ty_EXP:'Expense',ty_INC:'Income',ty_BORROW:'Borrowed (hand loan)',ty_REPAY:'Paid back',ty_LEND:'Lent (hand loan)',ty_RECOVER:'Got back',ty_PASS_IN:'Others\' money received',ty_PASS_OUT:'Others\' money sent',ty_LOAN_IN:'Loan received',ty_EMI:'EMI / interest paid',ty_XFER:'Transfer',ty_SAVE:'Savings / investment',
 h_BORROW:'Money borrowed from a friend for a short time.',h_REPAY:'Paying back money you borrowed.',h_LEND:'Money given to a friend — also when you took a loan in your name for them.',h_RECOVER:'Money a friend paid back to you (including their loan EMI money).',h_PASS_IN:'Money a friend sent you to forward to someone. Not counted in profit/loss.',h_PASS_OUT:'Money forwarded to someone as a friend asked. Not counted in profit/loss.',h_LOAN_IN:'Bank / gold loan amount received.',h_EMI:'Loan EMI or gold-loan interest. If you paid only interest, put the same amount in "interest".',h_XFER:'ATM withdrawal, credit card bill payment, moving money between banks.',h_SAVE:'Atal Pension, shares, RD — not an expense, your money only moves.',
@@ -419,10 +454,10 @@ function renderChrome(){
  var p=tdy().split('-'),d=new Date(+p[0],+p[1]-1,+p[2]),ds;
  try{ds=d.toLocaleDateString(LANG==='en'?'en-IN':'ta-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}catch(e){ds=dmy(tdy());}
  $('hDate').textContent=ds;$('langBtn').textContent=LANG==='en'?'த':'EN';document.title=t('app');
- var navs=[['task','✅'],['add','➕'],['sum','📊'],['per','👥'],['loan','🏦'],['rec','📜']],h='';
+ var navs=[['task','✅'],['milk','🥛'],['add','➕'],['sum','📊'],['per','👥'],['loan','🏦']],h='';
  navs.forEach(function(n){h+='<button data-go="'+n[0]+'" class="'+(S.page===n[0]?'on':'')+'"><span>'+n[1]+'</span>'+t('nav_'+n[0])+'</button>';});
  $('nav').innerHTML=h;$('perQ').placeholder=t('search');$('perAllL').textContent=t('everyone');
- $('loanTtl').textContent=t('loansTitle');$('newLoanBtn').textContent=t('newOne');
+ $('loanTtl').textContent=t('loansTitle');$('newLoanBtn').textContent=t('newOne');$('recBtnL').textContent=t('nav_rec');
  qBadge();}
 function toggleLang(){if(S.type)grab();LANG=LANG==='en'?'ta':'en';lsSet('lang',LANG);
  google.script.run.withFailureHandler(function(){}).setLang(LANG);
@@ -432,7 +467,7 @@ function toggleLang(){if(S.type)grab();LANG=LANG==='en'?'ta':'en';lsSet('lang',L
 function go(p){S.page=p;var ps=document.querySelectorAll('.pg');for(var i=0;i<ps.length;i++)ps[i].classList.remove('on');$('pg-'+p).classList.add('on');
  var ns=document.querySelectorAll('nav button');for(var j=0;j<ns.length;j++)ns[j].classList.toggle('on',ns[j].getAttribute('data-go')===p);window.scrollTo(0,0);
  if(!S.init)return;
- if(p==='task')loadTasks();if(p==='sum')loadSum();if(p==='per')loadPer();if(p==='loan')loadLoans();if(p==='rec')loadRec();if(p==='set')loadSet();if(p==='add'&&!S.type)renderGrid();}
+ if(p==='task')loadTasks();if(p==='milk')mLoad();if(p==='sum')loadSum();if(p==='per')loadPer();if(p==='loan')loadLoans();if(p==='rec')loadRec();if(p==='set')loadSet();if(p==='add'&&!S.type)renderGrid();}
 
 /* ---- Offline வரிசை ---- */
 function qGet(){try{return JSON.parse(lsGet('queue')||'[]');}catch(e){return [];}}
@@ -654,8 +689,9 @@ function delRec(id){if(!confirm(t('delQ')))return;call('deleteEntry',[id],functi
 /* ---- அமைப்பு ---- */
 function loadSet(){call('getPockets',[],function(list){var h='<div class="card"><div class="ch">'+t('setPk')+'</div><div class="hint">'+t('setPkHint')+'</div>';
  function gsel(cls,name,g){return '<select class="inp '+cls+'" data-name="'+esc(name)+'" style="width:118px;padding:10px 6px">'+GRPS.map(function(x){return '<option value="'+x+'"'+(x===g?' selected':'')+'>'+GICON[x]+' '+t('g_'+x)+'</option>';}).join('')+'</select>';}
- list.forEach(function(p){h+='<div class="row" style="gap:6px"><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis">'+esc(tv(p.name))+'</span>'+gsel('pkg',p.name,p.group)+'<input class="inp pk" data-name="'+esc(p.name)+'" type="number" inputmode="decimal" style="width:104px;text-align:right" value="'+p.opening+'"></div>';});
+ list.forEach(function(p){h+='<div class="row" style="gap:6px"><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis">'+esc(tv(p.name))+'</span>'+gsel('pkg',p.name,p.group)+'<input class="inp pk" data-name="'+esc(p.name)+'" type="number" inputmode="decimal" style="width:104px;text-align:right" value="'+p.opening+'"><button class="tb mini" data-act="pkren" data-name="'+esc(p.name)+'" aria-label="rename">✏️</button></div>';});
  h+='<div class="row" style="gap:6px;margin-top:8px"><input id="newPk" class="inp" style="flex:1" placeholder="'+t('newPk')+'">'+gsel('','',"cash").replace('<select class="inp ','<select id="newPkG" class="inp ')+'</div><button class="save" data-act="savepk">'+t('lSave')+'</button></div>';
+ h+=mLinkCard();
  h+='<div class="card"><div class="ch">📅 '+t('calT')+'</div><div class="small">'+t('calSteps')+'</div><button class="save" data-act="testcal">'+t('calTest')+'</button></div>';
  h+='<div class="card"><div class="ch">💳 '+t('cardT')+'</div>'+lab(t('cardLim'))+'<input id="cardLim" class="inp" type="number" inputmode="decimal"><div class="small" style="margin-top:6px">'+t('cardHint')+'</div><button class="save sec" data-act="savecard">'+t('lSave')+'</button></div>';
  h+='<div class="card"><div class="ch">🔒 '+t('lkT')+'</div><div class="small">'+t('lkHint')+'</div>'
@@ -776,7 +812,7 @@ function tN(x){return LANG==='en'&&x.en?x.en:x.name;}
 function dur(m){m=Math.round(Number(m)||0);var h=Math.floor(m/60),mm=m%60;return LANG==='en'?(h?h+'h ':'')+mm+'m':(h?h+' மணி ':'')+mm+' நிமி';}
 function stBadge(st){var c={pending:'p',started:'o',paused:'o',done:'',skipped:'n',missed:'r'}[st];return '<span class="badge '+c+'">'+t('st_'+st)+'</span>';}
 function sheetOpen(){return !$('sheet').classList.contains('hidden');}
-function qBadge(){var n=qGet().length,e=$('qb');if(e)e.textContent=n?'⏳ '+n:'';}
+function qBadge(){var n=qGet().length+(typeof mqGet==='function'?mqGet().length:0),e=$('qb');if(e)e.textContent=n?'⏳ '+n:'';}
 function qPush(fn,args){var q=qGet();q.push({fn:fn,args:args,cid:'Q'+Date.now()+Math.random().toString(36).slice(2,6)});qSet(q);qBadge();setTimeout(flush,0);}
 
 /* போனிலேயே உடனே மாற்றம் (offline) — Sheet-க்குப் பின்னணியில் */
@@ -1174,7 +1210,7 @@ function showPin(msg){var lk=$('lock'),entry='';lk.classList.remove('hidden');
 window.onAuthFail=function(){CFG.key='';saveCfg();showSetup(L('ரகசியக் குறி மாற்றப்பட்டுள்ளது — புதிய குறியை உள்ளிடவும்','The key was changed — enter the new key'));};
 window.freshInit=function(r){S.init=r;fillPlist();renderChrome();};
 var started=false;
-var DEFINIT={"divs":["அமிர்தம் டெய்ரி","நலம் சித்தா","சொந்தம்"],"divEn":{"அமிர்தம் டெய்ரி":"Amirtham Dairy","நலம் சித்தா":"Nalam Siddha","சொந்தம்":"Personal"},"cats":[{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"தீவனம்","en":"Fodder"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"சம்பளம்","en":"Salary"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"மின்சாரம்","en":"Electricity"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"மருந்து","en":"Medicine"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"மருத்துவர் கட்டணம்","en":"Doctor fees"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"கருவூட்டல்","en":"Insemination"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"எரிபொருள்","en":"Fuel"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"பராமரிப்பு","en":"Maintenance"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"வங்கிக் கட்டணம்","en":"Bank charges"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"மற்றவை","en":"Others"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"பால்","en":"Milk"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"இயற்கை உரம்","en":"Organic manure"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"சாக்குப் பை","en":"Gunny bags"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"கன்று விற்பனை","en":"Calf sale"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"பசு விற்பனை","en":"Cow sale"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"மற்றவை","en":"Others"},{"div":"நலம் சித்தா","kind":"செலவு","name":"மூலப்பொருள்","en":"Raw materials"},{"div":"நலம் சித்தா","kind":"செலவு","name":"விறகு","en":"Firewood"},{"div":"நலம் சித்தா","kind":"செலவு","name":"மருந்து தயாரிப்புக் கூலி","en":"Medicine prep labour"},{"div":"நலம் சித்தா","kind":"செலவு","name":"அரைத்தல் / சாறு எடுத்தல்","en":"Grinding / extraction"},{"div":"நலம் சித்தா","kind":"செலவு","name":"மற்றவை","en":"Others"},{"div":"நலம் சித்தா","kind":"வரவு","name":"மருந்து விற்பனை – நோயாளிகள்","en":"Medicine sales – patients"},{"div":"நலம் சித்தா","kind":"வரவு","name":"மருந்து விற்பனை – கால்நடை","en":"Medicine sales – cattle"},{"div":"நலம் சித்தா","kind":"வரவு","name":"மற்றவை","en":"Others"},{"div":"சொந்தம்","kind":"செலவு","name":"ஹோட்டல்","en":"Hotel"},{"div":"சொந்தம்","kind":"செலவு","name":"வீட்டு வாடகை","en":"House rent"},{"div":"சொந்தம்","kind":"செலவு","name":"மின்சாரம்","en":"Electricity"},{"div":"சொந்தம்","kind":"செலவு","name":"மளிகை","en":"Groceries"},{"div":"சொந்தம்","kind":"செலவு","name":"துணிமணி","en":"Clothing"},{"div":"சொந்தம்","kind":"செலவு","name":"பராமரிப்பு","en":"Maintenance"},{"div":"சொந்தம்","kind":"செலவு","name":"வீட்டுத் தேவைகள்","en":"Household needs"},{"div":"சொந்தம்","kind":"செலவு","name":"அன்பளிப்பு / விசேஷம்","en":"Gifts / functions"},{"div":"சொந்தம்","kind":"செலவு","name":"வங்கிக் கட்டணம்","en":"Bank charges"},{"div":"சொந்தம்","kind":"செலவு","name":"முதலீட்டுக் கட்டணம் (Demat)","en":"Investment charges (Demat)"},{"div":"சொந்தம்","kind":"செலவு","name":"மற்றவை","en":"Others"},{"div":"சொந்தம்","kind":"வரவு","name":"அன்பளிப்பு","en":"Gift received"},{"div":"சொந்தம்","kind":"வரவு","name":"வட்டி வரவு","en":"Interest received"},{"div":"சொந்தம்","kind":"வரவு","name":"மற்றவை","en":"Others"},{"div":"சொந்தம்","kind":"சேமிப்பு","name":"Atal Pension","en":"Atal Pension"},{"div":"சொந்தம்","kind":"சேமிப்பு","name":"பங்குகள் / Demat","en":"Shares / Demat"},{"div":"சொந்தம்","kind":"சேமிப்பு","name":"சேமிப்புக் கணக்கு / RD","en":"Savings / RD"},{"div":"சொந்தம்","kind":"சேமிப்பு","name":"மற்றவை","en":"Others"}],"pockets":["ரொக்கம்","HDFC","SBI","IOB","PNB","TGB","Credit card"],"pocketGroups":{"ரொக்கம்":"cash","HDFC":"bank","SBI":"bank","IOB":"bank","PNB":"bank","TGB":"bank","Credit card":"card"},"persons":[],"pinfo":[],"loans":[],"doneToday":false,"lang":"ta","dflt":true};
+var DEFINIT={"divs":["அமிர்தம் டெய்ரி","நலம் சித்தா","சொந்தம்"],"divEn":{"அமிர்தம் டெய்ரி":"Amirtham Dairy","நலம் சித்தா":"Nalam Siddha","சொந்தம்":"Personal"},"cats":[{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"தீவனம்","en":"Fodder"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"சம்பளம்","en":"Salary"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"மின்சாரம்","en":"Electricity"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"மருந்து","en":"Medicine"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"மருத்துவர் கட்டணம்","en":"Doctor fees"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"கருவூட்டல்","en":"Insemination"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"எரிபொருள்","en":"Fuel"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"பராமரிப்பு","en":"Maintenance"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"வங்கிக் கட்டணம்","en":"Bank charges"},{"div":"அமிர்தம் டெய்ரி","kind":"செலவு","name":"மற்றவை","en":"Others"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"பால்","en":"Milk"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"இயற்கை உரம்","en":"Organic manure"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"சாக்குப் பை","en":"Gunny bags"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"கன்று விற்பனை","en":"Calf sale"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"பசு விற்பனை","en":"Cow sale"},{"div":"அமிர்தம் டெய்ரி","kind":"வரவு","name":"மற்றவை","en":"Others"},{"div":"நலம் சித்தா","kind":"செலவு","name":"மூலப்பொருள்","en":"Raw materials"},{"div":"நலம் சித்தா","kind":"செலவு","name":"விறகு","en":"Firewood"},{"div":"நலம் சித்தா","kind":"செலவு","name":"மருந்து தயாரிப்புக் கூலி","en":"Medicine prep labour"},{"div":"நலம் சித்தா","kind":"செலவு","name":"அரைத்தல் / சாறு எடுத்தல்","en":"Grinding / extraction"},{"div":"நலம் சித்தா","kind":"செலவு","name":"மற்றவை","en":"Others"},{"div":"நலம் சித்தா","kind":"வரவு","name":"மருந்து விற்பனை – நோயாளிகள்","en":"Medicine sales – patients"},{"div":"நலம் சித்தா","kind":"வரவு","name":"மருந்து விற்பனை – கால்நடை","en":"Medicine sales – cattle"},{"div":"நலம் சித்தா","kind":"வரவு","name":"மற்றவை","en":"Others"},{"div":"சொந்தம்","kind":"செலவு","name":"ஹோட்டல்","en":"Hotel"},{"div":"சொந்தம்","kind":"செலவு","name":"வீட்டு வாடகை","en":"House rent"},{"div":"சொந்தம்","kind":"செலவு","name":"மின்சாரம்","en":"Electricity"},{"div":"சொந்தம்","kind":"செலவு","name":"மளிகை","en":"Groceries"},{"div":"சொந்தம்","kind":"செலவு","name":"துணிமணி","en":"Clothing"},{"div":"சொந்தம்","kind":"செலவு","name":"பராமரிப்பு","en":"Maintenance"},{"div":"சொந்தம்","kind":"செலவு","name":"வீட்டுத் தேவைகள்","en":"Household needs"},{"div":"சொந்தம்","kind":"செலவு","name":"அன்பளிப்பு / விசேஷம்","en":"Gifts / functions"},{"div":"சொந்தம்","kind":"செலவு","name":"வங்கிக் கட்டணம்","en":"Bank charges"},{"div":"சொந்தம்","kind":"செலவு","name":"முதலீட்டுக் கட்டணம் (Demat)","en":"Investment charges (Demat)"},{"div":"சொந்தம்","kind":"செலவு","name":"மற்றவை","en":"Others"},{"div":"சொந்தம்","kind":"வரவு","name":"அன்பளிப்பு","en":"Gift received"},{"div":"சொந்தம்","kind":"வரவு","name":"வட்டி வரவு","en":"Interest received"},{"div":"சொந்தம்","kind":"வரவு","name":"மற்றவை","en":"Others"},{"div":"சொந்தம்","kind":"சேமிப்பு","name":"Atal Pension","en":"Atal Pension"},{"div":"சொந்தம்","kind":"சேமிப்பு","name":"பங்குகள் / Demat","en":"Shares / Demat"},{"div":"சொந்தம்","kind":"சேமிப்பு","name":"சேமிப்புக் கணக்கு / RD","en":"Savings / RD"},{"div":"சொந்தம்","kind":"சேமிப்பு","name":"மற்றவை","en":"Others"}],"pockets":["அமிர்தம் ரொக்கம்","HDFC","SBI","IOB","PNB","TGB","Credit card"],"pocketGroups":{"அமிர்தம் ரொக்கம்":"cash","HDFC":"bank","SBI":"bank","IOB":"bank","PNB":"bank","TGB":"bank","Credit card":"card"},"persons":[],"pinfo":[],"loans":[],"doneToday":false,"lang":"ta","dflt":true};
 function defInit(){var d=JSON.parse(JSON.stringify(DEFINIT));d.today=tdy();d.ver=APP_VER;d.lang=LANG;return d;}
 function firstGo(){var m=tdy().slice(0,7);$('sumMonth').value=m;$('recMonth').value=m;if(START==='add')renderGrid();else go(START);}
 // Net இல்லாவிட்டாலும் உடனே திறக்கும்: சேமித்த data இருந்தால் அது, இல்லையென்றால் பொதுவான அமைப்பு; Net வந்ததும் தானாகப் புதுப்பிக்கும்
@@ -1184,7 +1220,8 @@ function startApp(){if(started)return;started=true;renderChrome();
  var got=function(r){var first=!S.init,wasDef=S.init&&S.init.dflt;S.init=r;if(!lsGet('lang')&&r.lang){LANG=r.lang;}renderChrome();fillPlist();
   if(first)firstGo();else if(wasDef&&!S.type&&!sheetOpen())go(S.page);flush();};
  var tryInit=function(){call('getInit',[],got,function(){if(!S.init){S.init=defInit();renderChrome();fillPlist();firstGo();}setTimeout(tryInit,30000);});};
- tryInit();}
+ tryInit();
+ if(MS.linkPending)setTimeout(mAutoLink,1500);}
 /* பூட்டு */
 function b64e(buf){var s='',a=new Uint8Array(buf);for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s);}
 function b64d(str){var s=atob(str),a=new Uint8Array(s.length);for(var i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a;}
@@ -1209,13 +1246,315 @@ function pinChangeGo(){var o=$('pcOld').value,n1=$('pcNew').value,n2=$('pcNew2')
  if(!/^\d{4}$/.test(n1)||n1!==n2){toast('⚠ '+L('PIN 4 இலக்கம், இரண்டும் ஒன்றாக இருக்க வேண்டும்','PIN must be 4 digits and match'),true);return;}
  phash(o).then(function(h){if(h!==CFG.pin){toast('⚠ '+L('பழைய PIN தவறு','Old PIN is wrong'),true);return null;}return phash(n1);}).then(function(h2){if(!h2)return;CFG.pin=h2;saveCfg();closeSheet();toast(t('savedOk'));});}
 setInterval(nightCheck,30000);
+/* ======== 🥛 பால் (v6.3) — பால் கணக்கு Sheet-உடன் நேரடி இணைப்பு (தரவு அந்த Sheet-லேயே) ======== */
+var MS={tab:'today',f:null,today:null,pay:null,payTab:'',payQ:'',payFil:'due',paySh:'',leave:null,chg:null,lf:{},pf:{},cf:{},linkPending:false,authBad:false};
+var MQ_OK={mHave:1,mMilk:1,mVeh:1,mPayAdd:1,mPayEdit:1,mPayDel:1,mLeaveSave:1,mLeaveDel:1,mCancel:1};
+var MWD=['ஞாயிறு','திங்கள்','செவ்வாய்','புதன்','வியாழன்','வெள்ளி','சனி'],MWE=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var MMON=['ஜனவரி','பிப்ரவரி','மார்ச்','ஏப்ரல்','மே','ஜூன்','ஜூலை','ஆகஸ்ட்','செப்டம்பர்','அக்டோபர்','நவம்பர்','டிசம்பர்'],MMOE=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function mOn(){return !!(CFG.mApi&&CFG.mKey);}
+function mF(){if(!MS.f)MS.f=new Date().getHours()<12?'FN':'AN';return MS.f;}
+function shN(F){return F==='AN'?L('மாலை','Evening'):L('காலை','Morning');}
+function mMonL(tb){var p=String(tb||'').split('-');return (LANG==='en'?MMOE:MMON)[(+p[1]||1)-1]+' '+p[0];}
+function mHm(ms){var d=new Date(ms||Date.now());return pad(d.getHours())+':'+pad(d.getMinutes());}
+function mCid(){return 'M'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+/* ---- இணைப்பு: பால் Sheet-ன் Apps Script (/exec) ---- */
+function mCall(fn,args,cid){var ac=null,tm=0;try{ac=new AbortController();tm=setTimeout(function(){try{ac.abort();}catch(e){}},30000);}catch(e){ac=null;}
+ return fetch(CFG.mApi,{method:'POST',body:JSON.stringify({key:CFG.mKey||'',fn:fn,args:args||[],cid:cid||''}),redirect:'follow',signal:ac?ac.signal:undefined})
+ .then(function(r){if(!r.ok)throw new Error('NetworkError HTTP '+r.status);return r.text();})
+ .then(function(txt){clearTimeout(tm);var j;try{j=JSON.parse(txt);}catch(e){throw new Error('NetworkError bad response');}
+   if(!j||!j.ok)throw new Error((j&&j.err)||'?');return j.r;},
+  function(e){clearTimeout(tm);var m=String((e&&e.message)||e);throw new Error(/^NetworkError/.test(m)?m:'NetworkError '+(e&&e.name==='AbortError'?'timeout':m));});}
+function mCk(fn,args){return 'm:'+fn+':'+JSON.stringify(args||[]);}
+function mCache(fn,args){var c=lsGet(mCk(fn,args));if(!c)return null;try{return JSON.parse(c);}catch(e){return null;}}
+function mGet(fn,args,ok,fail){var c=mCache(fn,args);if(c)ok(c,true);if(!mOn())return;busy(true);
+ mCall(fn,args).then(function(r){busy(false);lsSet(mCk(fn,args),JSON.stringify(r));ok(r,false);},
+  function(e){busy(false);if(emsg(e)==='AUTH'){mAuthFail();return;}if(fail)fail(e,!!c);else if(!c&&!isNet(e))toast('⚠ '+emsg(e),true);});}
+function mAuthFail(){MS.authBad=true;toast('⚠ '+L('பால் இணைப்புக் குறி மாறியுள்ளது — ⚙-ல் மீண்டும் இணைக்கவும்','The milk link key has changed — link again in ⚙'),true);if(S.page==='milk')mRender();}
+/* ---- Offline வரிசை (பால்) ---- */
+function mqGet(){try{return JSON.parse(lsGet('mq')||'[]');}catch(e){return [];}}
+function mqSet(q){lsSet('mq',JSON.stringify(q));}
+function mqfGet(){try{return JSON.parse(lsGet('mqfail')||'[]');}catch(e){return [];}}
+function mqAdd(fn,args,cid){var q=mqGet();if(!q.some(function(x){return x.cid===cid;}))q.push({fn:fn,args:args,cid:cid});mqSet(q);qBadge();}
+var mFlushing=false;
+function mFlush(){if(mFlushing||!mOn())return;var q=mqGet();if(!q.length){qBadge();return;}mFlushing=true;var it=q[0];
+ var drop=function(){var q2=mqGet().filter(function(x){return x.cid!==it.cid;});mqSet(q2);mFlushing=false;qBadge();return q2;};
+ mCall(it.fn,it.args,it.cid).then(function(r){var q2=drop();mApply(it.fn,it.args,r);if(q2.length)mFlush();else mDone(true);},
+  function(e){var m=emsg(e);if(isNet(e)||m==='AUTH'||/BUSY/.test(m)||retryErr(m)){mFlushing=false;qBadge();if(m==='AUTH')mAuthFail();return;}
+   var q2=drop(),f=mqfGet();it.err=m.slice(0,200);f.push(it);lsSet('mqfail',JSON.stringify(f));toast('⚠ '+m,true);if(q2.length)setTimeout(mFlush,200);else mDone(true);});}
+function mDone(reload){if(S.page!=='milk'||sheetOpen())return;if(reload)mLoad();else mRender();}
+function mSetToday(d){if(!d||!d.date)return;MS.today=d;lsSet(mCk('mToday',[]),JSON.stringify(d));}
+function mApply(fn,args,r){if(!r)return;
+ if(r.dup){if(r.today)mSetToday(r.today);return;}
+ if(fn==='mCancel'){if(r.today)mSetToday(r.today);return;}
+ if(/^mPay/.test(fn)&&r.custs){MS.pay=r;MS.payTab=r.tab;lsSet(mCk('mPayList',[r.tab]),JSON.stringify(r));return;}
+ if(/^mLeave/.test(fn)&&r.rows){MS.leave=r;lsSet(mCk('mLeaveList',[]),JSON.stringify(r));return;}
+ if(r.FN!==undefined&&r.date)mSetToday(r);}
+// முதலில் நேரடியாக; Net இல்லையென்றால் போனில் வரிசையில் (அதே குறியுடன் — இரண்டு முறை பதியாது)
+function mDo(fn,args,done,local){
+ if(!mOn()){toast('⚠ '+L('முதலில் பால் கணக்கை இணைக்கவும் (⚙)','Link the milk account first (⚙)'),true);return;}
+ var cid=mCid();
+ var queue=function(){if(!MQ_OK[fn]){toast('⚠ '+t('needNet'),true);return;}mqAdd(fn,args,cid);if(local)local();toast(L('📴 போனில் சேமிக்கப்பட்டது — Net வந்ததும் Sheet-க்குப் போகும்','📴 Saved on the phone — goes to the Sheet when online'));if(done)done(null);};
+ if(!navigator.onLine){queue();return;}
+ busy(true);
+ mCall(fn,args,cid).then(function(r){busy(false);mApply(fn,args,r);if(done)done(r);},
+  function(e){busy(false);var m=emsg(e);if(m==='AUTH'){mAuthFail();return;}
+   if(isNet(e)||/BUSY/.test(m)||retryErr(m)){queue();return;}
+   toast('⚠ '+m,true);});}
+/* ---- பக்கம் ---- */
+function mLoad(){if(!mOn()){mRender();return;}mRender();
+ var re=function(w){return function(r){if(w==='today')MS.today=r;else if(w==='pay'){MS.pay=r;MS.payTab=r.tab;}else MS.leave=r;if(S.page==='milk'&&MS.tab===w&&!sheetOpen())mRender();};};
+ var fl=function(e,had){if(!had&&!isNet(e))toast('⚠ '+emsg(e),true);if(!had&&S.page==='milk')mRender();};
+ if(MS.tab==='today')mGet('mToday',[],re('today'),fl);
+ else if(MS.tab==='pay')mGet('mPayList',[MS.payTab||''],re('pay'),fl);
+ else mGet('mLeaveList',[],re('leave'),fl);
+ mFlush();}
+function mRender(){var b=$('mBox');if(!b)return;
+ var tabs=[['today','📋 '+L('இன்று','Today')],['pay','💰 '+L('வசூல்','Collections')],['leave','🗓 '+L('விடுப்பு','Leave')]];
+ $('mTabs').innerHTML='<div class="msub">'+tabs.map(function(x){return '<button class="'+(MS.tab===x[0]?'on':'')+'" data-act="mtab" data-t="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';
+ if(!mOn()||MS.authBad){b.innerHTML='<div class="card"><div class="ch">🥛 '+L('பால் கணக்கை இணைக்கவும்','Link the milk account')+'</div><div class="small">'+L('லேப்டாப்பில் பால் கணக்கு Sheet ▸ மெனு பால் ▸ 📱 My Tasks app — பால் இணைப்பு ▸ வரும் QR-ஐ இந்த போனில் scan செய்யவும். அல்லது ⚙ ▸ 🥛 பால் கணக்கு இணைப்பில் ஒட்டவும்.','On the laptop: milk Sheet ▸ menu பால் ▸ 📱 My Tasks app — பால் இணைப்பு ▸ scan the QR with this phone. Or paste it in ⚙ ▸ 🥛 Milk account link.')+'</div><button class="save" data-go="set">⚙ '+L('அமைப்பு','Settings')+'</button></div>';return;}
+ var qf=mqfGet(),h=qf.length?'<button class="done bad" data-act="mqfshow">⚠ '+qf.length+L(' பால் பதிவுகள் சேமிக்க முடியவில்லை — பாருங்கள்',' milk entries could not be saved — check')+'</button>':'';
+ if(MS.tab==='today')h+=mRenderToday();else if(MS.tab==='pay')h+=mRenderPay();else h+=mRenderLeave();
+ b.innerHTML=h;}
+/* ---- 📋 இன்று ---- */
+function mPkTxt(p){var t2=[],u=L(' லி',' L');[['0.5',2],['0.7',1],['1',0]].forEach(function(x){if(p&&p[x[1]])t2.push(x[0]+u+' × '+p[x[1]]);});return t2.join(' + ');}
+function mQ(q){return (Math.round(q*100)/100)+' '+L('லி','L');}
+function mRtn(s){return '<span class="rtn">'+esc(s.rt)+'</span> - '+esc(s.n);}
+function mTag(s){var m={leave:L('விடுப்பு','leave'),cancel:L('ரத்து','cancelled'),down:'⬇',up:'⬆',alt:L('மாற்றுநாள்','alternate day'),alt0:L('மாற்றுநாள் — இன்று இல்லை','alternate day — not today'),wo:L('வார விடுமுறை','weekly off'),woyes:L('வார விடுமுறை நாள் — இன்று உண்டு','weekly-off day — today yes'),swap:L('இன்று மட்டும்','today only')}[s.k];
+ return m?' <span class="badge'+(s.k==='leave'||s.k==='cancel'?' r':' p')+'">'+esc(m)+'</span>':'';}
+function mSections(x,F){var chg=[],alt=[],swp=[],wo=[];
+ (x.stops||[]).forEach(function(s){var Lb=mRtn(s);
+  if(s.k==='leave')chg.push('<div class="ln red">'+Lb+' — ✗ '+L('விடுப்பு','leave')+'</div>');
+  else if(s.k==='cancel')chg.push('<div class="ln red">'+Lb+' — ✗ '+L('ரத்து','cancelled')+'</div>');
+  else if(s.k==='down')chg.push('<div class="ln dn">'+Lb+' — '+mQ(s.q)+' ⬇ ('+mPkTxt(s.pk)+')</div>');
+  else if(s.k==='up')chg.push('<div class="ln up">'+Lb+' — '+mQ(s.q)+' ⬆ ('+mPkTxt(s.pk)+')</div>');
+  else if(s.k==='woyes')chg.push('<div class="ln up">'+Lb+' — '+mQ(s.q)+' ✓ '+L('வார விடுமுறை நாள், இன்று உண்டு','weekly-off day, but today yes')+'</div>');
+  else if(s.k==='alt')alt.push('<div class="ln">'+Lb+' — '+mQ(s.q)+'</div>');
+  else if(s.k==='swap')swp.push('<div class="ln">'+Lb+' — '+mQ(s.q)+' ('+mPkTxt(s.pk)+')</div>');
+  else if(s.k==='wo')wo.push('<div class="ln">'+Lb+'</div>');});
+ (x.moved||[]).forEach(function(m){wo.push('<div class="ln">'+mRtn(m)+' ('+(m.to==='AN'?L('மாலையில் மட்டும்','evening only'):L('காலையில் மட்டும்','morning only'))+')</div>');});
+ var wd=new Date().getDay(),h='<div class="mdl">';
+ h+='<div class="hd">'+L('இயல்பு நிலையில் மாற்றம்','Changes from default')+'</div>'+(chg.length?chg.join(''):'<div class="ln up">✓ '+L('மாற்றம் இல்லை','No changes')+'</div>');
+ if(swp.length)h+='<div class="hd">'+L('இன்று மட்டும் '+shN(F)+' நேரம்','Only today in the '+shN(F).toLowerCase())+'</div>'+swp.join('');
+ if(alt.length)h+='<div class="hd">'+L('மாற்றுநாள் வாடிக்கையாளர்கள்','Alternate-day customers')+'</div>'+alt.join('');
+ if(wo.length)h+='<div class="hd">'+L(MWD[wd]+' பால் வாங்காதவர்கள்',MWE[wd]+' off')+'</div>'+wo.join('');
+ if(x.extra)h+='<div class="hd">'+L('கவனிக்க','Note')+'</div><div class="ln">'+esc(x.extra).replace(/\n/g,'<br>')+'</div>';
+ return h+'</div>';}
+function mPlan(d,F,x){var pk=x.pk||[0,0,0],tot=pk[0]+pk[1]+pk[2],kg=(pk[0]+pk[1]*0.7+pk[2]*0.5)*(d.kg1||1.035);
+ var h='<div class="card"><div class="ch">'+L('விநியோகத் திட்டம் — ','Delivery plan — ')+shN(F)+'</div>';
+ h+='<div class="mcov"><div class="ttl">'+L('உறை எண்ணிக்கை','Cover count')+'</div><div class="cv"><div><b>'+pk[0]+'</b><span>1 '+L('லி','L')+'</span></div><div><b>'+pk[1]+'</b><span>0.7 '+L('லி','L')+'</span></div><div><b>'+pk[2]+'</b><span>0.5 '+L('லி','L')+'</span></div></div>'
+  +'<div class="tot">'+L('மொத்தம் <b>'+tot+'</b> உறை · எடை <b>'+kg.toFixed(2)+' கி</b>','Total <b>'+tot+'</b> covers · weight <b>'+kg.toFixed(2)+' kg</b>')+'</div></div>';
+ if(F==='FN')h+='<div class="mveh '+(d.veh.today?'y':'n')+'">🛵 '+(d.veh.today?L('இன்று காலை வண்டி கொண்டு போகலாம் ✅','Morning bike allowed today ✅'):L('இன்று காலை வண்டி கொண்டு போகக்கூடாது ❌','No bike this morning ❌'))+'</div>';
+ h+=mSections(x,F);
+ var mt=d.milk&&d.milk.d===d.date?d.milk[F]:'';
+ h+='<button class="done'+(mt?' ok':'')+'" style="margin-top:10px" data-act="mmilk">'+(mt?'🥛 '+L('பால் கொடுத்தது ','Milk handed over ')+esc(mt)+' ✓':'☐ '+L('பால் கொடுத்தேன்','Milk handed over'))+'</button>';
+ var st=x.stops||[],live=st.filter(function(s){return s.q>0;});
+ h+='<details class="msch"><summary class="ch">📋 '+L('விநியோக அட்டவணை','Delivery schedule')+' · '+live.length+L(' வீடுகள்',' houses')+'</summary>';
+ st.forEach(function(s){h+='<div class="mstop'+(s.q>0?'':' z')+'"><div>'+mRtn(s)+mTag(s)+'</div><div class="q">'+(s.q>0?mQ(s.q)+'<div class="s">'+esc(mPkTxt(s.pk))+'</div>':'✗')+'</div></div>';});
+ return h+'</details></div>';}
+function mRenderToday(){var d=MS.today,F=mF(),h='';
+ if(!d)return '<div class="card empty">'+L('ஏற்றுகிறது…','Loading…')+'</div>';
+ var x=d[F];
+ h+='<div class="tools" style="margin-bottom:8px"><div style="flex:1;font-size:13px;color:var(--mut)">'+esc(dmy(d.date))+' · '+L('பட்டியல் நேரம் ','List time ')+mHm(d.at)+'</div><button class="tb" data-act="mref">⟳ '+L('புதுப்பி','Refresh')+'</button></div>';
+ if(d.date!==tdy())h+='<div class="hint warn">⚠ '+L('இன்றைய பட்டியல் இன்னும் வரவில்லை — காட்டுவது முந்தைய பட்டியல். ⟳ அழுத்தவும்.','Today\'s list has not come yet — showing an earlier one. Tap ⟳.')+'</div>';
+ if(d.warn==='nomonth')h+='<div class="hint warn">⚠ '+L('பால் Sheet ▸ அமைப்பு ▸ மாதம், இன்றைய தேதியுடன் பொருந்தவில்லை','Milk Sheet ▸ settings month does not match today')+'</div>';
+ h+='<div class="mseg">'+['FN','AN'].map(function(G){return '<button class="'+(G===F?'on':'')+'" data-act="mf" data-f="'+G+'">'+(G==='FN'?'🌅 ':'🌇 ')+shN(G)+'</button>';}).join('')+'</div>';
+ if(!x)return h+mVehCard(d);
+ var lv=x.leave||{n:0,who:[],lit:0};
+ h+='<div class="card"><div class="ch"><span>'+L('விடுப்பு / ரத்து','Leave / cancelled')+'</span><span class="s">'+(lv.n?lv.n+L(' பேர் · ',' · ')+Number(lv.lit).toFixed(1)+L(' லி குறைவு',' L less'):'')+'</span></div><div class="mdl">'
+  +(lv.n?lv.who.map(function(w){return '<div class="ln'+(w.k==='ask'?' dn':' red')+'"><span class="rtn">'+esc(w.r)+'</span> - '+esc(w.n)+'  ('+esc(w.w)+')</div>';}).join(''):'<div class="ln">— '+L('இல்லை','none')+'</div>')+'</div></div>';
+ var st;
+ if(x.have===null||x.have===undefined)st='<span class="neu">— '+L('கையில் அளவு போடவும்','enter litres in hand')+'</span>';
+ else if(x.short===null||x.short<=0.0001)st='<b class="in">✓ '+L('போதும்','Enough')+'</b> <span class="neu">('+L('பயன் ','usable ')+Number(x.use).toFixed(2)+')</span>';
+ else st='<b class="out">⚠ '+Number(x.short).toFixed(2)+L(' லி குறைவு',' L short')+'</b> <span class="neu">('+L('பயன் ','usable ')+Number(x.use).toFixed(2)+')</span>';
+ h+='<div class="card"><div class="row"><span>'+L('தேவை','Needed')+'</span><span><b class="mbig">'+Number(x.need).toFixed(1)+'</b> '+L('லி','L')+' <span class="neu">('+L('இயல்பு ','usual ')+Number(x.norm).toFixed(1)+')</span></span></div>'
+  +'<div class="row"><span>'+L('கையில்','In hand')+'</span><span class="mnum"><input id="mHave" class="inp" type="number" inputmode="decimal" step="0.01" placeholder="'+L('லிட்டர்','litres')+'" value="'+(x.have===null||x.have===undefined?'':x.have)+'"><button class="tb go" data-act="mhave">✓</button></span></div>'
+  +'<div class="row"><span>'+L('நிலை','Status')+'</span><span>'+st+'</span></div>'+(d.waste?'<div class="small">'+L('சேதக் கணக்கு ','Waste allowance ')+d.waste+'%</div>':'')+'</div>';
+ var sg=d.sugg;
+ if(sg&&sg.shift===F&&(sg.head||sg.rows.length)){h+='<div class="card"><div class="ch">'+L('குறைப்பு / மீட்பு பரிந்துரை','Reduce / restore suggestion')+'</div><div style="white-space:pre-line;font-weight:600;margin-bottom:6px">'+esc(sg.head)+'</div>';
+  sg.rows.forEach(function(r){h+='<div class="row"><span>'+esc(r.a)+'</span><b>'+esc(r.d)+'</b></div>';});
+  if(sg.live&&sg.n)h+='<button class="save" data-act="mconfirm">✓ '+esc(String(sg.ok||'').replace(/^←\s*/,''))+'</button>';
+  else if(sg.ok&&sg.ok.indexOf('✓')>=0)h+='<div class="hint">'+esc(sg.ok.replace(/^←\s*/,''))+'</div>';
+  h+='</div>';}
+ else if(sg&&sg.live&&sg.shift&&sg.shift!==F)h+='<div class="hint">'+L(shN(sg.shift)+' நேரத்துக்கான பரிந்துரை உறுதி செய்யக் காத்திருக்கிறது','A suggestion for the '+shN(sg.shift).toLowerCase()+' is waiting to be confirmed')+'</div>';
+ h+=mPlan(d,F,x);
+ h+='<div class="card"><a class="save" style="display:block;text-align:center;text-decoration:none;margin:0" href="'+esc(x.boy.link||'#')+'" target="_blank" rel="noopener"'+(x.boy.link?'':' data-act="mnoboy"')+'>▶ '+L('விநியோகிப்பாளருக்கு WhatsApp','WhatsApp the delivery staff')+'</a><details style="margin-top:8px"><summary class="small">'+L('செய்தியைப் பார்','See the message')+'</summary><div class="mwa">'+esc(x.boy.msg||'—')+'</div></details></div>';
+ h+=mVehCard(d)+mCancelCard(d,F)+mChgCard(F);
+ h+='<div class="card"><div class="ch">'+L('சரிசெய்தல்','Fix')+'</div><button class="save sec" style="margin-top:0" data-act="mrscr">'+L('திரையை மீட்டமை','Reset the screen')+'</button><button class="save sec" data-act="mrday">'+L('இன்றைய அளவை மீட்டமை — ','Reset today\'s quantities — ')+shN(F)+'</button>'
+  +'<div class="small" style="margin-top:6px">'+L('திரையை மீட்டமை: கையில் அளவு, பரிந்துரை, ரத்து படிவம், மாற்றப் பட்டியல் காலியாகும். இன்றைய அளவை மீட்டமை: இந்த நேரத்தின் இன்றைய அளவுகள் வழக்கமான அளவுக்கு (விடுப்புடன்) திரும்பும்.','Reset the screen clears litres in hand, the suggestion, the cancel form and the change list. Reset today\'s quantities puts this shift\'s quantities back to normal (leave still applies).')+'</div></div>';
+ return h;}
+function mVehCard(d){var v=d.veh||{ok:true,lbl:''};
+ return '<div class="card"><div class="ch"><span>🛵 '+L('காலை வண்டி அனுமதி','Morning bike permission')+'</span><span class="s">'+esc(v.lbl||'')+'</span></div><div class="mseg"><button class="'+(v.ok?'on':'')+'" data-act="mveh" data-v="1">✅ '+L('கொண்டு போகலாம்','Allowed')+'</button><button class="'+(v.ok?'':'on bad')+'" data-act="mveh" data-v="0">❌ '+L('கூடாது','Not allowed')+'</button></div>'
+  +'<div class="small">'+L('காலை 10 மணிக்கு முன் மாற்றினால் இன்று; பிறகு மாற்றினால் நாளை காலைக்கு. தினமும் அதிகாலை 4 மணிக்கு \"கொண்டு போகலாம்\" ஆகும்.','Before 10 AM it applies today; after 10 AM it applies to tomorrow morning. It goes back to \"allowed\" at 4 AM daily.')+'</div></div>';}
+function mcGrab(){if($('mcDate'))MS.cf.date=$('mcDate').value||tdy();if($('mcWhy'))MS.cf.why=$('mcWhy').value;if($('mcNext'))MS.cf.next=$('mcNext').checked;}
+function mCancelCard(d,F){var cf=MS.cf;if(!cf.date)cf.date=tdy();if(!cf.f)cf.f=F;if(!cf.why)cf.why=(d.why||[])[0];cf.rts=cf.rts||[];
+ var list=(cf.date===d.date&&d[cf.f])?(d[cf.f].stops||[]).filter(function(s){return s.q>0;}).map(function(s){return {rt:s.rt,n:s.n};})
+  :(d.custs||[]).filter(function(c){return c.f===cf.f;}).map(function(c){return {rt:c.rt,n:c.n};});
+ var h='<div class="card"><div class="ch">'+L('ரத்து / திருத்தம்','Cancel / correction')+'</div><div class="g2"><div>'+lab(t('date'))+'<input id="mcDate" class="inp" type="date" value="'+esc(cf.date)+'"></div><div>'+lab(L('நேரம்','Shift'))
+  +'<div class="mseg" style="margin:0">'+['FN','AN'].map(function(G){return '<button class="'+(cf.f===G?'on':'')+'" data-act="mcf" data-f="'+G+'">'+shN(G)+'</button>';}).join('')+'</div></div></div>';
+ h+=lab(L('வழி எண்கள் (தொட்டுத் தேர்வு)','Route numbers (tap to pick)'))+'<div class="rts">'+list.map(function(s){return '<button class="chip'+(cf.rts.indexOf(s.rt)>=0?' on':'')+'" data-act="mcrt" data-rt="'+esc(s.rt)+'">'+esc(s.rt)+' '+esc(String(s.n).slice(0,14))+'</button>';}).join('')+'</div>';
+ h+=lab(L('காரணம்','Reason'))+'<select id="mcWhy" class="inp">'+(d.why||[]).map(function(w){return '<option'+(w===cf.why?' selected':'')+'>'+esc(w)+'</option>';}).join('')+'</select>';
+ h+='<label class="small" style="display:flex;gap:8px;align-items:center;margin-top:10px"><input id="mcNext" type="checkbox"'+(cf.next?' checked':'')+'> '+L('மறுநாள்? (ஒரு நாள் விட்டு வாங்குபவர் — மறுநாள் கொடுக்க)','Next day? (alternate-day customer — give it tomorrow)')+'</label>';
+ h+='<button class="save" data-act="mcgo">✓ '+L('பதிவு செய்','Record')+(cf.rts.length?' ('+cf.rts.length+')':'')+'</button>'+(cf.res?'<div class="hint'+(cf.ok?'':' warn')+'" style="margin-top:8px">'+esc(cf.res)+'</div>':'')+'</div>';
+ return h;}
+function mChgCard(F){var c=MS.chg,h='<div class="card"><div class="ch">'+L('மாற்றம் — வாடிக்கையாளருக்கு','Changes — message customers')+'</div>';
+ h+='<button class="save sec" style="margin-top:0" data-act="mchg">'+L('பட்டியல் தயாரி — ','Prepare the list — ')+shN(F)+'</button>';
+ if(c&&c.f===F){
+  if(!c.rows.length)h+='<div class="hint" style="margin-top:8px">✓ '+shN(F)+L(' — மாற்றம் இல்லை',' — no changes')+'</div>';
+  else{var n=c.rows.filter(function(r){return r.tick;}).length;h+='<div class="small" style="margin:8px 0 4px">'+c.rows.length+L(' பேர் · ☑ ',' people · ☑ ')+n+'</div>';
+   c.rows.forEach(function(r,i){h+='<div class="mstop'+(r.sent?' z':'')+'"><label style="display:flex;gap:8px;align-items:flex-start;flex:1"><input type="checkbox" data-act="mchk" data-i="'+i+'"'+(r.tick?' checked':'')+'><span>'+mRtn(r)+'<div class="s">'+esc(r.from+' → '+r.to+'  ·  '+r.why)+'</div></span></label><div class="q">'
+    +(r.link?'<a class="tb go" href="'+esc(r.link)+'" target="_blank" rel="noopener" data-act="mchsent" data-i="'+i+'">'+(r.sent?'✓':'▶')+'</a>':'<span class="s">'+L('எண் இல்லை','no number')+'</span>')+'</div></div>';});}}
+ return h+'</div>';}
+/* ---- 💰 வசூல் ---- */
+function mFindC(id){var r=null;((MS.pay&&MS.pay.custs)||[]).forEach(function(c){if(c.id===id)r=c;});return r;}
+function mSyncL(x){if(x.local)return '📴';return {ok:'✓ '+L('கணக்கில்','in accounts'),wait:'⏳',pre:L('நவ. 1-க்கு முன்','before 1 Nov'),nolink:'⚠ '+L('இணைப்பு இல்லை','not linked'),err:'⚠ '+esc(x.sst||'')}[x.sync]||'';}
+function mPayListHtml(){var p=MS.pay,q=MS.payQ.trim().toLowerCase(),fil=MS.payFil,sf=MS.paySh;
+ var list=p.custs.filter(function(c){if(sf&&c.f!==sf)return false;if(fil==='due'&&!(c.bal>0.5))return false;if(fil==='paid'&&(c.bal>0.5||!(c.net>0)))return false;
+  if(q&&(String(c.rt)+' '+c.n).toLowerCase().indexOf(q)<0)return false;return fil==='all'||c.act||c.bal>0.5;});
+ if(!list.length)return '<div class="empty">'+(fil==='due'?L('நிலுவை இல்லை 👍','Nothing due 👍'):L('யாரும் இல்லை','No one'))+'</div>';
+ return list.map(function(c){return '<div class="mpay" data-act="mpopen" data-id="'+esc(c.id)+'"><div><b><span class="rtn">'+esc(c.rt)+'</span> - '+esc(c.n)+'</b><div class="s">'+shN(c.f)+' · '+L('பில் ','bill ')+money(c.net)+(c.recd?' · '+L('வந்தது ','got ')+money(c.recd):'')+(c.pays.length>1?' · '+c.pays.length+L(' தவணை',' payments'):'')+(c.act?'':' · '+L('விலகியவர்','left'))+'</div></div>'
+  +'<b class="'+(c.bal>0.5?'out':'in')+'">'+(c.bal>0.5?money(c.bal):'✓')+'</b></div>';}).join('');}
+function mRenderPay(){var p=MS.pay,h='';
+ if(!p)return '<div class="card empty">'+L('ஏற்றுகிறது…','Loading…')+'</div>';
+ h+='<div class="tools"><select id="mpTab" class="inp">'+p.tabs.slice().reverse().map(function(tb){return '<option value="'+esc(tb)+'"'+(tb===p.tab?' selected':'')+'>'+esc(mMonL(tb))+'</option>';}).join('')+'</select><button class="tb" data-act="mpref">⟳</button></div>';
+ var bill=0,got=0,due=0,nd=0;p.custs.forEach(function(c){if(c.net>0)bill+=c.net;got+=c.recd;if(c.bal>0.5){due+=c.bal;nd++;}});
+ h+='<div class="card"><div class="three"><div><small>'+L('பில்','Billed')+'</small><b>'+money(bill)+'</b></div><div><small>'+L('வந்தது','Received')+'</small><b class="in">'+money(got)+'</b></div><div><small>'+L('நிலுவை','Due')+' ('+nd+')</small><b class="out">'+money(due)+'</b></div></div>'
+  +(p.linked?'':'<div class="hint warn" style="margin-top:8px">⚠ '+L('My Accounts இணைப்பு இன்னும் இல்லை — ⚙ ▸ 🥛 பால் கணக்கு இணைப்பு ▸ \"இணை\"','Not linked to My Accounts yet — ⚙ ▸ 🥛 Milk account link ▸ \"Connect\"')+'</div>')
+  +'<div class="small" style="margin-top:6px">'+L(dmy(p.from)+' முதல் ஒவ்வொரு வசூலும் My Accounts-ல் தானாக வரவாகும் (டெய்ரி · பால்).','From '+dmy(p.from)+' every collection goes into My Accounts automatically (dairy · milk).')+'</div></div>';
+ h+='<div class="chips" style="margin-bottom:8px">'+[['due',L('நிலுவை','Due')],['all',L('எல்லோரும்','All')],['paid',L('கட்டியவர்','Paid')]].map(function(x){return '<button class="chip'+(MS.payFil===x[0]?' on':'')+'" data-act="mpfil" data-v="'+x[0]+'">'+x[1]+'</button>';}).join('')
+  +[['',L('இரு நேரம்','Both')],['FN',shN('FN')],['AN',shN('AN')]].map(function(x){return '<button class="chip'+(MS.paySh===x[0]?' on':'')+'" data-act="mpsh" data-v="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';
+ h+='<input id="mpQ" class="inp" placeholder="🔍 '+L('பெயர் / வழி எண்','Name / route no.')+'" value="'+esc(MS.payQ)+'" style="margin-bottom:10px"><div class="card" id="mpList">'+mPayListHtml()+'</div>';
+ return h;}
+function mPayOpen(id){var c=mFindC(id);if(!c)return;MS.pf={id:id,cid:'',amt:c.bal>0.5?String(Math.round(c.bal)):'',mode:lsGet('mmode')||'ரொக்கம்',date:tdy()};mPaySheet();}
+function mpGrab(){if($('mpAmt'))MS.pf.amt=$('mpAmt').value.trim();if($('mpDate'))MS.pf.date=$('mpDate').value||tdy();}
+function mPaySheet(){var pf=MS.pf,c=mFindC(pf.id),p=MS.pay;if(!c)return;
+ var h='<div class="shead"><b>💰 '+esc(c.rt+' - '+c.n)+'</b><button class="x" data-act="close">✕</button></div>';
+ h+='<div class="card"><div class="small">'+esc(mMonL(p.tab))+' · '+shN(c.f)+'</div><div class="row"><span>'+L('இம்மாதத் தொகை','This month')+' ('+Number(c.litr).toFixed(1)+L(' லி',' L')+')</span><b>'+money(c.tot)+'</b></div><div class="row"><span>'+L('முன்பாக்கி','Previous balance')+'</span><b>'+money(c.old)+'</b></div>'
+  +'<div class="row"><span>'+L('செலுத்த வேண்டியது','Bill total')+'</span><b>'+money(c.net)+'</b></div><div class="row"><span>'+L('வந்தது','Received')+'</span><b class="in">'+money(c.recd)+'</b></div><div class="row"><span><b>'+L('நிலுவை','Due')+'</b></span><b class="'+(c.bal>0.5?'out':'in')+'">'+money(c.bal)+'</b></div></div>';
+ if(c.pays.length)h+='<div class="gt">'+L('தவணைகள் (திருத்த தட்டவும்)','Payments (tap to edit)')+'</div><div class="card">'+c.pays.map(function(x){return '<div class="mpay"'+(x.local?'':' data-act="mpedit" data-cid="'+esc(x.cid)+'"')+'><div><b>'+money(x.amt)+'</b> · '+esc(x.mode==='ரொக்கம்'?L('ரொக்கம்','Cash'):'Digital')+'<div class="s">'+esc(dmy(x.date))+(x.src==='Sheet'?' · Sheet':'')+(x.note?' · '+esc(x.note):'')+'</div></div><span class="s">'+mSyncL(x)+'</span></div>';}).join('')+'</div>';
+ h+='<div class="gt">'+(pf.cid?L('தவணையைத் திருத்து','Edit payment'):L('புதிய வசூல்','New payment'))+'</div>';
+ h+='<input id="mpAmt" class="amt" type="number" inputmode="decimal" placeholder="₹" value="'+esc(pf.amt)+'">'+lab(L('முறை','Mode'))+'<div class="mseg">'+['ரொக்கம்','Digital'].map(function(m){return '<button class="'+(pf.mode===m?'on':'')+'" data-act="mpmode" data-m="'+m+'">'+(m==='ரொக்கம்'?'💵 '+L('ரொக்கம்','Cash'):'📱 Digital')+'</button>';}).join('')+'</div>'
+  +'<div class="small">'+(pf.mode==='ரொக்கம்'?L('My Accounts-ல்: அமிர்தம் ரொக்கம்','In My Accounts: அமிர்தம் ரொக்கம்'):L('My Accounts-ல்: HDFC (SBI-க்கு வந்தால் பதிவுகளில் மாற்றவும்)','In My Accounts: HDFC (if it came to SBI, change it in Records)'))+'</div>'+lab(t('date'))+'<input id="mpDate" class="inp" type="date" value="'+esc(pf.date)+'">';
+ h+='<button class="save" data-act="mpsave">'+(pf.cid?t('update'):'✓ '+L('வசூல் பதிவு செய்','Save payment'))+'</button>'
+  +(pf.cid?'<button class="save sec" data-act="mpdel">🗑 '+L('இந்தத் தவணையை நீக்கு','Delete this payment')+'</button><button class="save sec" data-act="mpnew">＋ '+L('புதிய வசூல்','New payment')+'</button>':'');
+ openSheet(h);}
+function mPayLocal(fn,o,cid){var c=mFindC(o.id||MS.pf.id);if(!c)return;
+ if(fn==='mPayAdd'){c.pays.push({cid:cid,amt:Number(o.amt),mode:o.mode,date:o.date,local:true});c.recd+=Number(o.amt);c.bal-=Number(o.amt);}
+ else{c.pays.forEach(function(x){if(x.cid!==cid)return;c.recd-=x.amt;c.bal+=x.amt;if(fn==='mPayEdit'){x.amt=Number(o.amt);x.mode=o.mode;x.date=o.date;c.recd+=x.amt;c.bal-=x.amt;}x.local=true;x.gone=fn==='mPayDel';});
+  c.pays=c.pays.filter(function(x){return !x.gone;});}
+ lsSet(mCk('mPayList',[MS.pay.tab]),JSON.stringify(MS.pay));}
+/* ---- 🗓 விடுப்பு ---- */
+function mlGrab(){var lf=MS.lf;if($('mlC'))lf.id=$('mlC').value;if($('mlF'))lf.from=$('mlF').value;if($('mlT'))lf.to=$('mlT').value;if($('mlQ'))lf.qty=$('mlQ').value;}
+function mRenderLeave(){var d=MS.leave,lf=MS.lf;if(!d)return '<div class="card empty">'+L('ஏற்றுகிறது…','Loading…')+'</div>';
+ if(!lf.from){lf.from=tdy();lf.to=tdy();}
+ var h='<div class="card"><div class="ch">'+(lf.row?L('விடுப்பைத் திருத்து','Edit leave'):L('புதிய விடுப்பு / அளவு மாற்றம்','New leave / quantity change'))+'</div>';
+ h+=lab(L('வாடிக்கையாளர்','Customer'))+'<select id="mlC" class="inp"><option value="">— '+L('தேர்வு செய்யவும்','choose')+' —</option>'+['FN','AN'].map(function(G){return '<optgroup label="'+shN(G)+'">'+d.custs.filter(function(c){return c.f===G;}).map(function(c){return '<option value="'+esc(c.id)+'"'+(c.id===lf.id?' selected':'')+'>'+esc(c.rt+' - '+c.n+' ('+c.q+L(' லி',' L')+')')+'</option>';}).join('')+'</optgroup>';}).join('')+'</select>';
+ h+='<div class="g2"><div>'+lab(L('முதல் தேதி','From'))+'<input id="mlF" class="inp" type="date" value="'+esc(lf.from)+'"></div><div>'+lab(L('கடைசி தேதி','To'))+'<input id="mlT" class="inp" type="date" value="'+esc(lf.to||lf.from)+'"></div></div>';
+ h+=lab(L('அளவு','Quantity'))+'<select id="mlQ" class="inp"><option value="">'+L('விடுப்பு — பால் வேண்டாம்','Leave — no milk')+'</option>'+d.amounts.map(function(a){return '<option value="'+a+'"'+(String(lf.qty)===String(a)?' selected':'')+'>'+a+L(' லி மட்டும்',' L only')+'</option>';}).join('')+'</select>';
+ h+='<button class="save" data-act="mlsave">'+(lf.row?t('update'):'✓ '+L('சேர்','Add'))+'</button>'+(lf.row?'<button class="save sec" data-act="mlnew">'+L('திருத்தம் வேண்டாம் — புதியது','Cancel edit — new one')+'</button>':'')
+  +'<div class="small" style="margin-top:6px">'+L('சேர்த்தவுடன் Sheet-ன் விடுப்பு tab, இன்றைய அளவு, இன்று திரை எல்லாம் உடனே மாறும்.','Saving updates the Sheet\'s leave tab, today\'s quantity and the today screen at once.')+'</div></div>';
+ var grp={now:[],next:[],past:[],bad:[]};d.rows.forEach(function(r){(grp[r.st]||grp.bad).push(r);});
+ var row=function(r){return '<div class="mstop'+(r.st==='past'?' z':'')+'"><div>'+mRtn(r)+' <span class="s">'+(r.f?shN(r.f):'')+'</span><div class="s">'+esc(dmy(r.from)+(r.to&&r.to!==r.from?' → '+dmy(r.to):''))+' · '+(r.qty===''?L('விடுப்பு','leave'):r.qty+L(' லி',' L'))+(r.local?' · 📴':'')+'</div></div><div class="q">'
+  +(r.local?'':'<button class="tb mini" data-act="mledit" data-row="'+r.row+'">✏️</button><button class="tb mini" data-act="mldel" data-row="'+r.row+'">✕</button>')+'</div></div>';};
+ h+='<div class="gt">'+L('இன்று விடுப்பில்','On leave today')+' ('+grp.now.length+')</div><div class="card">'+(grp.now.length?grp.now.map(row).join(''):'<div class="empty">—</div>')+'</div>';
+ h+='<div class="gt">'+L('வரவிருப்பவை','Coming up')+' ('+grp.next.length+')</div><div class="card">'+(grp.next.length?grp.next.map(row).join(''):'<div class="empty">—</div>')+'</div>';
+ if(grp.past.length||grp.bad.length)h+='<details class="card"><summary class="ch">'+L('முடிந்தவை','Finished')+' ('+(grp.past.length+grp.bad.length)+')</summary>'+grp.past.concat(grp.bad).map(row).join('')+'</details>';
+ return h;}
+function mFindL(row){var r=null;((MS.leave&&MS.leave.rows)||[]).forEach(function(x){if(String(x.row)===String(row))r=x;});return r;}
+/* ---- ⚙ இணைப்பு ---- */
+function mLinkCard(){return '<div class="card"><div class="ch">🥛 '+L('பால் கணக்கு இணைப்பு','Milk account link')+'</div>'
+ +(mOn()&&!MS.authBad?'<div class="hint">✓ '+L('இணைக்கப்பட்டுள்ளது','Linked')+'</div>':'<div class="hint warn">'+L('பால் கணக்கு Sheet ▸ மெனு பால் ▸ 📱 My Tasks app — பால் இணைப்பு ▸ QR-ஐ scan செய்யவும் (அல்லது கீழே ஒட்டவும்).','Milk Sheet ▸ menu பால் ▸ 📱 My Tasks app — பால் இணைப்பு ▸ scan the QR (or paste below).')+'</div>')
+ +'<details'+(mOn()&&!MS.authBad?'':' open')+'><summary class="small">'+L('இணைப்பு விவரம்','Link details')+'</summary>'+lab('Web app URL (…/exec)')+'<input id="mlApi" class="inp" value="'+esc(CFG.mApi||'')+'">'+lab(L('ரகசியக் குறி','Secret key'))+'<input id="mlKey" class="inp" autocomplete="off" value="'+esc(CFG.mKey||'')+'"><button class="save sec" data-act="mlink">✓ '+L('இணை','Connect')+'</button></details>'
+ +(mOn()?'<button class="save sec" data-act="msync">🔄 '+L('வசூல் → My Accounts இப்போதே அனுப்பு','Send collections to My Accounts now')+'</button>':'')+'</div>';}
+function mAutoLink(){if(!mOn()||!CFG.key)return;MS.linkPending=false;
+ mCall('mLink',[CFG.api,CFG.key]).then(function(r){MS.authBad=false;toast('✓ '+L('பால் கணக்கு இணைந்தது','Milk account linked')+(r&&r.sent?' · '+r.sent+L(' வசூல் கணக்கில்',' collections sent'):''));if(S.page==='milk')mLoad();if(S.page==='set')loadSet();},
+  function(e){var m=emsg(e);if(m==='AUTH'){toast('⚠ '+L('பால் இணைப்புக் குறி தவறு — Sheet-ல் புதிய QR எடுக்கவும்','Wrong milk link key — make a new QR in the Sheet'),true);return;}MS.linkPending=true;toast('⚠ '+L('பால் இணைப்பு: ','Milk link: ')+(isNet(e)?t('needNet'):m),true);});}
+/* ---- செயல்கள் ---- */
+var MACT={
+ mtab:function(b){MS.tab=b.getAttribute('data-t');closeSheet();window.scrollTo(0,0);mLoad();},
+ mf:function(b){MS.f=b.getAttribute('data-f');MS.cf.f=MS.f;MS.cf.rts=[];mRender();},
+ mref:function(){mLoad();},
+ mhave:function(){var v=$('mHave')?$('mHave').value.trim():'',F=mF();if(v!==''&&!(Number(v)>=0)){toast('⚠ '+t('e_amt'),true);return;}
+  mDo('mHave',[F,v===''?'':Number(v)],function(r){mRender();if(r)toast(v===''?L('கையில் அளவு நீக்கப்பட்டது','Litres cleared'):'✓ '+v+L(' லி — பரிந்துரை தயார்',' L — suggestion ready'));},
+   function(){if(MS.today&&MS.today[F])MS.today[F].have=v===''?null:Number(v);});},
+ mconfirm:function(){mDo('mConfirm',[],function(r){mRender();if(r)toast('✓ '+L('உறுதி — மாத tab-ல் பதிவானது','Confirmed — saved in the month tab'));});},
+ mmilk:function(){var d=MS.today,F=mF(),on=!(d&&d.milk&&d.milk.d===d.date&&d.milk[F]);
+  mDo('mMilk',[F,on,nowStrL()],function(){mRender();},function(){if(d){if(!d.milk||d.milk.d!==d.date)d.milk={d:d.date,FN:'',AN:''};d.milk[F]=on?mHm():'';}});},
+ mveh:function(b){var ok=b.getAttribute('data-v')==='1';mDo('mVeh',[ok],function(r){mRender();if(r)toast(r.veh&&r.veh.next?L('✓ நாளை காலைக்கு: ','✓ For tomorrow morning: ')+(ok?'✅':'❌'):'✓ '+(ok?'✅':'❌'));},
+  function(){if(MS.today)MS.today.veh.ok=ok;});},
+ mnoboy:function(){toast('⚠ '+L('பால் Sheet அமைப்பில் விநியோகிப்பாளர் எண் இல்லை','No delivery staff number in the milk Sheet settings'),true);},
+ mcf:function(b){mcGrab();MS.cf.f=b.getAttribute('data-f');MS.cf.rts=[];mRender();},
+ mcrt:function(b){mcGrab();var rt=Number(b.getAttribute('data-rt')),a=MS.cf.rts,i=a.indexOf(rt);if(i>=0)a.splice(i,1);else a.push(rt);b.classList.toggle('on',i<0);
+  var g=document.querySelector('[data-act="mcgo"]');if(g)g.textContent='✓ '+L('பதிவு செய்','Record')+(a.length?' ('+a.length+')':'');},
+ mcgo:function(){mcGrab();var cf=MS.cf;if(!cf.rts.length){toast('⚠ '+L('வழி எண் தேர்வு செய்யவும்','Pick route numbers'),true);return;}
+  var o={date:cf.date,f:cf.f,rts:cf.rts.slice(),why:cf.why,next:!!cf.next};
+  mDo('mCancel',[o],function(r){if(r){cf.res=r.res;cf.ok=r.ok;if(r.ok){cf.rts=[];cf.next=false;}}else{cf.res=L('📴 Net வந்ததும் பதியும்','📴 Will be saved when online');cf.ok=true;cf.rts=[];}mRender();});},
+ mchg:function(){var F=mF();if(!navigator.onLine){toast('⚠ '+t('needNet'),true);return;}busy(true);
+  mCall('mChanges',[F]).then(function(r){busy(false);MS.chg=r;mRender();},function(e){busy(false);toast('⚠ '+(isNet(e)?t('needNet'):emsg(e)),true);});},
+ mchk:function(b){var r=MS.chg&&MS.chg.rows[+b.getAttribute('data-i')];if(r)r.tick=b.checked;},
+ mchsent:function(b){var r=MS.chg&&MS.chg.rows[+b.getAttribute('data-i')];if(r){r.sent=true;setTimeout(mRender,400);}},
+ mrscr:function(){if(!confirm(L('திரையை மீட்டமைக்கவா? (கையில் அளவு, பரிந்துரை, ரத்து படிவம் காலியாகும்)','Reset the screen?')))return;MS.chg=null;MS.cf={};mDo('mResetScreen',[],function(){mRender();toast('✓');});},
+ mrday:function(){var F=mF();if(!confirm(L(shN(F)+' — இன்றைய அளவுகளை வழக்கமான அளவுக்குத் திருப்பவா? ரத்து / குறைப்பு எல்லாம் நீங்கும்.','Put '+shN(F).toLowerCase()+' quantities back to normal? Cancels and reductions are removed.')))return;
+  mDo('mResetDay',[F],function(){mRender();toast('✓');});},
+ mpref:function(){mLoad();},
+ mpfil:function(b){MS.payFil=b.getAttribute('data-v');mRender();},
+ mpsh:function(b){MS.paySh=b.getAttribute('data-v');mRender();},
+ mpopen:function(b){mPayOpen(b.getAttribute('data-id'));},
+ mpmode:function(b){mpGrab();MS.pf.mode=b.getAttribute('data-m');mPaySheet();},
+ mpedit:function(b){var cid=b.getAttribute('data-cid'),c=mFindC(MS.pf.id),x=null;(c?c.pays:[]).forEach(function(p){if(p.cid===cid)x=p;});if(!x)return;
+  MS.pf={id:MS.pf.id,cid:cid,amt:String(x.amt),mode:x.mode,date:x.date};mPaySheet();},
+ mpnew:function(){mPayOpen(MS.pf.id);},
+ mpsave:function(){mpGrab();var pf=MS.pf,amt=Number(pf.amt);if(!(amt>0)){toast('⚠ '+t('e_amt'),true);return;}if(!pf.date){toast('⚠ '+t('date'),true);return;}
+  lsSet('mmode',pf.mode);var tab=MS.pay.tab,id=pf.id,o={tab:tab,id:id,amt:amt,mode:pf.mode,date:pf.date};
+  if(pf.cid){mDo('mPayEdit',[pf.cid,{amt:amt,mode:pf.mode,date:pf.date}],function(){toast(t('updated'));mPayOpen(id);},function(){mPayLocal('mPayEdit',{id:id,amt:amt,mode:pf.mode,date:pf.date},pf.cid);});return;}
+  o.cid='P'+mCid().slice(1);
+  mDo('mPayAdd',[o],function(){toast(t('saved')+' — '+money(amt));mPayOpen(id);},function(){mPayLocal('mPayAdd',o,o.cid);});},
+ mpdel:function(){var pf=MS.pf,id=pf.id;if(!confirm(t('delQ')))return;
+  mDo('mPayDel',[pf.cid],function(){toast(t('deleted'));mPayOpen(id);},function(){mPayLocal('mPayDel',{id:id},pf.cid);});},
+ mlsave:function(){mlGrab();var lf=MS.lf;if(!lf.id){toast('⚠ '+L('வாடிக்கையாளர் தேர்வு செய்யவும்','Choose a customer'),true);return;}
+  if(!lf.from){toast('⚠ '+t('date'),true);return;}if(lf.to&&lf.to<lf.from){toast('⚠ '+L('கடைசி தேதி, முதல் தேதிக்கு முன் இருக்கக்கூடாது','The end date cannot be before the start'),true);return;}
+  var o={row:lf.row||0,oldId:lf.oldId||'',id:lf.id,from:lf.from,to:lf.to||lf.from,qty:lf.qty===''||lf.qty===undefined?'':Number(lf.qty)};
+  mDo('mLeaveSave',[o],function(r){MS.lf={};mRender();toast(r?'✓ '+L('விடுப்பு பதிவானது','Leave saved'):L('📴 போனில்','📴 On the phone'));},
+   function(){var c=null;MS.leave.custs.forEach(function(x){if(x.id===o.id)c=x;});if(!o.row&&c)MS.leave.rows.push({row:'',id:o.id,n:c.n,rt:c.rt,f:c.f,from:o.from,to:o.to,qty:o.qty,st:o.from<=tdy()?'now':'next',local:true});});},
+ mlnew:function(){MS.lf={};mRender();},
+ mledit:function(b){var r=mFindL(b.getAttribute('data-row'));if(!r)return;MS.lf={row:r.row,oldId:r.id,id:r.id,from:r.from,to:r.to,qty:r.qty};mRender();window.scrollTo(0,0);},
+ mldel:function(b){var r=mFindL(b.getAttribute('data-row'));if(!r)return;if(!confirm(L(r.n+' — இந்த விடுப்பை நீக்கவா?','Delete this leave for '+r.n+'?')))return;
+  mDo('mLeaveDel',[r.row,r.id],function(){mRender();toast(t('deleted'));},function(){MS.leave.rows=MS.leave.rows.filter(function(x){return x!==r;});});},
+ mqfshow:function(){var f=mqfGet(),h='<div class="shead"><b>⚠ '+t('qfT')+'</b><button class="x" data-act="close">✕</button></div>';
+  f.forEach(function(o,i){h+='<div class="card"><div>'+esc(o.fn+' '+JSON.stringify(o.args||[]).slice(0,120))+'</div><div class="small out">'+esc(o.err||'')+'</div><div class="tbs"><button class="tb" data-act="mqfdel" data-i="'+i+'">🗑</button></div></div>';});
+  if(!f.length)h+='<div class="card empty">✓</div>';openSheet(h);},
+ mqfdel:function(b){var f=mqfGet();f.splice(+b.getAttribute('data-i'),1);lsSet('mqfail',JSON.stringify(f));MACT.mqfshow();mRender();},
+ mlink:function(){var api=$('mlApi').value.trim(),key=$('mlKey').value.trim();
+  if(!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(api)){toast('⚠ '+L('Web app இணைப்பு சரியில்லை (…/exec)','Web app link looks wrong (…/exec)'),true);return;}
+  if(key.length<20){toast('⚠ '+L('ரகசியக் குறி சரியில்லை','Key looks wrong'),true);return;}
+  CFG.mApi=api;CFG.mKey=key;saveCfg();MS.authBad=false;mAutoLink();},
+ msync:function(){if(!navigator.onLine){toast('⚠ '+t('needNet'),true);return;}busy(true);
+  mCall('mSyncNow',[]).then(function(r){busy(false);toast(r.msg?'⚠ '+r.msg:'✓ '+L('அனுப்பியது ','Sent ')+r.sent+(r.err?' · ⚠ '+r.err:''),!!r.msg);},function(e){busy(false);toast('⚠ '+(isNet(e)?t('needNet'):emsg(e)),true);});},
+ pkren:function(b){var old=b.getAttribute('data-name'),nw=prompt(L('\"'+old+'\" — புதிய பெயர்:','New name for \"'+old+'\":'),old);if(!nw||!nw.trim()||nw.trim()===old)return;nw=nw.trim();
+  if(!navigator.onLine){toast('⚠ '+t('needNet'),true);return;}
+  call('renamePocket',[old,nw],function(){if(lsGet('pocket')===old)lsSet('pocket',nw);toast('✓ '+old+' → '+nw);call('getInit',[],function(r){S.init=r;fillPlist();loadSet();});},function(e){toast('⚠ '+(isNet(e)?t('needNet'):emsg(e)),true);});}
+};
+Object.keys(MACT).forEach(function(k){ACT[k]=MACT[k];});
+document.addEventListener('change',function(e){var id=e.target&&e.target.id;
+ if(id==='mpTab'){MS.payTab=e.target.value;MS.pay=mCache('mPayList',[MS.payTab])||MS.pay;mLoad();}
+ else if(id==='mcDate'){mcGrab();MS.cf.rts=[];mRender();}});
+document.addEventListener('input',function(e){if(e.target&&e.target.id==='mpQ'){MS.payQ=e.target.value;var l=$('mpList');if(l)l.innerHTML=mPayListHtml();}});
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target&&e.target.id==='mHave'){e.preventDefault();MACT.mhave();}});
+window.addEventListener('online',function(){mFlush();});
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&S.page==='milk'&&!CFG.locked&&!sheetOpen())mLoad();});
+setInterval(function(){if(document.hidden||S.page!=='milk'||MS.tab!=='today'||sheetOpen()||CFG.locked)return;var a=document.activeElement;if(a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))return;if(navigator.onLine)mGet('mToday',[],function(r,c){if(!c){MS.today=r;mRender();}});},120000);
+
 function boot(){var h=location.hash||'';
+ if(h.indexOf('#mk=')===0){var mq={};h.slice(1).split('&').forEach(function(x){var i=x.indexOf('=');if(i>0)mq[x.slice(0,i)]=decodeURIComponent(x.slice(i+1));});
+  try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}h='';
+  if(mq.mk&&mq.mu){CFG.mKey=mq.mk;CFG.mApi=mq.mu;saveCfg();MS.linkPending=true;MS.authBad=false;}
+  if(!CFG.key){showSetup(L('முதலில் My Accounts ரகசியக் குறியைப் போடவும் — பிறகு பால் தானாக இணையும்','Enter the My Accounts key first — milk links after that'));return;}
+  if(started){mAutoLink();go('milk');return;}}
  if(h.indexOf('#k=')===0){var k=decodeURIComponent(h.slice(3));try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}showSetup(L('புதிய PIN அமைக்கவும்','Set a PIN'),k);return;}
  if(!CFG.key){showSetup('');return;}
  if(CFG.locked&&CFG.pin){showPin();return;}
  if(nightCheck())return;
  startApp();}
-window.addEventListener('hashchange',function(){if((location.hash||'').indexOf('#k=')===0)boot();});
+window.addEventListener('hashchange',function(){var h=location.hash||'';if(h.indexOf('#k=')===0||h.indexOf('#mk=')===0)boot();});
 if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(function(){});}
 boot();
 </script>
