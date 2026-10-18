@@ -184,8 +184,17 @@ details.card>summary::-webkit-details-marker{display:none}
 .shead b{font-size:17px}
 .x{border:0;background:#fff;border-radius:10px;width:36px;height:36px;font-size:18px}
 #toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:#1d2a1f;color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;opacity:0;transition:.25s;z-index:10;pointer-events:none;max-width:90%;text-align:center}
-.msub{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
-.msub button{border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 4px;font:inherit;font-weight:700;font-size:14px;color:var(--tx)}
+.msub{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:10px}
+.msub button{border:1px solid var(--bd);background:#fff;border-radius:12px;padding:7px 2px;font:inherit;font-weight:700;font-size:12px;color:var(--tx);line-height:1.25}
+.msub button span{display:block;font-size:18px}
+.mcovl{background:#eef1ed;color:var(--mut);border-radius:12px;padding:9px 12px;font-size:14px;margin-bottom:10px;cursor:pointer}
+.mcovl.lv{background:#fff3e0;color:#8a4b00;font-weight:700;border:1px solid #ffcc80}
+.gcal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
+.gcal .gw{text-align:center;font-size:11px;color:var(--mut)}
+.gd{border:1px solid var(--bd);background:#fff;border-radius:8px;padding:3px 0;font:inherit;text-align:center;color:var(--tx);min-height:46px}
+.gd span{display:block;font-size:10px;color:var(--mut)}.gd b{font-size:14px}
+.gd.z b{color:var(--out)}.gd.df b{color:#1565c0}.gd.e b{color:#bbb}.gd.wo{background:#eceeec}.gd.td{border:2px solid var(--g)}
+.dnq{color:#1565c0}
 .msub button.on{background:var(--g);border-color:var(--g);color:#fff}
 .mseg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
 .mseg button{border:1px solid var(--bd);background:#f7f9f6;border-radius:12px;padding:11px 6px;font:inherit;font-size:14px;font-weight:700;color:var(--tx)}
@@ -240,12 +249,12 @@ a.tb{text-decoration:none;display:inline-block;text-align:center}
 <datalist id="plist"></datalist>
 <div id="toast"></div>
 <script>
-var APP_VER='v6.3.1 · 19-10-2026';
+var APP_VER='v6.4 · 19-10-2026';
 var START=(function(){var p='';try{p=new URLSearchParams(location.search).get('p')||'';}catch(e){}return /^(task|milk|add|sum|per|loan|rec)$/.test(p)?p:'task';})();
 /* ---- API இணைப்பு (Apps Script) + cache: கடைசி data உடனே தெரியும், பின்னணியில் புதுப்பிக்கும் ---- */
 var CFG={};try{CFG=JSON.parse(localStorage.getItem('cfg')||'{}')||{};}catch(e){CFG={};}
 if(!CFG.api)CFG.api='https://script.google.com/macros/s/AKfycbxYPZ95siv1prlc1s6fxXQmj5LU4Pp0F29-Kse5MCmJEvpFMMg_T7PyfQRzIflf1xXRPw/exec';
-var READ={getAssets:1,getInit:1,getTasks:1,getSummary:1,getPersons:1,getPerson:1,getLoans:1,getRecords:1,getPockets:1,getCard:1,getAllTasks:1,getTaskReport:1,getReview:1,getPlan:1};
+var READ={getCover:1,getAssets:1,getInit:1,getTasks:1,getSummary:1,getPersons:1,getPerson:1,getLoans:1,getRecords:1,getPockets:1,getCard:1,getAllTasks:1,getTaskReport:1,getReview:1,getPlan:1};
 function saveCfg(){lsSet('cfg',JSON.stringify(CFG));}
 // 20 வினாடிக்குள் பதில் இல்லையென்றால் விட்டுவிடும் (பலவீனமான signal-ல் முடிவில்லாமல் காத்திருக்காது); பதில் JSON இல்லையென்றால் = net பிழை (பதிவு அழியாது, மீண்டும் முயலும்)
 function apiCall(fn,args){var ac=null,tm=0;try{ac=new AbortController();tm=setTimeout(function(){try{ac.abort();}catch(e){}},20000);}catch(e){ac=null;}
@@ -867,7 +876,6 @@ function renderTasks(r){if(r)S.tasksRaw=r;if(!S.tasksRaw||!S.init)return;var R=r
  h+='<div class="abar"><button class="emgb" data-act="emg">⚡ '+t('emgBtn')+'</button><button class="planb" data-act="plan">🌙 '+t('planBtn')+'</button></div>';
  if(R.dnd&&R.dnd>Date.now()){var d=new Date(R.dnd);h+='<div class="pend"><span>🔕 '+fmt(t('dndOn'),pad(d.getHours())+':'+pad(d.getMinutes()))+'</span><button data-act="dndoff">'+t('dndOff')+'</button></div>';}
  else h+='<button class="done" data-act="dnd">🔕 '+t('dndBtn')+'</button>';
- h+=covRow(R.today,R.cover.today,t('cvToday'),'cover')+covRow(R.tomorrow,R.cover.tomorrow,t('cvTom'),'cover');
  if(!R.planned.tomorrow&&nm>=19*60)h+='<div class="hint warn" data-act="plan" style="margin-top:10px">🌙 '+t('plNotYet')+' ›</div>';
  var cf=R.items.filter(function(x){return x.conflict&&x.st==='pending';});if(cf.length)h+='<div class="hint warn" style="margin-top:10px">⚠ '+fmt(t('cfN'),cf.length)+'</div>';
  if(R.empty)h+='<div class="hint warn" style="margin-top:10px">'+t('tkOffline')+'</div>';
@@ -958,7 +966,6 @@ function planItems(){var p=S.plan,ed=S.planEd||{};var items=p.items.filter(funct
  items.sort(sortT);conflictsL(items);return items;}
 function renderPlan(){var e=$('plBox'),p=S.plan;if(!e||!p)return;var items=planItems(),h='<div class="card"><div class="ch">📅 '+t('plT')+' · '+esc(dayName(p.date))+' '+dmy(p.date)+'</div>';
  h+=p.planned?'<div class="hint">✓ '+t('plDone')+'</div>':'<div class="hint warn">'+t('plNot')+'</div>';
- h+=covRow(p.date,p.cover,p.date===addDayL(tdy(),1)?t('cvTom'):t('cvDay2')+' '+dmy(p.date),'plcover');
  var ncf=items.filter(function(i){return i.conflict&&!i.skip;}).length;if(ncf)h+='<div class="hint warn">⚠ '+fmt(t('cfN'),ncf)+'</div>';
  items.forEach(function(i){h+='<div class="pli'+(i.skip?' sk':'')+(i.conflict&&!i.skip?' cf':'')+'"><input type="time" class="pt" data-tid="'+esc(i.tid)+'" value="'+esc(i.time||'')+'"><div class="pn"><b>'+(DIVI[i.div]||'')+' '+esc(tN(i))+'</b>'+(i.imp?' ⭐':'')+(i.auto||i.added?' <span class="badge">📥 '+t('plAuto')+'</span>':'')
   +'<div class="s">'+(i.dur?dur(i.dur):'')+(i.loc?' · '+esc(locN(i.loc)):'')+(i.nsubs?' · ☐×'+i.nsubs:'')+'</div>'
@@ -1248,7 +1255,7 @@ function pinChangeGo(){var o=$('pcOld').value,n1=$('pcNew').value,n2=$('pcNew2')
 setInterval(nightCheck,30000);
 /* ======== 🥛 பால் (v6.3) — பால் கணக்கு Sheet-உடன் நேரடி இணைப்பு (தரவு அந்த Sheet-லேயே) ======== */
 var MS={tab:'today',f:null,today:null,pay:null,payTab:'',payQ:'',payFil:'due',paySh:'',leave:null,chg:null,lf:{},pf:{},cf:{},linkPending:false,authBad:false};
-var MQ_OK={mHave:1,mMilk:1,mVeh:1,mPayAdd:1,mPayEdit:1,mPayDel:1,mLeaveSave:1,mLeaveDel:1,mCancel:1};
+var MQ_OK={mHave:1,mMilk:1,mVeh:1,mPayAdd:1,mPayEdit:1,mPayDel:1,mLeaveSave:1,mLeaveDel:1,mCancel:1,mCustSave:1,mCustOrder:1,mGridSet:1,mPhoto:1};
 var MWD=['ஞாயிறு','திங்கள்','செவ்வாய்','புதன்','வியாழன்','வெள்ளி','சனி'],MWE=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 var MMON=['ஜனவரி','பிப்ரவரி','மார்ச்','ஏப்ரல்','மே','ஜூன்','ஜூலை','ஆகஸ்ட்','செப்டம்பர்','அக்டோபர்','நவம்பர்','டிசம்பர்'],MMOE=['January','February','March','April','May','June','July','August','September','October','November','December'];
 function mOn(){return !!(CFG.mApi&&CFG.mKey);}
@@ -1259,7 +1266,7 @@ function mHm(ms){var d=new Date(ms||Date.now());return pad(d.getHours())+':'+pad
 function mCid(){return 'M'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 /* ---- இணைப்பு: பால் Sheet-ன் Apps Script (/exec) ---- */
 function mCall(fn,args,cid){var ac=null,tm=0;try{ac=new AbortController();tm=setTimeout(function(){try{ac.abort();}catch(e){}},45000);}catch(e){ac=null;}
- return fetch(CFG.mApi,{method:'POST',body:JSON.stringify({key:CFG.mKey||'',fn:fn,args:args||[],cid:cid||''}),redirect:'follow',signal:ac?ac.signal:undefined})
+ return fetch(CFG.mApi,{method:'POST',body:JSON.stringify({key:CFG.mKey||'',fn:fn,args:args||[],cid:cid||'',u:CFG.mApi}),redirect:'follow',signal:ac?ac.signal:undefined})
  .then(function(r){if(!r.ok)throw new Error('NetworkError HTTP '+r.status);return r.text();})
  .then(function(txt){clearTimeout(tm);var j;try{j=JSON.parse(txt);}catch(e){var tt=String(txt||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,140);throw new Error('NetworkError bad response: '+tt);}
    if(!j||!j.ok)throw new Error((j&&j.err)||'?');return j.r;},
@@ -1284,6 +1291,9 @@ function mFlush(){if(mFlushing||!mOn())return;var q=mqGet();if(!q.length){qBadge
 function mDone(reload){if(S.page!=='milk'||sheetOpen())return;if(reload)mLoad();else mRender();}
 function mSetToday(d){if(!d||!d.date)return;MS.today=d;lsSet(mCk('mToday',[]),JSON.stringify(d));}
 function mApply(fn,args,r){if(!r)return;
+ if((fn==='mCustSave'||fn==='mCustOrder')&&r.custs){MS.cust=r;lsSet(mCk('mCustList',[]),JSON.stringify(r));return;}
+ if(fn==='mGridSet'&&(r.days||r.rows)){MS.grid=r;return;}
+ if(fn==='mPhoto')return;
  if(r.dup){if(r.today)mSetToday(r.today);return;}
  if(fn==='mCancel'){if(r.today)mSetToday(r.today);return;}
  if(/^mPay/.test(fn)&&r.custs){MS.pay=r;MS.payTab=r.tab;lsSet(mCk('mPayList',[r.tab]),JSON.stringify(r));return;}
@@ -1302,22 +1312,24 @@ function mDo(fn,args,done,local){
    toast('⚠ '+m,true);});}
 /* ---- பக்கம் ---- */
 function mLoad(){if(!mOn()){mRender();return;}mRender();
- var re=function(w){return function(r){if(w==='today')MS.today=r;else if(w==='pay'){MS.pay=r;MS.payTab=r.tab;}else MS.leave=r;if(S.page==='milk'&&MS.tab===w&&!sheetOpen())mRender();};};
+ var re=function(w){return function(r){if(w==='today')MS.today=r;else if(w==='pay'){MS.pay=r;MS.payTab=r.tab;}else if(w==='cust')MS.cust=r;else MS.leave=r;if(S.page==='milk'&&MS.tab===w&&!sheetOpen())mRender();};};
  var fl=function(e,had){MS.err=had?'':emsg(e);if(!had&&S.page==='milk')mRender();};
  MS.err='';
- if(MS.tab==='today')mGet('mToday',[],re('today'),fl);
+ if(MS.tab==='today'){mGet('mToday',[],re('today'),fl);mCovLoad();}
  else if(MS.tab==='pay')mGet('mPayList',[MS.payTab||''],re('pay'),fl);
+ else if(MS.tab==='cust')mGet('mCustList',[],re('cust'),fl);
+ else if(MS.tab==='grid')grLoad();
  else mGet('mLeaveList',[],re('leave'),fl);
  mFlush();}
 function mRender(){var b=$('mBox');if(!b)return;
- var tabs=[['today','📋 '+L('இன்று','Today')],['pay','💰 '+L('வசூல்','Collections')],['leave','🗓 '+L('விடுப்பு','Leave')]];
+ var tabs=[['today','<span>📋</span>'+L('இன்று','Today')],['pay','<span>💰</span>'+L('வசூல்','Money')],['leave','<span>🗓</span>'+L('விடுப்பு','Leave')],['cust','<span>👥</span>'+L('வாடிக்கை','Customers')],['grid','<span>📅</span>'+L('மாதம்','Month')]];
  $('mTabs').innerHTML='<div class="msub">'+tabs.map(function(x){return '<button class="'+(MS.tab===x[0]?'on':'')+'" data-act="mtab" data-t="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';
  if(!mOn()||MS.authBad){b.innerHTML='<div class="card"><div class="ch">🥛 '+L('பால் கணக்கை இணைக்கவும்','Link the milk account')+'</div><div class="small">'+L('லேப்டாப்பில் பால் கணக்கு Sheet ▸ மெனு பால் ▸ 📱 My Tasks app — பால் இணைப்பு ▸ வரும் QR-ஐ இந்த போனில் scan செய்யவும். அல்லது ⚙ ▸ 🥛 பால் கணக்கு இணைப்பில் ஒட்டவும்.','On the laptop: milk Sheet ▸ menu பால் ▸ 📱 My Tasks app — பால் இணைப்பு ▸ scan the QR with this phone. Or paste it in ⚙ ▸ 🥛 Milk account link.')+'</div><button class="save" data-go="set">⚙ '+L('அமைப்பு','Settings')+'</button></div>';return;}
- if(MS.err&&!(MS.tab==='today'?MS.today:MS.tab==='pay'?MS.pay:MS.leave)){var em=MS.err.replace(/^NetworkError\s*/,'');b.innerHTML='<div class="card"><div class="ch">⚠ '+L('பால் கணக்குடன் இணைக்க முடியவில்லை','Could not reach the milk account')+'</div><div class="small out" style="word-break:break-all">'+esc(em||'?')+'</div>'
+ if(MS.err&&MS.tab!=='grid'&&!({today:MS.today,pay:MS.pay,leave:MS.leave,cust:MS.cust})[MS.tab]){var em=MS.err.replace(/^NetworkError\s*/,'');b.innerHTML='<div class="card"><div class="ch">⚠ '+L('பால் கணக்குடன் இணைக்க முடியவில்லை','Could not reach the milk account')+'</div><div class="small out" style="word-break:break-all">'+esc(em||'?')+'</div>'
   +'<div class="small" style="margin-top:8px">'+L('சரிபார்க்க: பால் Sheet Apps Script-ல் Deploy ▸ Manage deployments ▸ ✏️ ▸ New version செய்தீர்களா? கீழே உள்ள இணைப்பை browser-ல் திறந்தால் milk-1… என்று வர வேண்டும்.','Check: did you do Deploy ▸ Manage deployments ▸ ✏️ ▸ New version in the milk Sheet? Opening the link below should show milk-1…')+'</div>'
   +'<a class="small" style="display:block;margin-top:6px;word-break:break-all" href="'+esc(CFG.mApi+'?mping=1')+'" target="_blank" rel="noopener">'+esc(CFG.mApi+'?mping=1')+'</a><button class="save" data-act="mref">⟳ '+L('மீண்டும் முயல்','Try again')+'</button><button class="save sec" data-go="set">⚙ '+L('இணைப்பு விவரம்','Link details')+'</button></div>';return;}
  var qf=mqfGet(),h=qf.length?'<button class="done bad" data-act="mqfshow">⚠ '+qf.length+L(' பால் பதிவுகள் சேமிக்க முடியவில்லை — பாருங்கள்',' milk entries could not be saved — check')+'</button>':'';
- if(MS.tab==='today')h+=mRenderToday();else if(MS.tab==='pay')h+=mRenderPay();else h+=mRenderLeave();
+ if(MS.tab==='today')h+=mRenderToday();else if(MS.tab==='pay')h+=mRenderPay();else if(MS.tab==='cust')h+=mRenderCust();else if(MS.tab==='grid')h+=mRenderGrid();else h+=mRenderLeave();
  b.innerHTML=h;}
 /* ---- 📋 இன்று ---- */
 function mPkTxt(p){var t2=[],u=L(' லி',' L');[['0.5',2],['0.7',1],['1',0]].forEach(function(x){if(p&&p[x[1]])t2.push(x[0]+u+' × '+p[x[1]]);});return t2.join(' + ');}
@@ -1361,6 +1373,7 @@ function mRenderToday(){var d=MS.today,F=mF(),h='';
  h+='<div class="tools" style="margin-bottom:8px"><div style="flex:1;font-size:13px;color:var(--mut)">'+esc(dmy(d.date))+' · '+L('பட்டியல் நேரம் ','List time ')+mHm(d.at)+'</div><button class="tb" data-act="mref">⟳ '+L('புதுப்பி','Refresh')+'</button></div>';
  if(d.date!==tdy())h+='<div class="hint warn">⚠ '+L('இன்றைய பட்டியல் இன்னும் வரவில்லை — காட்டுவது முந்தைய பட்டியல். ⟳ அழுத்தவும்.','Today\'s list has not come yet — showing an earlier one. Tap ⟳.')+'</div>';
  if(d.warn==='nomonth')h+='<div class="hint warn">⚠ '+L('பால் Sheet ▸ அமைப்பு ▸ மாதம், இன்றைய தேதியுடன் பொருந்தவில்லை','Milk Sheet ▸ settings month does not match today')+'</div>';
+ h+=mCovLine();
  h+='<div class="mseg">'+['FN','AN'].map(function(G){return '<button class="'+(G===F?'on':'')+'" data-act="mf" data-f="'+G+'">'+(G==='FN'?'🌅 ':'🌇 ')+shN(G)+'</button>';}).join('')+'</div>';
  if(!x)return h+mVehCard(d);
  var lv=x.leave||{n:0,who:[],lit:0};
@@ -1546,6 +1559,168 @@ document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target&&e.
 window.addEventListener('online',function(){mFlush();});
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&S.page==='milk'&&!CFG.locked&&!sheetOpen())mLoad();});
 setInterval(function(){if(document.hidden||S.page!=='milk'||MS.tab!=='today'||sheetOpen()||CFG.locked)return;var a=document.activeElement;if(a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))return;if(navigator.onLine)mGet('mToday',[],function(r,c){if(!c){MS.today=r;mRender();}});},120000);
+
+/* ======== 🥛 இரண்டாம் கட்டம் (v6.4): 👥 வாடிக்கையாளர், 📅 மாத grid, 🛵 பிரதீப் வரி ======== */
+MS.cust=null;MS.cuF={st:'தொடர்பவர்',f:'',q:''};MS.cuForm=null;MS.cuOrder=null;MS.grid=null;MS.gridMode='cust';MS.gridTab='';MS.gridId='';MS.gridDay=0;MS.photos={};
+var M_ACT='தொடர்பவர்',M_LEFT='விலகியவர்',M_PEND='தொடங்க உள்ளவர்';
+/* ---- 🛵 பிரதீப் விடுப்பு (My Accounts-ன் setCover) — பால் tab-ல் மட்டும் ---- */
+function mCovGet(){var c=null;try{c=JSON.parse(lsGet('c:getCover:[]')||'null');}catch(e){}
+ var d={today:tdy(),tomorrow:addDayL(tdy(),1),cover:{today:{am:false,pm:false},tomorrow:{am:false,pm:false}}};
+ if(c&&c.today===d.today)d=c;else if(c&&c.tomorrow===d.today)d.cover.today=c.cover.tomorrow;
+ qGet().forEach(function(q){if(q.fn!=='setCover')return;var m=q.args[1],cv={am:m==='am'||m==='day',pm:m==='pm'||m==='day'};if(q.args[0]===d.today)d.cover.today=cv;else if(q.args[0]===d.tomorrow)d.cover.tomorrow=cv;});
+ return d;}
+function mCovLoad(){if(!navigator.onLine)return;google.script.run.withSuccessHandler(function(){if(S.page==='milk'&&MS.tab==='today'&&!sheetOpen())mRender();}).withFailureHandler(function(){}).getCover();}
+function mCovTxt(c){var m=covMode(c);return m==='none'?'✓':m==='am'?'🌅 '+L('காலை விடுப்பு','morning leave'):m==='pm'?'🌇 '+L('மாலை விடுப்பு','evening leave'):'🏠 '+L('முழு நாள் விடுப்பு','full-day leave');}
+function mCovLine(){var d=mCovGet(),lv=covMode(d.cover.today)!=='none'||covMode(d.cover.tomorrow)!=='none';
+ return '<div class="mcovl'+(lv?' lv':'')+'" data-act="mcovopen">🛵 '+L('பிரதீப்','Pradeep')+': '+L('இன்று','today')+' '+mCovTxt(d.cover.today)+' · '+L('நாளை','tomorrow')+' '+mCovTxt(d.cover.tomorrow)+' ›</div>';}
+function mCovSheet(){var d=mCovGet();openSheet('<div class="shead"><b>🛵 '+L('பிரதீப் விடுப்பு','Pradeep leave')+'</b><button class="x" data-act="close">✕</button></div>'
+ +covRow(d.today,d.cover.today,t('cvToday'),'mcover')+covRow(d.tomorrow,d.cover.tomorrow,t('cvTom'),'mcover')
+ +'<div class="small" style="margin-top:10px">'+L('விடுப்பு குறித்தால், அன்று \"🛵 பால் packing & விநியோகம்\" உங்கள் பணிகளில் தானாக வரும்.','When marked, \"🛵 milk packing & delivery\" appears in your tasks for that day.')+'</div>');}
+/* ---- 👥 வாடிக்கையாளர் ---- */
+function cuFind(id){var r=null;((MS.cust&&MS.cust.custs)||[]).forEach(function(c){if(c.id===id)r=c;});return r;}
+function cuSub(c){var a=[];if(c.q)a.push(c.q+L(' லி',' L'));if(c.freq===(MS.cust&&MS.cust.opt.alt))a.push(L('ஒரு நாள் விட்டு','alternate day'));
+ if(c.woff)a.push(c.woff+(c.wsw?' → '+c.wsw.replace(' கொடு','').replace('யில்',''):L(' விடுமுறை',' off')));
+ if(c.st===M_PEND)a.push(L('தொடக்கம் ','starts ')+dmy(c.start));if(c.lat!==null&&c.lat!==undefined)a.push('📍');if(c.photo)a.push('📷');return a.join(' · ');}
+function mRenderCust(){var d=MS.cust,F=MS.cuF;if(!d)return '<div class="card empty">'+L('ஏற்றுகிறது…','Loading…')+'</div>';
+ if(MS.cuForm)return cuFormHtml();
+ if(MS.cuOrder)return cuOrderHtml();
+ var h='<div class="tools"><button class="addbtn" style="flex:1" data-act="cunew">＋ '+L('புதிய வாடிக்கையாளர்','New customer')+'</button><button class="tb" data-act="cuorder">⇅ '+L('வழி வரிசை','Route order')+'</button></div>';
+ var cnt={};d.custs.forEach(function(c){cnt[c.st]=(cnt[c.st]||0)+1;});
+ h+='<div class="chips" style="margin-bottom:6px">'+[[M_ACT,L('தொடர்பவர்','Active')],[M_PEND,L('தொடங்க உள்ளவர்','Starting')],[M_LEFT,L('விலகியவர்','Left')],['',L('எல்லாம்','All')]].map(function(x){
+  return (x[0]===M_PEND&&!cnt[M_PEND])?'':'<button class="chip'+(F.st===x[0]?' on':'')+'" data-act="cufst" data-v="'+x[0]+'">'+x[1]+(x[0]&&cnt[x[0]]?' '+cnt[x[0]]:'')+'</button>';}).join('')+'</div>';
+ h+='<div class="chips" style="margin-bottom:8px">'+[['',L('இரு நேரம்','Both')],['FN',shN('FN')],['AN',shN('AN')]].map(function(x){return '<button class="chip'+(F.f===x[0]?' on':'')+'" data-act="cuff" data-v="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';
+ h+='<input id="cuQ" class="inp" placeholder="🔍 '+L('பெயர் / வழி எண் / அலைபேசி','Name / route / phone')+'" value="'+esc(F.q)+'" style="margin-bottom:10px"><div class="card" id="cuList">'+cuListHtml()+'</div>';
+ return h;}
+function cuListHtml(){var F=MS.cuF,q=F.q.trim().toLowerCase(),last='';
+ var l=MS.cust.custs.filter(function(c){return (!F.st||c.st===F.st)&&(!F.f||c.f===F.f)&&(!q||(String(c.rt)+' '+c.n+' '+c.mob+' '+c.id).toLowerCase().indexOf(q)>=0);});
+ if(!l.length)return '<div class="empty">'+L('யாரும் இல்லை','No one')+'</div>';
+ return l.map(function(c){var g=c.st+c.f,hd='';if(g!==last&&!F.f){hd='<div class="gt" style="margin:8px 0 2px">'+shN(c.f)+(c.st!==M_ACT?' · '+esc(c.st):'')+'</div>';last=g;}
+  return hd+'<div class="mpay" data-act="cuopen" data-id="'+esc(c.id)+'"><div><b>'+(c.rt?'<span class="rtn">'+esc(c.rt)+'</span> - ':'')+esc(c.n)+'</b> <span class="s">'+esc(c.id)+'</span><div class="s">'+esc(cuSub(c))+'</div></div><span class="s">›</span></div>';}).join('');}
+function cuBlank(){var o=MS.cust.opt,F=MS.cuF.f||mF();var n=MS.cust.custs.filter(function(c){return c.st===M_ACT&&c.f===F;}).length;
+ return {isNew:true,id:MS.cust.next,f:F,n:'',mob:'',wa:'',rate:'',q:1,p1:1,p07:0,p05:0,canred:'ஆம்',min:0.5,ccat:'சாதாரணம்',bmode:o.bmode[0]||'பகிரி',recip:'',rem:'',freq:o.daily,altStart:tdy(),woff:[],wsw:'',lat:null,lng:null,addr:'',pos:n+1,start:addDayL(tdy(),1),st:M_ACT,qToday:false,photoNew:''};}
+function cuEdit(c){var o=JSON.parse(JSON.stringify(c));o.isNew=false;o.woff=c.woff?c.woff.split(/[,\s]+/).filter(Boolean):[];o.altStart=c.start||tdy();o.pos=c.rt||c.pos||1;o.qToday=false;o.photoNew='';return o;}
+function cuGrab(){var f=MS.cuForm;if(!f)return;var g=function(id){var e=$(id);return e?e.value:undefined;};
+ ['n','mob','wa','rate','min','addr','recip'].forEach(function(k){var v=g('cu_'+k);if(v!==undefined)f[k]=v.trim();});
+ ['p1','p07','p05','pos'].forEach(function(k){var v=g('cu_'+k);if(v!==undefined)f[k]=v===''?'':Number(v);});
+ var q=g('cu_q');if(q!==undefined)f.q=Number(q);var st=g('cu_start');if(st!==undefined)f.start=st;var as=g('cu_alts');if(as!==undefined)f.altStart=as;
+ var qt=$('cu_qt');if(qt)f.qToday=qt.checked;}
+function cuChips(name,opts,sel){return '<div class="chips">'+opts.map(function(o){var v=Array.isArray(o)?o[0]:o,l=Array.isArray(o)?o[1]:o;return '<button class="chip'+(sel===v?' on':'')+'" data-act="cuset" data-k="'+name+'" data-v="'+esc(v)+'">'+esc(l)+'</button>';}).join('')+'</div>';}
+function cuFormHtml(){var f=MS.cuForm,o=MS.cust.opt,pk=(Number(f.p1)||0)+0.7*(Number(f.p07)||0)+0.5*(Number(f.p05)||0);
+ var h='<div class="fhead"><button class="back" data-act="cuback">‹</button><b>'+(f.isNew?L('புதிய வாடிக்கையாளர் · ','New customer · ')+esc(f.id):esc((f.rt?f.rt+' - ':'')+f.n)+' <span class="s">'+esc(f.id)+'</span>')+'</b></div>';
+ h+='<div class="card">';
+ if(!f.isNew)h+=lab(L('நிலை','Status'))+cuChips('st',[[M_ACT,L('தொடர்பவர்','Active')],[M_LEFT,L('விலகியவர்','Left')]].concat(f.st===M_PEND?[[M_PEND,L('தொடங்க உள்ளவர்','Starting')]]:[]),f.st);
+ h+='<div class="g2"><div>'+lab(L('நேரம்','Shift'))+cuChips('f',[['FN',shN('FN')],['AN',shN('AN')]],f.f)+'</div><div>'+lab(L('வழியில் இடம்','Route position'))+'<input id="cu_pos" class="inp" type="number" inputmode="numeric" value="'+esc(f.pos)+'"></div></div>';
+ h+=lab(L('பெயர்','Name'))+'<input id="cu_n" class="inp" value="'+esc(f.n)+'">';
+ h+='<div class="g2"><div>'+lab(L('அலைபேசி','Mobile'))+'<input id="cu_mob" class="inp" type="tel" inputmode="tel" value="'+esc(f.mob)+'"></div><div>'+lab('WhatsApp')+'<input id="cu_wa" class="inp" type="tel" placeholder="'+L('காலி = அதே எண் · இல்லை','blank = same · இல்லை')+'" value="'+esc(f.wa)+'"></div></div>';
+ if(f.isNew)h+=lab(L('பால் தொடங்கும் தேதி','Milk starts on'))+'<input id="cu_start" class="inp" type="date" value="'+esc(f.start)+'">';
+ h+='</div><div class="card"><div class="g2"><div>'+lab(L('தினசரி அளவு','Daily quantity'))+'<select id="cu_q" class="inp" data-act="cuq">'+o.amounts.map(function(a){return '<option value="'+a+'"'+(Number(f.q)===a?' selected':'')+'>'+a+L(' லி',' L')+'</option>';}).join('')+'</select></div><div>'+lab(L('விலை / லி','Rate / L'))+'<input id="cu_rate" class="inp" type="number" inputmode="decimal" value="'+esc(f.rate)+'"></div></div>';
+ if(!f.isNew)h+='<label class="small" style="display:flex;gap:8px;align-items:center;margin-top:8px"><input id="cu_qt" type="checkbox"'+(f.qToday?' checked':'')+'> '+L('அளவு மாற்றம் இன்றே (இல்லையென்றால் நாளை முதல்)','Change quantity from today (else from tomorrow)')+'</label>';
+ h+=lab(L('கவர் விருப்பம் (வழக்கமான அளவுக்கு)','Preferred covers (for the usual quantity)'))+'<div class="g3"><div><div class="small">1 '+L('லி','L')+'</div><input id="cu_p1" class="inp" type="number" inputmode="numeric" value="'+esc(f.p1)+'"></div><div><div class="small">0.7</div><input id="cu_p07" class="inp" type="number" inputmode="numeric" value="'+esc(f.p07)+'"></div><div><div class="small">0.5</div><input id="cu_p05" class="inp" type="number" inputmode="numeric" value="'+esc(f.p05)+'"></div></div>'
+  +'<div class="small '+(Math.abs(pk-Number(f.q))<0.001||pk===0?'':'out')+'" id="cu_pk">'+L('கவர் கூட்டல் = ','Covers add up to ')+(Math.round(pk*100)/100)+L(' லி',' L')+(pk===0?L(' (காலி = தானாக)',' (blank = automatic)'):'')+'</div>';
+ h+=lab(L('நாள் முறை','Frequency'))+cuChips('freq',[[o.daily,L('தினமும்','Daily')],[o.alt,L('ஒரு நாள் விட்டு','Alternate day')]],f.freq===o.alt?o.alt:o.daily);
+ if(f.freq===o.alt)h+=lab(L('பால் கொடுக்கும் ஒரு நாள் (தொடக்கம்)','A day milk is given (start)'))+'<input id="cu_alts" class="inp" type="date" value="'+esc(f.altStart)+'">';
+ else{h+=lab(L('வார விடுமுறை','Weekly off'))+'<div class="chips">'+o.days.map(function(dn){return '<button class="chip'+(f.woff.indexOf(dn)>=0?' on':'')+'" data-act="cuwd" data-v="'+esc(dn)+'">'+esc(dn)+'</button>';}).join('')+'</div>';
+  if(f.woff.length)h+=lab(L('அன்று','On that day'))+cuChips('wsw',[['',L('பால் இல்லை','No milk')]].concat(o.swap.filter(function(x){return (x==='மாலையில் கொடு'?'AN':'FN')!==f.f;}).map(function(x){return [x,x];})),f.wsw);}
+ h+='</div><div class="card">'+lab('🏠 '+L('வீடு','House'))+'<input id="cu_addr" class="inp" placeholder="'+L('முகவரிக் குறிப்பு / அடையாளம்','Address note / landmark')+'" value="'+esc(f.addr)+'">';
+ h+='<div class="tbs" style="margin-top:8px"><button class="tb" data-act="cugps">📍 '+L('இங்கே இருப்பிடம் எடு','Use my location here')+'</button>'+(f.lat!==null&&f.lat!==undefined&&f.lat!==''?'<a class="tb" target="_blank" rel="noopener" href="https://maps.google.com/?q='+f.lat+','+f.lng+'">🧭 '+L('வரைபடம்','Map')+'</a><button class="tb" data-act="cugpsx">✕</button>':'')+'</div>'
+  +(f.lat!==null&&f.lat!==undefined&&f.lat!==''?'<div class="small">📍 '+Number(f.lat).toFixed(5)+', '+Number(f.lng).toFixed(5)+'</div>':'');
+ var ph=f.photoNew||(MS.photos[f.id]||'');
+ h+='<div style="margin-top:10px">'+(ph?'<img src="'+ph+'" style="width:100%;max-height:240px;object-fit:cover;border-radius:12px">':(f.photo&&!f.isNew?'<button class="tb" data-act="cuphload">🖼 '+L('புகைப்படத்தைக் காட்டு','Show photo')+'</button>':''))+'</div>'
+  +'<label class="tb" style="display:inline-block;margin-top:8px">📷 '+(f.photo||ph?L('புதிய புகைப்படம்','New photo'):L('வீட்டுப் புகைப்படம் எடு','Take house photo'))+'<input id="cu_ph" type="file" accept="image/*" capture="environment" style="display:none"></label></div>';
+ h+='<details class="card"><summary class="ch">'+L('மேலும் (குறைப்பு, ரத்து, பில்)','More (reduction, cancel, bill)')+'</summary>'
+  +lab(L('பால் குறைவு நாளில் குறைக்கலாமா','Can reduce on short days'))+cuChips('canred',[['ஆம்',L('ஆம்','Yes')],['இல்லை',L('இல்லை','No')]],f.canred==='இல்லை'?'இல்லை':'ஆம்')
+  +lab(L('குறைந்தபட்சம் (லி)','Minimum (L)'))+'<input id="cu_min" class="inp" type="number" inputmode="decimal" value="'+esc(f.min)+'">'
+  +lab(L('ரத்து வரிசை','Cancel priority'))+cuChips('ccat',o.ccat,f.ccat||'சாதாரணம்')
+  +lab(L('பில் அனுப்பும் முறை','Bill delivery'))+cuChips('bmode',o.bmode,f.bmode)
+  +lab(L('பில் யார் பெயரில் (வேறு வா. எண் — காலி = இவரே)','Bill under (another ID — blank = self)'))+'<input id="cu_recip" class="inp" value="'+esc(f.recip)+'">'
+  +lab(L('நிலுவை நினைவூட்டல்','Due reminder'))+cuChips('rem',[['',L('வேண்டும்','Yes')],['வேண்டாம்',L('வேண்டாம்','No')]],f.rem==='வேண்டாம்'?'வேண்டாம்':'')+'</details>';
+ h+='<button class="save" data-act="cusave">✓ '+(f.isNew?L('சேர்','Add'):t('update'))+'</button><button class="save sec" data-act="cuback">'+L('ரத்து','Cancel')+'</button>';
+ return h;}
+function cuOrderHtml(){var F=MS.cuOrder.f,ids=MS.cuOrder.ids,h='<div class="fhead"><button class="back" data-act="cuback">‹</button><b>⇅ '+L('வழி வரிசை — ','Route order — ')+shN(F)+'</b></div>';
+ h+='<div class="mseg">'+['FN','AN'].map(function(G){return '<button class="'+(G===F?'on':'')+'" data-act="cuof" data-f="'+G+'">'+shN(G)+'</button>';}).join('')+'</div><div class="card">';
+ ids.forEach(function(id,i){var c=cuFind(id);h+='<div class="mstop"><div><span class="rtn">'+(i+1)+'</span> - '+esc(c?c.n:id)+'</div><div class="q"><button class="tb mini" data-act="cuup" data-i="'+i+'">▲</button><button class="tb mini" data-act="cudn" data-i="'+i+'">▼</button></div></div>';});
+ return h+'</div><button class="save" data-act="cuosave">✓ '+L('இந்த வரிசையைச் சேமி','Save this order')+'</button><div class="small">'+L('சேமித்ததும் வழி எண்கள் Sheet-லும் பிரதீப் app-லும் மாறும்.','Saving updates route numbers in the Sheet and Pradeep\'s app.')+'</div>';}
+function cuOrderInit(F){MS.cuOrder={f:F,ids:MS.cust.custs.filter(function(c){return c.st===M_ACT&&c.f===F;}).sort(function(a,b){return (a.rt||999)-(b.rt||999);}).map(function(c){return c.id;})};}
+function cuResize(file,cb){var rd=new FileReader();rd.onload=function(){var im=new Image();im.onload=function(){var mx=1024,w=im.width,h=im.height,k=Math.min(1,mx/Math.max(w,h));var cv=document.createElement('canvas');cv.width=Math.round(w*k);cv.height=Math.round(h*k);cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);cb(cv.toDataURL('image/jpeg',0.72));};im.onerror=function(){toast('⚠ '+L('புகைப்படம் திறக்க முடியவில்லை','Could not open the photo'),true);};im.src=rd.result;};rd.readAsDataURL(file);}
+/* ---- 📅 மாத grid ---- */
+function grAmtSheet(id,day,cur,name){var a=(MS.grid&&MS.grid.amounts)||[0,0.5,0.7,1,1.5,2];MS.grPick={id:id,day:day};
+ openSheet('<div class="shead"><b>'+esc(name)+' · '+day+'</b><button class="x" data-act="close">✕</button></div><div class="chips">'+a.map(function(x){return '<button class="chip'+(cur===x?' on':'')+'" data-act="grset" data-v="'+x+'">'+x+L(' லி',' L')+'</button>';}).join('')
+  +'<button class="chip'+(cur===''?' on':'')+'" data-act="grset" data-v="">'+L('காலி','blank')+'</button></div>'+(MS.grid&&day===MS.grid.today?'<div class="small" style="margin-top:10px">'+L('இன்றைய கட்டம் — Sheet-ல் மாற்றியது போலவே திருத்தப் பதிவும் இன்று திரையும் உடனே மாறும்.','Today\'s cell — the change log and today screen update, same as editing the Sheet.')+'</div>':''));}
+function mRenderGrid(){var g=MS.grid,h='';
+ var tabs=(g&&g.tabs)||[MS.gridTab||tdy().slice(0,7)];
+ h+='<div class="tools"><select id="grTab" class="inp">'+tabs.slice().reverse().map(function(tb){return '<option value="'+esc(tb)+'"'+(g&&tb===g.tab?' selected':'')+'>'+esc(mMonL(tb))+'</option>';}).join('')+'</select></div>';
+ h+='<div class="mseg"><button class="'+(MS.gridMode==='cust'?'on':'')+'" data-act="grmode" data-v="cust">👤 '+L('ஒருவர்','One customer')+'</button><button class="'+(MS.gridMode==='day'?'on':'')+'" data-act="grmode" data-v="day">📋 '+L('ஒரு நாள் — எல்லோரும்','One day — all')+'</button></div>';
+ if(MS.gridMode==='cust'){var cl=(MS.cust&&MS.cust.custs)||[];
+  h+='<select id="grCust" class="inp" style="margin-bottom:10px"><option value="">— '+L('வாடிக்கையாளர் தேர்வு','Choose customer')+' —</option>'+['FN','AN'].map(function(G){return '<optgroup label="'+shN(G)+'">'+cl.filter(function(c){return c.f===G&&c.st!==M_PEND;}).map(function(c){return '<option value="'+esc(c.id)+'"'+(c.id===MS.gridId?' selected':'')+'>'+esc((c.rt?c.rt+' - ':'')+c.n+(c.st===M_LEFT?' ('+L('விலகியவர்','left')+')':''))+'</option>';}).join('')+'</optgroup>';}).join('')+'</select>';
+  if(!g||!g.days||g.id!==MS.gridId)return h+(MS.gridId?'<div class="card empty">'+L('ஏற்றுகிறது…','Loading…')+'</div>':'');
+  h+='<div class="card"><div class="row"><span><b>'+esc((g.rt?g.rt+' - ':'')+g.n)+'</b> <span class="s">'+shN(g.f)+'</span></span><span class="s">'+g.litr.toFixed(1)+L(' லி · ',' L · ')+money(g.tot)+'</span></div><div class="gcal">';
+  (LANG==='en'?['S','M','T','W','T','F','S']:['ஞா','தி','செ','பு','வி','வெ','ச']).forEach(function(w){h+='<div class="gw">'+w+'</div>';});
+  for(var i=0;i<g.dow1;i++)h+='<div></div>';
+  g.days.forEach(function(x){var cls=x.q===0?' z':x.q===''?' e':(x.q!==g.req?' df':'');h+='<button class="gd'+cls+(x.wo?' wo':'')+(x.d===g.today?' td':'')+'" data-act="grcell" data-d="'+x.d+'"><span>'+x.d+'</span><b>'+(x.q===''?'·':x.q)+'</b></button>';});
+  h+='</div><div class="small" style="margin-top:6px">'+L('சிவப்பு = 0 · நீலம் = வழக்கத்திலிருந்து மாறியது · சாம்பல் = வார விடுமுறை · பச்சைக் கோடு = இன்று','Red = 0 · blue = changed from usual · grey = weekly off · green border = today')+'</div></div>';
+  return h;}
+ if(!g||!g.rows)return h+'<div class="card empty">'+L('ஏற்றுகிறது…','Loading…')+'</div>';
+ h+='<div class="tools"><button class="tb" data-act="grday" data-v="-1">‹</button><div style="flex:1;text-align:center;font-weight:700">'+g.day+' '+esc(mMonL(g.tab))+(g.day===g.today?' · '+L('இன்று','today'):'')+'</div><button class="tb" data-act="grday" data-v="1">›</button></div>';
+ h+='<div class="card"><div class="three"><div><small>'+shN('FN')+'</small><b>'+g.tot.FN+L(' லி',' L')+'</b></div><div><small>'+shN('AN')+'</small><b>'+g.tot.AN+L(' லி',' L')+'</b></div><div><small>'+L('மொத்தம்','Total')+'</small><b>'+(Math.round((g.tot.FN+g.tot.AN)*100)/100)+'</b></div></div></div><div class="card">';
+ var last='';g.rows.forEach(function(x){var gk=x.act?x.f:'x';if(gk!==last){h+='<div class="gt" style="margin:6px 0 2px">'+(x.act?shN(x.f):L('விலகியவர்','Left'))+'</div>';last=gk;}
+  h+='<div class="mstop" data-act="grrow" data-id="'+esc(x.id)+'" style="cursor:pointer"><div>'+(x.rt!==''?'<span class="rtn">'+esc(x.rt)+'</span> - ':'')+esc(x.n)+'</div><div class="q '+(x.q===0?'out':(x.q!==''&&x.q!==x.req?'dnq':''))+'">'+(x.q===''?'·':x.q+L(' லி',' L'))+'</div></div>';});
+ return h+'</div>';}
+function grLoad(){var tab=MS.gridTab||'';if(MS.gridMode==='cust'){if(!MS.cust)mGet('mCustList',[],function(r){MS.cust=r;if(MS.tab==='grid'&&!sheetOpen())mRender();});
+  if(!MS.gridId){mRender();return;}mGet('mGrid',[tab,MS.gridId],function(r){MS.grid=r;MS.gridTab=r.tab;if(MS.tab==='grid'&&!sheetOpen())mRender();},function(e,had){if(!had)toast('⚠ '+emsg(e),true);});}
+ else mGet('mGridDay',[tab,MS.gridDay||0],function(r){MS.grid=r;MS.gridTab=r.tab;MS.gridDay=r.day;if(MS.tab==='grid'&&!sheetOpen())mRender();},function(e,had){if(!had)toast('⚠ '+emsg(e),true);});}
+/* ---- செயல்கள் ---- */
+var MACT2={
+ mcovopen:function(){mCovSheet();},
+ mcover:function(b){var ds=b.getAttribute('data-d'),m=b.getAttribute('data-m');qPush('setCover',[ds,m]);
+  try{var c=mCovGet();lsSet('c:getCover:[]',JSON.stringify(c));}catch(e){}closeSheet();mRender();toast(t('cvSaved'));},
+ cunew:function(){MS.cuForm=cuBlank();mRender();window.scrollTo(0,0);},
+ cuopen:function(b){var c=cuFind(b.getAttribute('data-id'));if(!c)return;MS.cuForm=cuEdit(c);mRender();window.scrollTo(0,0);},
+ cuback:function(){MS.cuForm=null;MS.cuOrder=null;mRender();},
+ cufst:function(b){MS.cuF.st=b.getAttribute('data-v');mRender();},
+ cuff:function(b){MS.cuF.f=b.getAttribute('data-v');mRender();},
+ cuset:function(b){cuGrab();var k=b.getAttribute('data-k'),v=b.getAttribute('data-v'),f=MS.cuForm;f[k]=v;
+  if(k==='f'&&f.wsw&&(f.wsw==='மாலையில் கொடு'?'AN':'FN')===v)f.wsw='';
+  if(k==='f'&&f.isNew)f.pos=MS.cust.custs.filter(function(c){return c.st===M_ACT&&c.f===v;}).length+1;mRender();},
+ cuwd:function(b){cuGrab();var v=b.getAttribute('data-v'),a=MS.cuForm.woff,i=a.indexOf(v);if(i>=0)a.splice(i,1);else a.push(v);if(!a.length)MS.cuForm.wsw='';mRender();},
+ cugps:function(){cuGrab();if(!navigator.geolocation){toast('⚠ GPS',true);return;}toast(L('📍 இருப்பிடம் எடுக்கிறது…','📍 Getting location…'));
+  navigator.geolocation.getCurrentPosition(function(p){var f=MS.cuForm;if(!f)return;f.lat=Math.round(p.coords.latitude*1e6)/1e6;f.lng=Math.round(p.coords.longitude*1e6)/1e6;mRender();toast('✓ 📍 ±'+Math.round(p.coords.accuracy||0)+' m');},
+   function(){toast('⚠ '+L('இருப்பிடம் கிடைக்கவில்லை — GPS / அனுமதியைப் பாருங்கள்','Could not get location — check GPS / permission'),true);},{enableHighAccuracy:true,timeout:25000,maximumAge:0});},
+ cugpsx:function(){cuGrab();MS.cuForm.lat=null;MS.cuForm.lng=null;mRender();},
+ cuphload:function(){var f=MS.cuForm;if(!navigator.onLine){toast('⚠ '+t('needNet'),true);return;}busy(true);
+  mCall('mPhotoGet',[f.id]).then(function(r){busy(false);if(r&&r.b64){MS.photos[f.id]=r.b64;mRender();}},function(e){busy(false);toast('⚠ '+emsg(e),true);});},
+ cusave:function(){cuGrab();var f=MS.cuForm,o=MS.cust.opt;
+  if(!f.n){toast('⚠ '+L('பெயர் தேவை','Name is required'),true);return;}
+  if(!(Number(f.rate)>0)){toast('⚠ '+L('விலை தேவை','Rate is required'),true);return;}
+  var pk=(Number(f.p1)||0)+0.7*(Number(f.p07)||0)+0.5*(Number(f.p05)||0);if(pk>0&&Math.abs(pk-Number(f.q))>0.001){toast('⚠ '+L('கவர் கூட்டல், தினசரி அளவுடன் பொருந்தவில்லை','Covers do not add up to the daily quantity'),true);return;}
+  if(f.isNew&&(!f.start||f.start<tdy())){toast('⚠ '+L('தொடக்கத் தேதி இன்று அல்லது பின்னர்','Start date must be today or later'),true);return;}
+  var a={isNew:f.isNew,id:f.id,st:f.st,f:f.f,pos:f.pos,n:f.n,mob:f.mob,wa:f.wa,rate:f.rate,q:f.q,p1:f.p1||0,p07:f.p07||0,p05:f.p05||0,canred:f.canred,min:f.min,ccat:f.ccat,bmode:f.bmode,recip:f.recip,rem:f.rem,
+   freq:f.freq===o.alt?o.alt:o.daily,daily:o.daily,altStart:f.altStart,woff:f.woff,wsw:f.wsw,lat:f.lat,lng:f.lng,addr:f.addr,start:f.start,qToday:!!f.qToday};
+  var photo=f.photoNew;
+  mDo('mCustSave',[a],function(r){if(!r){MS.cuForm=null;mRender();return;}
+   var id=r.saved;MS.cuForm=null;mRender();toast('✓ '+(f.isNew?L('சேர்க்கப்பட்டது — ','Added — ')+id:t('updated')));
+   if(photo&&id){MS.photos[id]=photo;mDo('mPhoto',[id,photo],function(){toast('✓ 📷');});}});},
+ cuorder:function(){cuOrderInit(MS.cuF.f||mF());mRender();window.scrollTo(0,0);},
+ cuof:function(b){cuOrderInit(b.getAttribute('data-f'));mRender();},
+ cuup:function(b){var i=+b.getAttribute('data-i'),a=MS.cuOrder.ids;if(i>0){var x=a[i];a[i]=a[i-1];a[i-1]=x;}mRender();},
+ cudn:function(b){var i=+b.getAttribute('data-i'),a=MS.cuOrder.ids;if(i<a.length-1){var x=a[i];a[i]=a[i+1];a[i+1]=x;}mRender();},
+ cuosave:function(){var o=MS.cuOrder;mDo('mCustOrder',[o.f,o.ids],function(r){MS.cuOrder=null;mRender();if(r)toast('✓ '+L('வழி வரிசை சேமிக்கப்பட்டது','Route order saved'));});},
+ grmode:function(b){MS.gridMode=b.getAttribute('data-v');MS.grid=null;grLoad();mRender();},
+ grcell:function(b){var g=MS.grid,d=+b.getAttribute('data-d'),x=g.days[d-1];grAmtSheet(g.id,d,x.q,(g.rt?g.rt+' - ':'')+g.n);},
+ grrow:function(b){var g=MS.grid,id=b.getAttribute('data-id'),x=null;g.rows.forEach(function(r){if(r.id===id)x=r;});if(x)grAmtSheet(id,g.day,x.q,(x.rt!==''?x.rt+' - ':'')+x.n);},
+ grset:function(b){var v=b.getAttribute('data-v'),p=MS.grPick,g=MS.grid;closeSheet();var val=v===''?'':Number(v);
+  mDo('mGridSet',[g.tab,p.id,p.day,val,MS.gridMode],function(r){if(r)mRender();},function(){if(g.days&&g.days[p.day-1])g.days[p.day-1].q=val;if(g.rows)g.rows.forEach(function(x){if(x.id===p.id)x.q=val;});mRender();});},
+ grday:function(b){var g=MS.grid;if(!g)return;var d=(g.day||1)+Number(b.getAttribute('data-v'));if(d<1||d>g.nd)return;MS.gridDay=d;grLoad();}
+};
+Object.keys(MACT2).forEach(function(k){ACT[k]=MACT2[k];});
+document.addEventListener('input',function(e){var id=e.target&&e.target.id;
+ if(id==='cuQ'){MS.cuF.q=e.target.value;var l=$('cuList');if(l)l.innerHTML=cuListHtml();}
+ else if(id==='cu_p1'||id==='cu_p07'||id==='cu_p05'){cuGrab();var f=MS.cuForm,pk=(Number(f.p1)||0)+0.7*(Number(f.p07)||0)+0.5*(Number(f.p05)||0),el=$('cu_pk');if(el){el.textContent=L('கவர் கூட்டல் = ','Covers add up to ')+(Math.round(pk*100)/100)+L(' லி',' L');el.className='small '+(Math.abs(pk-Number(f.q))<0.001||pk===0?'':'out');}}});
+document.addEventListener('change',function(e){var id=e.target&&e.target.id;
+ if(id==='cu_q'){cuGrab();var f=MS.cuForm,q=Number(f.q),p=[0,0,0];var best=null;for(var a=0;a<=5;a++)for(var m=0;m<=4;m++)for(var h=0;h<=6;h++){if(Math.abs(a+0.7*m+0.5*h-q)>0.001)continue;var n=a+m+h;if(!best||n<best[3])best=[a,m,h,n];}
+  if(best){f.p1=best[0];f.p07=best[1];f.p05=best[2];}mRender();}
+ else if(id==='cu_ph'&&e.target.files&&e.target.files[0]){cuGrab();var f2=MS.cuForm;cuResize(e.target.files[0],function(d){f2.photoNew=d;if(!f2.isNew){MS.photos[f2.id]=d;mDo('mPhoto',[f2.id,d],function(r){if(r)toast('✓ 📷 '+L('புகைப்படம் சேமிக்கப்பட்டது','Photo saved'));});}mRender();});}
+ else if(id==='grCust'){MS.gridId=e.target.value;MS.grid=null;grLoad();mRender();}
+ else if(id==='grTab'){MS.gridTab=e.target.value;MS.grid=null;grLoad();mRender();}});
 
 function boot(){var h=location.hash||'';
  if(h.indexOf('#mk=')===0){var mq={};h.slice(1).split('&').forEach(function(x){var i=x.indexOf('=');if(i>0)mq[x.slice(0,i)]=decodeURIComponent(x.slice(i+1));});
