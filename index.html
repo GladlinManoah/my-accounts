@@ -240,7 +240,7 @@ a.tb{text-decoration:none;display:inline-block;text-align:center}
 <datalist id="plist"></datalist>
 <div id="toast"></div>
 <script>
-var APP_VER='v6.3 · 19-10-2026';
+var APP_VER='v6.3.1 · 19-10-2026';
 var START=(function(){var p='';try{p=new URLSearchParams(location.search).get('p')||'';}catch(e){}return /^(task|milk|add|sum|per|loan|rec)$/.test(p)?p:'task';})();
 /* ---- API இணைப்பு (Apps Script) + cache: கடைசி data உடனே தெரியும், பின்னணியில் புதுப்பிக்கும் ---- */
 var CFG={};try{CFG=JSON.parse(localStorage.getItem('cfg')||'{}')||{};}catch(e){CFG={};}
@@ -1258,10 +1258,10 @@ function mMonL(tb){var p=String(tb||'').split('-');return (LANG==='en'?MMOE:MMON
 function mHm(ms){var d=new Date(ms||Date.now());return pad(d.getHours())+':'+pad(d.getMinutes());}
 function mCid(){return 'M'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 /* ---- இணைப்பு: பால் Sheet-ன் Apps Script (/exec) ---- */
-function mCall(fn,args,cid){var ac=null,tm=0;try{ac=new AbortController();tm=setTimeout(function(){try{ac.abort();}catch(e){}},30000);}catch(e){ac=null;}
+function mCall(fn,args,cid){var ac=null,tm=0;try{ac=new AbortController();tm=setTimeout(function(){try{ac.abort();}catch(e){}},45000);}catch(e){ac=null;}
  return fetch(CFG.mApi,{method:'POST',body:JSON.stringify({key:CFG.mKey||'',fn:fn,args:args||[],cid:cid||''}),redirect:'follow',signal:ac?ac.signal:undefined})
  .then(function(r){if(!r.ok)throw new Error('NetworkError HTTP '+r.status);return r.text();})
- .then(function(txt){clearTimeout(tm);var j;try{j=JSON.parse(txt);}catch(e){throw new Error('NetworkError bad response');}
+ .then(function(txt){clearTimeout(tm);var j;try{j=JSON.parse(txt);}catch(e){var tt=String(txt||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,140);throw new Error('NetworkError bad response: '+tt);}
    if(!j||!j.ok)throw new Error((j&&j.err)||'?');return j.r;},
   function(e){clearTimeout(tm);var m=String((e&&e.message)||e);throw new Error(/^NetworkError/.test(m)?m:'NetworkError '+(e&&e.name==='AbortError'?'timeout':m));});}
 function mCk(fn,args){return 'm:'+fn+':'+JSON.stringify(args||[]);}
@@ -1303,7 +1303,8 @@ function mDo(fn,args,done,local){
 /* ---- பக்கம் ---- */
 function mLoad(){if(!mOn()){mRender();return;}mRender();
  var re=function(w){return function(r){if(w==='today')MS.today=r;else if(w==='pay'){MS.pay=r;MS.payTab=r.tab;}else MS.leave=r;if(S.page==='milk'&&MS.tab===w&&!sheetOpen())mRender();};};
- var fl=function(e,had){if(!had&&!isNet(e))toast('⚠ '+emsg(e),true);if(!had&&S.page==='milk')mRender();};
+ var fl=function(e,had){MS.err=had?'':emsg(e);if(!had&&S.page==='milk')mRender();};
+ MS.err='';
  if(MS.tab==='today')mGet('mToday',[],re('today'),fl);
  else if(MS.tab==='pay')mGet('mPayList',[MS.payTab||''],re('pay'),fl);
  else mGet('mLeaveList',[],re('leave'),fl);
@@ -1312,6 +1313,9 @@ function mRender(){var b=$('mBox');if(!b)return;
  var tabs=[['today','📋 '+L('இன்று','Today')],['pay','💰 '+L('வசூல்','Collections')],['leave','🗓 '+L('விடுப்பு','Leave')]];
  $('mTabs').innerHTML='<div class="msub">'+tabs.map(function(x){return '<button class="'+(MS.tab===x[0]?'on':'')+'" data-act="mtab" data-t="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';
  if(!mOn()||MS.authBad){b.innerHTML='<div class="card"><div class="ch">🥛 '+L('பால் கணக்கை இணைக்கவும்','Link the milk account')+'</div><div class="small">'+L('லேப்டாப்பில் பால் கணக்கு Sheet ▸ மெனு பால் ▸ 📱 My Tasks app — பால் இணைப்பு ▸ வரும் QR-ஐ இந்த போனில் scan செய்யவும். அல்லது ⚙ ▸ 🥛 பால் கணக்கு இணைப்பில் ஒட்டவும்.','On the laptop: milk Sheet ▸ menu பால் ▸ 📱 My Tasks app — பால் இணைப்பு ▸ scan the QR with this phone. Or paste it in ⚙ ▸ 🥛 Milk account link.')+'</div><button class="save" data-go="set">⚙ '+L('அமைப்பு','Settings')+'</button></div>';return;}
+ if(MS.err&&!(MS.tab==='today'?MS.today:MS.tab==='pay'?MS.pay:MS.leave)){var em=MS.err.replace(/^NetworkError\s*/,'');b.innerHTML='<div class="card"><div class="ch">⚠ '+L('பால் கணக்குடன் இணைக்க முடியவில்லை','Could not reach the milk account')+'</div><div class="small out" style="word-break:break-all">'+esc(em||'?')+'</div>'
+  +'<div class="small" style="margin-top:8px">'+L('சரிபார்க்க: பால் Sheet Apps Script-ல் Deploy ▸ Manage deployments ▸ ✏️ ▸ New version செய்தீர்களா? கீழே உள்ள இணைப்பை browser-ல் திறந்தால் milk-1… என்று வர வேண்டும்.','Check: did you do Deploy ▸ Manage deployments ▸ ✏️ ▸ New version in the milk Sheet? Opening the link below should show milk-1…')+'</div>'
+  +'<a class="small" style="display:block;margin-top:6px;word-break:break-all" href="'+esc(CFG.mApi+'?mping=1')+'" target="_blank" rel="noopener">'+esc(CFG.mApi+'?mping=1')+'</a><button class="save" data-act="mref">⟳ '+L('மீண்டும் முயல்','Try again')+'</button><button class="save sec" data-go="set">⚙ '+L('இணைப்பு விவரம்','Link details')+'</button></div>';return;}
  var qf=mqfGet(),h=qf.length?'<button class="done bad" data-act="mqfshow">⚠ '+qf.length+L(' பால் பதிவுகள் சேமிக்க முடியவில்லை — பாருங்கள்',' milk entries could not be saved — check')+'</button>':'';
  if(MS.tab==='today')h+=mRenderToday();else if(MS.tab==='pay')h+=mRenderPay();else h+=mRenderLeave();
  b.innerHTML=h;}
