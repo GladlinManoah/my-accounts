@@ -187,6 +187,14 @@ details.card>summary::-webkit-details-marker{display:none}
 .msub{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px}
 .msub button{border:1px solid var(--bd);background:#fff;border-radius:12px;padding:7px 2px;font:inherit;font-weight:700;font-size:12px;color:var(--tx);line-height:1.25}
 .msub button span{display:block;font-size:18px}
+.masg{background:#eef1ed;border-radius:12px;padding:9px 12px;font-size:14px;margin-bottom:10px;cursor:pointer}
+.masg .r{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:2px 0}.masg .r>b{min-width:52px;color:var(--mut);font-weight:600}
+.masg.lv{background:#fff3e0;border:1px solid #ffcc80}.masg .w{color:#8a4b00;font-weight:700;margin-top:4px}
+.asn{background:#fff;border-radius:16px;padding:3px 10px}.asn.lv{background:#ffe0b2;color:#8a4b00;font-weight:700}
+.asgd{border-top:1px solid var(--bd);padding:10px 0 4px}.asgd .ttl{font-weight:700;margin-bottom:6px}.asgd label{display:block;font-size:13px;color:var(--mut);margin:6px 0}
+.asgs{margin:6px 0 10px}.asgs .l{font-size:14px;margin-bottom:5px}.asgs .chips{display:flex;flex-wrap:wrap;gap:6px}.lvw{color:#b45309;font-weight:700}
+.asgs a.wa{display:inline-block;margin-top:7px;color:#1B5E20;font-weight:700;text-decoration:none}
+.asr{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed var(--bd)}
 .mcovl{background:#eef1ed;color:var(--mut);border-radius:12px;padding:9px 12px;font-size:14px;margin-bottom:10px;cursor:pointer}
 .mcovl.lv{background:#fff3e0;color:#8a4b00;font-weight:700;border:1px solid #ffcc80}
 .gcal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
@@ -252,7 +260,7 @@ a.tb{text-decoration:none;display:inline-block;text-align:center}
 <datalist id="plist"></datalist>
 <div id="toast"></div>
 <script>
-var APP_VER='v6.6 · 20-10-2026';
+var APP_VER='v6.7 · 20-10-2026';
 var START=(function(){var p='';try{p=new URLSearchParams(location.search).get('p')||'';}catch(e){}return /^(task|milk|add|sum|per|loan|rec)$/.test(p)?p:'task';})();
 /* ---- API இணைப்பு (Apps Script) + cache: கடைசி data உடனே தெரியும், பின்னணியில் புதுப்பிக்கும் ---- */
 var CFG={};try{CFG=JSON.parse(localStorage.getItem('cfg')||'{}')||{};}catch(e){CFG={};}
@@ -1319,7 +1327,7 @@ function mLoad(){if(!mOn()){mRender();return;}mRender();
  var re=function(w){return function(r){if(w==='today')MS.today=r;else if(w==='pay'){MS.pay=r;MS.payTab=r.tab;}else if(w==='cust')MS.cust=r;else MS.leave=r;if(S.page==='milk'&&MS.tab===w&&!sheetOpen())mRender();};};
  var fl=function(e,had){MS.err=had?'':emsg(e);if(!had&&S.page==='milk')mRender();};
  MS.err='';
- if(MS.tab==='today'){mGet('mToday',[],re('today'),fl);mCovLoad();}
+ if(MS.tab==='today'){mGet('mToday',[],function(r,c){re('today')(r);if(!c){try{asgCover(r.asg);}catch(e){}}},fl);mCovLoad();}
  else if(MS.tab==='pay')mGet('mPayList',[MS.payTab||''],re('pay'),fl);
  else if(MS.tab==='cust')mGet('mCustList',[],re('cust'),fl);
  else if(MS.tab==='grid')grLoad();
@@ -1376,7 +1384,7 @@ function mRenderToday(){var d=MS.today,F=mF(),h='';
  h+='<div class="tools" style="margin-bottom:8px"><div style="flex:1;font-size:13px;color:var(--mut)">'+esc(dmy(d.date))+' · '+L('பட்டியல் நேரம் ','List time ')+mHm(d.at)+'</div><button class="tb" data-act="mref">⟳ '+L('புதுப்பி','Refresh')+'</button></div>';
  if(d.date!==tdy())h+='<div class="hint warn">⚠ '+L('இன்றைய பட்டியல் இன்னும் வரவில்லை — காட்டுவது முந்தைய பட்டியல். ⟳ அழுத்தவும்.','Today\'s list has not come yet — showing an earlier one. Tap ⟳.')+'</div>';
  if(d.warn==='nomonth')h+='<div class="hint warn">⚠ '+L('பால் Sheet ▸ அமைப்பு ▸ மாதம், இன்றைய தேதியுடன் பொருந்தவில்லை','Milk Sheet ▸ settings month does not match today')+'</div>';
- h+=mCovLine();
+ h+=mAsgLine();
  h+='<div class="mseg">'+['FN','AN'].map(function(G){return '<button class="'+(G===F?'on':'')+'" data-act="mf" data-f="'+G+'">'+(G==='FN'?'🌅 ':'🌇 ')+shN(G)+'</button>';}).join('')+'</div>';
  if(!x)return h+mVehCard(d);
  var st;
@@ -1937,6 +1945,63 @@ var MACT3={
  grwhy:function(b){MS.grPick.why=b.getAttribute('data-v');MS.grWhy=MS.grPick.why;grDraw();}
 };
 Object.keys(MACT3).forEach(function(k){ACT[k]=MACT3[k];});
+/* ======== 🛵 v6.7: விநியோகம் யார் — பால் Sheet "ஒதுக்கீடு" (பணியாளர் Sheet அதையே படிக்கிறது) ======== */
+MS.asgF={from:'',to:'',f:'FN',p:'',note:''};
+function asgD(){var d=MS.today;return d&&d.asg?d.asg:null;}
+function asgCell(x,F){return '<span class="asn'+(x.leave||x.off?' lv':'')+'">'+(F==='FN'?'🌅 ':'🌇 ')+esc(x.p==='ME'?L('நான்','Me'):x.n)+(x.leave?' ⚠ '+L('விடுப்பு','leave'):'')+(x.off?' ⏸':'')+'</span>';}
+function mAsgLine(){var a=asgD();if(!a)return mCovLine();
+ var bad=function(x){return x.leave||x.off;},lv=bad(a.today.FN)||bad(a.today.AN)||bad(a.tomorrow.FN)||bad(a.tomorrow.AN);
+ var h='<div class="masg'+(lv?' lv':'')+'" data-act="asgopen"><div class="r"><b>'+L('இன்று','Today')+'</b>'+asgCell(a.today.FN,'FN')+asgCell(a.today.AN,'AN')+'</div>'
+  +'<div class="r"><b>'+L('நாளை','Tomorrow')+'</b>'+asgCell(a.tomorrow.FN,'FN')+asgCell(a.tomorrow.AN,'AN')+' ›</div>';
+ if(lv)h+='<div class="w">⚠ '+L('விடுப்பு / நிறுத்தியவர் — தட்டி வேறு ஒருவரைத் தேர்வு செய்யவும்','On leave / paused — tap to choose someone else')+'</div>';
+ return h+'</div>';}
+function asgT(s){var p=String(s||'').split(':'),h=+p[0];return p.length<2?'':((h%12)||12)+':'+p[1];}
+function asgWa(ds,F,x,a){var st=asgT(a.starts&&a.starts[F]),td=tdy(),dd=ds===td?'இன்று':(ds===addDayL(td,1)?'நாளை':'');
+ var msg='வணக்கம் '+x.n+', '+(dd?dd+' ':'')+'('+dmy(ds)+') '+(F==='FN'?'காலை':'மாலை')+' பால் விநியோகம் உங்களுக்கு. '+(st?(F==='FN'?'காலை ':'மாலை ')+st+' மணிக்குப் ':'')+'பண்ணைக்கு வந்து app-ல் "பதிவு செய்" அழுத்துங்கள். நன்றி.';
+ return 'https://wa.me/91'+x.ph+'?text='+encodeURIComponent(msg);}
+function asgFl(f){return f==='FN'?'🌅 '+shN('FN'):f==='AN'?'🌇 '+shN('AN'):'🌅🌇 '+L('இரண்டும்','Both');}
+function asgSheet(){var a=asgD();if(!a){toast('⚠ '+L('பால் Sheet-ல் milk-5 இன்னும் இல்லை','Milk Sheet is not on milk-5 yet'),true);return;}
+ var f=MS.asgF,h='<div class="shead"><b>🛵 '+L('விநியோகம் யார்','Who delivers')+'</b><button class="x" data-act="close">✕</button></div>';
+ [[a.today,L('இன்று','Today')],[a.tomorrow,L('நாளை','Tomorrow')]].forEach(function(q){var day=q[0];
+  h+='<div class="asgd"><div class="ttl">'+q[1]+' · '+dmy(day.d)+'</div>';
+  ['FN','AN'].forEach(function(F){var x=day[F];
+   h+='<div class="asgs"><div class="l">'+(F==='FN'?'🌅 ':'🌇 ')+shN(F)+(x.leave?' <span class="lvw">⚠ '+L('பிரதீப் விடுப்பு — வேறு ஒருவரைத் தேர்வு செய்யவும்','Pradeep on leave — choose someone else')+'</span>':'')+(x.off?' <span class="lvw">⏸ '+L('இணைப்பு நிறுத்தம்','link paused')+'</span>':'')+'</div><div class="chips">';
+   a.people.forEach(function(p){h+='<button class="chip'+(p.id===x.p?' on':'')+'" data-act="asgone" data-d="'+day.d+'" data-f="'+F+'" data-p="'+esc(p.id)+'">'+esc(p.id==='ME'?L('நான்','Me'):p.n)+'</button>';});
+   h+='</div>';
+   if(x.p!=='ME'&&x.ph&&!x.leave)h+='<a class="wa" target="_blank" rel="noopener" href="'+esc(asgWa(day.d,F,x,a))+'">💬 '+L('WhatsApp-ல் சொல்','Tell on WhatsApp')+' — '+esc(x.n)+'</a>';
+   h+='</div>';});
+  h+='</div>';});
+ h+='<div class="asgd"><div class="ttl">📅 '+L('நிலையான / பல நாள் ஒதுக்கீடு','Standing / multi-day')+'</div>'
+  +'<label>'+L('முதல்','From')+'<input type="date" id="asFrom" value="'+esc(f.from||a.tomorrow.d)+'"></label>'
+  +'<label>'+L('வரை (காலி = இனி எப்போதும்)','To (empty = from then on)')+'<input type="date" id="asTo" value="'+esc(f.to||'')+'"></label>'
+  +'<div class="chips" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">'+['FN','AN','FD'].map(function(v){return '<button class="chip'+(f.f===v?' on':'')+'" data-act="asgf" data-v="'+v+'">'+asgFl(v)+'</button>';}).join('')+'</div>'
+  +'<select id="asP"><option value="">'+L('யார்?','Who?')+'</option>'+a.people.map(function(p){return '<option value="'+esc(p.id)+'"'+(f.p===p.id?' selected':'')+'>'+esc(p.id==='ME'?L('நான்','Me'):p.n)+(p.type&&p.id!=='ME'?' · '+esc(p.type):'')+'</option>';}).join('')+'</select>'
+  +'<input id="asNote" maxlength="100" placeholder="'+L('குறிப்பு (விருப்பம்)','Note (optional)')+'" value="'+esc(f.note||'')+'">'
+  +'<button class="save" data-act="asgadd" style="margin-top:8px">＋ '+L('சேர்','Add')+'</button></div>';
+ h+='<div class="asgd"><div class="ttl">'+L('நடப்பு ஒதுக்கீடுகள்','Current assignments')+'</div>';
+ if(!a.rows.length)h+='<div class="small">'+L('எதுவும் இல்லை — எல்லா நேரமும் பிரதீப்.','None — Pradeep does every shift.')+'</div>';
+ a.rows.slice().reverse().forEach(function(r){h+='<div class="asr"><div><b>'+esc(r.p==='ME'?L('நான்','Me'):r.n)+'</b> · '+asgFl(r.f)+'<div class="small">'+dmy(r.from)+(r.to?(r.to===r.from?'':' → '+dmy(r.to)):' → '+L('இனி எப்போதும்','onwards'))+(r.note?' · '+esc(r.note):'')+'</div></div><button class="tb" data-act="asgdel" data-id="'+esc(r.id)+'">'+(r.past?L('நிறுத்து','Stop'):'🗑')+'</button></div>';});
+ h+='<div class="small" style="margin-top:8px">'+L('கடைசியாகச் சேர்த்தது வெல்லும் · ஒதுக்காத நேரம் = பிரதீப் · "நான்" நாட்களில் 🛵 பால் பணி உங்கள் பணிகளில் தானாக வரும் · புதியவரைச் சேர்க்க: பணியாளர் Sheet ▸ விநியோகிப்பாளர்கள் tab.','Latest entry wins · unassigned = Pradeep · on "Me" days the 🛵 milk task appears in your tasks · to add a person: staff Sheet ▸ விநியோகிப்பாளர்கள் tab.')+(a.synced?' ('+L('பட்டியல் ','list ')+esc(a.synced)+')':'')+'</div>';
+ openSheet(h);}
+function asgKeep(){var f=MS.asgF;if($('asFrom'))f.from=$('asFrom').value;if($('asTo'))f.to=$('asTo').value;if($('asP'))f.p=$('asP').value;if($('asNote'))f.note=$('asNote').value;}
+function asgDo(fn,args,after){if(!navigator.onLine){toast('⚠ '+t('needNet'),true);return;}busy(true);
+ mCall(fn,args).then(function(r){busy(false);if(MS.today){MS.today.asg=r;lsSet(mCk('mToday',[]),JSON.stringify(MS.today));}if(after)after();try{asgCover(r);}catch(e){}asgSheet();mRender();toast('✓ '+L('சேமிக்கப்பட்டது','Saved'));},
+  function(e){busy(false);toast('⚠ '+(isNet(e)?t('needNet'):emsg(e)),true);});}
+/** "நான்" ஒதுக்கிய நாட்கள் → My Tasks 🛵 பால் பணி (setCover) — அடுத்த 14 நாள், மாறியவை மட்டும் */
+function asgCover(a){if(!a||!a.me)return 0;var prev=null;try{prev=JSON.parse(lsGet('asgMe')||'null');}catch(e){}prev=prev||{};
+ var td=tdy(),end=addDayL(td,13),ks={},ch=0,keep={};
+ Object.keys(prev).forEach(function(k){ks[k]=1;});Object.keys(a.me).forEach(function(k){ks[k]=1;});
+ Object.keys(ks).sort().forEach(function(ds){if(ds<td||ds>end)return;var m=a.me[ds]||'none',o=prev[ds]||'none';if(m!==o){qPush('setCover',[ds,m]);ch++;}if(a.me[ds])keep[ds]=a.me[ds];});
+ lsSet('asgMe',JSON.stringify(keep));return ch;}
+var MACT4={
+ asgopen:function(){asgSheet();},
+ asgone:function(b){if(b.classList.contains('on'))return;var ds=b.getAttribute('data-d');asgDo('mAsgAdd',[{from:ds,to:ds,f:b.getAttribute('data-f'),p:b.getAttribute('data-p'),note:L('இந்த நாள் மட்டும்','this day only')}]);},
+ asgf:function(b){asgKeep();MS.asgF.f=b.getAttribute('data-v');asgSheet();},
+ asgadd:function(){asgKeep();var f=MS.asgF;if(!f.from){toast('⚠ '+L('"முதல்" தேதி தேவை','"From" date needed'),true);return;}if(!f.p){toast('⚠ '+L('யார் என்று தேர்வு செய்யவும்','Choose who'),true);return;}
+  asgDo('mAsgAdd',[{from:f.from,to:f.to,f:f.f,p:f.p,note:f.note}],function(){MS.asgF={from:'',to:'',f:'FN',p:'',note:''};});},
+ asgdel:function(b){if(!confirm(L('இந்த ஒதுக்கீட்டை நீக்கவா? (தொடங்கியது என்றால் நேற்றுடன் முடியும்)','Remove this assignment? (if it already started, it ends yesterday)')))return;asgDo('mAsgDel',[b.getAttribute('data-id')]);}
+};
+Object.keys(MACT4).forEach(function(k){ACT[k]=MACT4[k];});
 document.addEventListener('change',function(e){var id=e.target&&e.target.id;
  if(id==='blTab'){MS.bl.tab=e.target.value;MS.bl.info=mCache('mBillInfo',[MS.bl.tab]);MS.bl.one='';mRender();blLoad();}
  else if(id==='blTpl'){MS.bl.tmpl=e.target.value;}
