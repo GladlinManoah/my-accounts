@@ -195,6 +195,9 @@ details.card>summary::-webkit-details-marker{display:none}
 .gd span{display:block;font-size:10px;color:var(--mut)}.gd b{font-size:14px}
 .gd.z b{color:var(--out)}.gd.df b{color:#1565c0}.gd.e b{color:#bbb}.gd.wo{background:#eceeec}.gd.td{border:2px solid var(--g)}
 .dnq{color:#1565c0}
+.mbdg{display:inline-block;background:#ef6c00;color:#fff;border-radius:10px;font-size:11px;padding:1px 7px;margin-left:6px;vertical-align:middle}.mbdg.t{background:#8E2B2B}
+.mbox{border:1px solid var(--bd);border-radius:12px;padding:8px}.mbox.nw{border-color:#f2a65a}.mbox b{display:block;font-size:12px;color:var(--mut);margin-bottom:4px}
+.mimg{height:120px;border-radius:10px;background:#eceeec;display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:22px}
 .msub button.on{background:var(--g);border-color:var(--g);color:#fff}
 .mseg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
 .mseg button{border:1px solid var(--bd);background:#f7f9f6;border-radius:12px;padding:11px 6px;font:inherit;font-size:14px;font-weight:700;color:var(--tx)}
@@ -249,7 +252,7 @@ a.tb{text-decoration:none;display:inline-block;text-align:center}
 <datalist id="plist"></datalist>
 <div id="toast"></div>
 <script>
-var APP_VER='v6.4.1 · 19-10-2026';
+var APP_VER='v6.5 · 19-10-2026';
 var START=(function(){var p='';try{p=new URLSearchParams(location.search).get('p')||'';}catch(e){}return /^(task|milk|add|sum|per|loan|rec)$/.test(p)?p:'task';})();
 /* ---- API இணைப்பு (Apps Script) + cache: கடைசி data உடனே தெரியும், பின்னணியில் புதுப்பிக்கும் ---- */
 var CFG={};try{CFG=JSON.parse(localStorage.getItem('cfg')||'{}')||{};}catch(e){CFG={};}
@@ -1254,8 +1257,8 @@ function pinChangeGo(){var o=$('pcOld').value,n1=$('pcNew').value,n2=$('pcNew2')
  phash(o).then(function(h){if(h!==CFG.pin){toast('⚠ '+L('பழைய PIN தவறு','Old PIN is wrong'),true);return null;}return phash(n1);}).then(function(h2){if(!h2)return;CFG.pin=h2;saveCfg();closeSheet();toast(t('savedOk'));});}
 setInterval(nightCheck,30000);
 /* ======== 🥛 பால் (v6.3) — பால் கணக்கு Sheet-உடன் நேரடி இணைப்பு (தரவு அந்த Sheet-லேயே) ======== */
-var MS={grF:{st:'தொடர்பவர்',f:''},tab:'today',f:null,today:null,pay:null,payTab:'',payQ:'',payFil:'due',paySh:'',leave:null,chg:null,lf:{},pf:{},cf:{},linkPending:false,authBad:false};
-var MQ_OK={mHave:1,mMilk:1,mVeh:1,mPayAdd:1,mPayEdit:1,mPayDel:1,mLeaveSave:1,mLeaveDel:1,mCancel:1,mCustSave:1,mCustOrder:1,mGridSet:1,mPhoto:1};
+var MS={photosN:{},grF:{st:'தொடர்பவர்',f:''},tab:'today',f:null,today:null,pay:null,payTab:'',payQ:'',payFil:'due',paySh:'',leave:null,chg:null,lf:{},pf:{},cf:{},linkPending:false,authBad:false};
+var MQ_OK={mHave:1,mMilk:1,mVeh:1,mPayAdd:1,mPayEdit:1,mPayDel:1,mLeaveSave:1,mLeaveDel:1,mCancel:1,mCustSave:1,mCustOrder:1,mGridSet:1,mPhoto:1,mHomeOk:1};
 var MWD=['ஞாயிறு','திங்கள்','செவ்வாய்','புதன்','வியாழன்','வெள்ளி','சனி'],MWE=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 var MMON=['ஜனவரி','பிப்ரவரி','மார்ச்','ஏப்ரல்','மே','ஜூன்','ஜூலை','ஆகஸ்ட்','செப்டம்பர்','அக்டோபர்','நவம்பர்','டிசம்பர்'],MMOE=['January','February','March','April','May','June','July','August','September','October','November','December'];
 function mOn(){return !!(CFG.mApi&&CFG.mKey);}
@@ -1291,7 +1294,7 @@ function mFlush(){if(mFlushing||!mOn())return;var q=mqGet();if(!q.length){qBadge
 function mDone(reload){if(S.page!=='milk'||sheetOpen())return;if(reload)mLoad();else mRender();}
 function mSetToday(d){if(!d||!d.date)return;MS.today=d;lsSet(mCk('mToday',[]),JSON.stringify(d));}
 function mApply(fn,args,r){if(!r)return;
- if((fn==='mCustSave'||fn==='mCustOrder')&&r.custs){MS.cust=r;lsSet(mCk('mCustList',[]),JSON.stringify(r));return;}
+ if((fn==='mCustSave'||fn==='mCustOrder'||fn==='mHomeOk')&&r.custs){MS.cust=r;lsSet(mCk('mCustList',[]),JSON.stringify(r));return;}
  if(fn==='mGridSet'&&(r.days||r.rows)){MS.grid=r;return;}
  if(fn==='mPhoto')return;
  if(r.dup){if(r.today)mSetToday(r.today);return;}
@@ -1583,7 +1586,7 @@ function mCovSheet(){var d=mCovGet();openSheet('<div class="shead"><b>🛵 '+L('
 function cuFind(id){var r=null;((MS.cust&&MS.cust.custs)||[]).forEach(function(c){if(c.id===id)r=c;});return r;}
 function cuSub(c){var a=[];if(c.q)a.push(c.q+L(' லி',' L'));if(c.freq===(MS.cust&&MS.cust.opt.alt))a.push(L('ஒரு நாள் விட்டு','alternate day'));
  if(c.woff)a.push(c.woff+(c.wsw?' → '+c.wsw.replace(' கொடு','').replace('யில்',''):L(' விடுமுறை',' off')));
- if(c.st===M_PEND)a.push(L('தொடக்கம் ','starts ')+dmy(c.start));if(c.qn)a.push('⏳ '+dmy(c.qn.from)+' → '+c.qn.q+L(' லி',' L'));if(c.lat!==null&&c.lat!==undefined)a.push('📍');if(c.photo)a.push('📷');return a.join(' · ');}
+ if(c.st===M_PEND)a.push(L('தொடக்கம் ','starts ')+dmy(c.start));if(c.qn)a.push('⏳ '+dmy(c.qn.from)+' → '+c.qn.q+L(' லி',' L'));if(cuTmpOn(c))a.push(dmy(c.tf)+' → '+dmy(c.tt||c.tf)+' '+L('வேறு முகவரி','other address'));if(c.lat!==null&&c.lat!==undefined)a.push('📍');if(c.photo)a.push('📷');return a.join(' · ');}
 function mRenderCust(){var d=MS.cust,F=MS.cuF;if(!d)return '<div class="card empty">'+L('ஏற்றுகிறது…','Loading…')+'</div>';
  if(MS.cuForm)return cuFormHtml();
  if(MS.cuOrder)return cuOrderHtml();
@@ -1592,21 +1595,28 @@ function mRenderCust(){var d=MS.cust,F=MS.cuF;if(!d)return '<div class="card emp
  h+='<div class="chips" style="margin-bottom:6px">'+[[M_ACT,L('தொடர்பவர்','Active')],[M_PEND,L('தொடங்க உள்ளவர்','Starting')],[M_LEFT,L('விலகியவர்','Left')],['',L('எல்லாம்','All')]].map(function(x){
   return (x[0]===M_PEND&&!cnt[M_PEND])?'':'<button class="chip'+(F.st===x[0]?' on':'')+'" data-act="cufst" data-v="'+x[0]+'">'+x[1]+(x[0]&&cnt[x[0]]?' '+cnt[x[0]]:'')+'</button>';}).join('')+'</div>';
  h+='<div class="chips" style="margin-bottom:8px">'+[['',L('இரு நேரம்','Both')],['FN',shN('FN')],['AN',shN('AN')]].map(function(x){return '<button class="chip'+(F.f===x[0]?' on':'')+'" data-act="cuff" data-v="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';
+ var np=d.custs.filter(function(c){return c.pend;}).length;
+ if(np)h+='<div class="mcovl lv" data-act="cupend">📍 '+L('பிரதீப் குறித்தவை — ஒப்புதலுக்கு ','Marked by Pradeep — to approve: ')+np+' ›</div>';
  h+='<input id="cuQ" class="inp" placeholder="🔍 '+L('பெயர் / வழி எண் / அலைபேசி','Name / route / phone')+'" value="'+esc(F.q)+'" style="margin-bottom:10px"><div class="card" id="cuList">'+cuListHtml()+'</div>';
  return h;}
 function cuListHtml(){var F=MS.cuF,q=F.q.trim().toLowerCase(),last='';
  var l=MS.cust.custs.filter(function(c){return (!F.st||c.st===F.st)&&(!F.f||c.f===F.f)&&(!q||(String(c.rt)+' '+c.n+' '+c.mob+' '+c.id).toLowerCase().indexOf(q)>=0);});
  if(!l.length)return '<div class="empty">'+L('யாரும் இல்லை','No one')+'</div>';
  return l.map(function(c){var g=c.st+c.f,hd='';if(g!==last&&!F.f){hd='<div class="gt" style="margin:8px 0 2px">'+shN(c.f)+(c.st!==M_ACT?' · '+esc(c.st):'')+'</div>';last=g;}
-  return hd+'<div class="mpay" data-act="cuopen" data-id="'+esc(c.id)+'"><div><b>'+(c.rt?'<span class="rtn">'+esc(c.rt)+'</span> - ':'')+esc(c.n)+'</b> <span class="s">'+esc(c.id)+'</span><div class="s">'+esc(cuSub(c))+'</div></div><span class="s">›</span></div>';}).join('');}
+  return hd+'<div class="mpay" data-act="cuopen" data-id="'+esc(c.id)+'"><div><b>'+(c.rt?'<span class="rtn">'+esc(c.rt)+'</span> - ':'')+esc(c.n)+'</b> <span class="s">'+esc(c.id)+'</span>'+cuBadges(c)+'<div class="s">'+esc(cuSub(c))+'</div></div><span class="s">›</span></div>';}).join('');}
+function cuTmpOn(c){return !!(c.tf&&(c.tt||c.tf)>=tdy());}
+function cuBadges(c){var b='';if(c.pend){if(c.pend.lat!==null)b+='<span class="mbdg">📍 '+L('புதிது','new')+'</span>';if(c.pend.ph)b+='<span class="mbdg">📷 '+L('புதிது','new')+'</span>';}
+ if(cuTmpOn(c))b+='<span class="mbdg t">🧳 '+L('தற்காலிகம்','temporary')+'</span>';return b;}
 function cuBlank(){var o=MS.cust.opt,F=MS.cuF.f||mF();var n=MS.cust.custs.filter(function(c){return c.st===M_ACT&&c.f===F;}).length;
- return {isNew:true,id:MS.cust.next,f:F,n:'',mob:'',wa:'',rate:'',q:1,p1:1,p07:0,p05:0,canred:'ஆம்',min:0.5,ccat:'சாதாரணம்',bmode:o.bmode[0]||'பகிரி',recip:'',rem:'',freq:o.daily,altStart:tdy(),woff:[],wsw:'',lat:null,lng:null,addr:'',pos:n+1,start:addDayL(tdy(),1),st:M_ACT,qFrom:'',photoNew:''};}
-function cuEdit(c){var o=JSON.parse(JSON.stringify(c));o.isNew=false;o.woff=c.woff?c.woff.split(/[,\s]+/).filter(Boolean):[];o.altStart=c.start||tdy();o.pos=c.rt||c.pos||1;o.qFrom=addDayL(tdy(),1);o.qCancel=false;o.photoNew='';return o;}
+ return {isNew:true,id:MS.cust.next,f:F,n:'',mob:'',wa:'',rate:'',q:1,p1:1,p07:0,p05:0,canred:'ஆம்',min:0.5,ccat:'சாதாரணம்',bmode:o.bmode[0]||'பகிரி',recip:'',rem:'',freq:o.daily,altStart:tdy(),woff:[],wsw:'',lat:null,lng:null,addr:'',pos:n+1,start:addDayL(tdy(),1),st:M_ACT,qFrom:'',photoNew:'',tf:'',tt:'',tn:'',tlat:null,tlng:null,tOpen:false};}
+function cuEdit(c){var o=JSON.parse(JSON.stringify(c));o.isNew=false;o.woff=c.woff?c.woff.split(/[,\s]+/).filter(Boolean):[];o.altStart=c.start||tdy();o.pos=c.rt||c.pos||1;o.qFrom=addDayL(tdy(),1);o.qCancel=false;o.photoNew='';o.tlat=c.tloc?c.tloc.lat:null;o.tlng=c.tloc?c.tloc.lng:null;o.tf=c.tf||'';o.tt=c.tt||'';o.tn=c.tn||'';o.tOpen=!!c.tf;return o;}
 function cuGrab(){var f=MS.cuForm;if(!f)return;var g=function(id){var e=$(id);return e?e.value:undefined;};
  ['n','mob','wa','rate','min','addr','recip'].forEach(function(k){var v=g('cu_'+k);if(v!==undefined)f[k]=v.trim();});
  ['p1','p07','p05','pos'].forEach(function(k){var v=g('cu_'+k);if(v!==undefined)f[k]=v===''?'':Number(v);});
  var q=g('cu_q');if(q!==undefined)f.q=Number(q);var st=g('cu_start');if(st!==undefined)f.start=st;var as=g('cu_alts');if(as!==undefined)f.altStart=as;
- var qf=g('cu_qf');if(qf!==undefined)f.qFrom=qf;}
+ var qf=g('cu_qf');if(qf!==undefined)f.qFrom=qf;
+ var tf=g('cu_tf');if(tf!==undefined)f.tf=tf;var tt=g('cu_tt');if(tt!==undefined)f.tt=tt;var tn=g('cu_tn');if(tn!==undefined)f.tn=tn.trim();
+ var tl=g('cu_tloc');if(tl!==undefined){var m=String(tl).match(/(-?\d{1,2}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)/);if(m){f.tlat=Number(m[1]);f.tlng=Number(m[2]);}else if(!String(tl).trim()){f.tlat=null;f.tlng=null;}}}
 function cuChips(name,opts,sel){return '<div class="chips">'+opts.map(function(o){var v=Array.isArray(o)?o[0]:o,l=Array.isArray(o)?o[1]:o;return '<button class="chip'+(sel===v?' on':'')+'" data-act="cuset" data-k="'+name+'" data-v="'+esc(v)+'">'+esc(l)+'</button>';}).join('')+'</div>';}
 function cuFormHtml(){var f=MS.cuForm,o=MS.cust.opt,pk=(Number(f.p1)||0)+0.7*(Number(f.p07)||0)+0.5*(Number(f.p05)||0);
  var h='<div class="fhead"><button class="back" data-act="cuback">‹</button><b>'+(f.isNew?L('புதிய வாடிக்கையாளர் · ','New customer · ')+esc(f.id):esc((f.rt?f.rt+' - ':'')+f.n)+' <span class="s">'+esc(f.id)+'</span>')+'</b></div>';
@@ -1625,12 +1635,13 @@ function cuFormHtml(){var f=MS.cuForm,o=MS.cust.opt,pk=(Number(f.p1)||0)+0.7*(Nu
  if(f.freq===o.alt)h+=lab(L('பால் கொடுக்கும் ஒரு நாள் (தொடக்கம்)','A day milk is given (start)'))+'<input id="cu_alts" class="inp" type="date" value="'+esc(f.altStart)+'">';
  else{h+=lab(L('வார விடுமுறை','Weekly off'))+'<div class="chips">'+o.days.map(function(dn){return '<button class="chip'+(f.woff.indexOf(dn)>=0?' on':'')+'" data-act="cuwd" data-v="'+esc(dn)+'">'+esc(dn)+'</button>';}).join('')+'</div>';
   if(f.woff.length)h+=lab(L('அன்று','On that day'))+cuChips('wsw',[['',L('பால் இல்லை','No milk')]].concat(o.swap.filter(function(x){return (x==='மாலையில் கொடு'?'AN':'FN')!==f.f;}).map(function(x){return [x,x];})),f.wsw);}
- h+='</div><div class="card">'+lab('🏠 '+L('வீடு','House'))+'<input id="cu_addr" class="inp" placeholder="'+L('முகவரிக் குறிப்பு / அடையாளம்','Address note / landmark')+'" value="'+esc(f.addr)+'">';
+ h+='</div>'+(f.pend&&!f.isNew?'<div class="mcovl lv" data-act="cupendone" data-id="'+esc(f.id)+'">📍 '+L('பிரதீப் குறித்தது — பார்த்து ஏற்க','Marked by Pradeep — review')+' ›</div>':'')+'<div class="card">'+lab('🏠 '+L('முகவரிக் குறிப்பு (பிரதீப்புக்குத் தெரியும்)','Address note (Pradeep sees it)'))+'<input id="cu_addr" class="inp" placeholder="'+L('அடையாளம் / வழி','Landmark / directions')+'" value="'+esc(f.addr)+'">';
  h+='<div class="tbs" style="margin-top:8px"><button class="tb" data-act="cugps">📍 '+L('இங்கே இருப்பிடம் எடு','Use my location here')+'</button>'+(f.lat!==null&&f.lat!==undefined&&f.lat!==''?'<a class="tb" target="_blank" rel="noopener" href="https://maps.google.com/?q='+f.lat+','+f.lng+'">🧭 '+L('வரைபடம்','Map')+'</a><button class="tb" data-act="cugpsx">✕</button>':'')+'</div>'
   +(f.lat!==null&&f.lat!==undefined&&f.lat!==''?'<div class="small">📍 '+Number(f.lat).toFixed(5)+', '+Number(f.lng).toFixed(5)+'</div>':'');
  var ph=f.photoNew||(MS.photos[f.id]||'');
  h+='<div style="margin-top:10px">'+(ph?'<img src="'+ph+'" style="width:100%;max-height:240px;object-fit:cover;border-radius:12px">':(f.photo&&!f.isNew?'<button class="tb" data-act="cuphload">🖼 '+L('புகைப்படத்தைக் காட்டு','Show photo')+'</button>':''))+'</div>'
   +'<label class="tb" style="display:inline-block;margin-top:8px">📷 '+(f.photo||ph?L('புதிய புகைப்படம்','New photo'):L('வீட்டுப் புகைப்படம் எடு','Take house photo'))+'<input id="cu_ph" type="file" accept="image/*" capture="environment" style="display:none"></label></div>';
+ h+=cuTmpHtml(f);
  h+='<details class="card"><summary class="ch">'+L('மேலும் (குறைப்பு, ரத்து, பில்)','More (reduction, cancel, bill)')+'</summary>'
   +lab(L('பால் குறைவு நாளில் குறைக்கலாமா','Can reduce on short days'))+cuChips('canred',[['ஆம்',L('ஆம்','Yes')],['இல்லை',L('இல்லை','No')]],f.canred==='இல்லை'?'இல்லை':'ஆம்')
   +lab(L('குறைந்தபட்சம் (லி)','Minimum (L)'))+'<input id="cu_min" class="inp" type="number" inputmode="decimal" value="'+esc(f.min)+'">'
@@ -1640,6 +1651,33 @@ function cuFormHtml(){var f=MS.cuForm,o=MS.cust.opt,pk=(Number(f.p1)||0)+0.7*(Nu
   +lab(L('நிலுவை நினைவூட்டல்','Due reminder'))+cuChips('rem',[['',L('வேண்டும்','Yes')],['வேண்டாம்',L('வேண்டாம்','No')]],f.rem==='வேண்டாம்'?'வேண்டாம்':'')+'</details>';
  h+='<button class="save" data-act="cusave">✓ '+(f.isNew?L('சேர்','Add'):t('update'))+'</button><button class="save sec" data-act="cuback">'+L('ரத்து','Cancel')+'</button>';
  return h;}
+function cuTmpHtml(f){var has=f.tlat!==null&&f.tlat!==undefined&&f.tlat!=='';
+ if(!f.tOpen)return '<div class="card"><button class="tb" data-act="cutmp">🧳 '+L('தற்காலிக முகவரி சேர் (சில நாட்கள் வேறு இடம்)','Add a temporary address (a few days elsewhere)')+'</button></div>';
+ var h='<div class="card" style="border-top:3px solid #8E2B2B"><div class="ch">🧳 '+L('தற்காலிக முகவரி','Temporary address')+'</div>';
+ h+='<div class="g2"><div>'+lab(L('முதல்','From'))+'<input id="cu_tf" class="inp" type="date" value="'+esc(f.tf||tdy())+'"></div><div>'+lab(L('வரை','To'))+'<input id="cu_tt" class="inp" type="date" value="'+esc(f.tt||f.tf||tdy())+'"></div></div>';
+ h+=lab(L('முகவரி / குறிப்பு','Address / note'))+'<input id="cu_tn" class="inp" value="'+esc(f.tn||'')+'">';
+ h+=lab(L('இருப்பிடம் (lat, lng — வரைபடத்திலிருந்து ஒட்டலாம்)','Location (lat, lng — can paste from Maps)'))+'<input id="cu_tloc" class="inp" inputmode="decimal" placeholder="8.18, 77.41" value="'+(has?esc(f.tlat+', '+f.tlng):'')+'">';
+ h+='<div class="tbs" style="margin-top:8px"><button class="tb" data-act="cutgps">📍 '+L('இங்கே இருப்பிடம் எடு','Use my location here')+'</button>'+(has?'<a class="tb" target="_blank" rel="noopener" href="https://maps.google.com/?q='+f.tlat+','+f.tlng+'">🧭</a>':'')+'</div>';
+ h+='<div class="hint" style="margin-top:8px">'+L('அந்த நாட்களில் மட்டும் பிரதீப் app இந்த முகவரியைக் காட்டும். முடிந்ததும் தானாகப் பழைய வீடு.','Only on those days Pradeep\'s app shows this address. After that, the usual house again.')+'</div>';
+ h+='<button class="save sec" style="color:var(--out)" data-act="cutmpx">✕ '+L('தற்காலிக முகவரியை நீக்கு','Remove the temporary address')+'</button></div>';
+ return h;}
+/* ---- 📍 பிரதீப் குறித்தது — ஒப்புதல் ---- */
+function cuPendSheet(id){var c=cuFind(id);if(!c||!c.pend){closeSheet();return;}var p=c.pend;MS.cuPendId=id;
+ var hasL=c.lat!==null&&c.lat!==undefined,img=function(src,cls){return src?'<img src="'+src+'" style="width:100%;height:120px;object-fit:cover;border-radius:10px">':'<div class="mimg'+(cls||'')+'">'+(cls?'⏳':'—')+'</div>';};
+ var cur=MS.photos[id]||'',nw=MS.photosN[id]||'';
+ var h='<div class="shead"><b>📍 '+esc((c.rt?c.rt+' - ':'')+c.n)+'</b><button class="x" data-act="close">✕</button></div>';
+ h+='<div class="small" style="margin-bottom:8px">'+L('பிரதீப் குறித்தது','Marked by Pradeep')+(p.at?' · '+esc(p.at):'')+(p.acc!==null&&p.acc!==undefined?' · ±'+p.acc+L(' மீ',' m'):'')+'</div>';
+ h+='<div class="g2"><div class="mbox"><b>'+L('இப்போது','Now')+'</b>'+(c.photo?(cur?img(cur):img('',' ld')):img(''))+'<div class="small">📍 '+(hasL?Number(c.lat).toFixed(5)+', '+Number(c.lng).toFixed(5)+' <a target="_blank" rel="noopener" href="https://maps.google.com/?q='+c.lat+','+c.lng+'">🧭</a>':L('இல்லை','none'))+'</div></div>';
+ h+='<div class="mbox nw"><b>'+L('புதியது','New')+'</b>'+(p.ph?(nw?img(nw):img('',' ld')):img(''))+'<div class="small">📍 '+(p.lat!==null?Number(p.lat).toFixed(5)+', '+Number(p.lng).toFixed(5)+' <a target="_blank" rel="noopener" href="https://maps.google.com/?q='+p.lat+','+p.lng+'">🧭</a>':L('இல்லை','none'))+'</div></div></div>';
+ if(p.lat!==null&&p.ph)h+='<button class="save" data-act="cuok" data-w="both">✓ '+L('இரண்டையும் ஏற்கிறேன்','Accept both')+'</button><div class="g2"><button class="save sec" style="margin-top:0" data-act="cuok" data-w="loc">📍 '+L('மட்டும்','only')+'</button><button class="save sec" style="margin-top:0" data-act="cuok" data-w="ph">📷 '+L('மட்டும்','only')+'</button></div>';
+ else h+='<button class="save" data-act="cuok" data-w="'+(p.ph?'ph':'loc')+'">✓ '+L('ஏற்கிறேன்','Accept')+'</button>';
+ h+='<button class="save sec" style="color:var(--out)" data-act="cuok" data-w="no">✗ '+L('வேண்டாம் (நீக்கு)','Reject (remove)')+'</button>';
+ h+='<div class="small" style="margin-top:6px">'+L('ஏற்றதும் பால் Sheet-ல் சேமிப்பு; பிரதீப் app-லும் வழி வரிசைக் கணக்கிலும் இதுவே.','Once accepted it is saved in the milk Sheet; Pradeep\'s app and the route calculation use it.')+'</div>';
+ openSheet(h);
+ if(navigator.onLine){
+  if(c.photo&&!cur)mCall('mPhotoGet',[id,'']).then(function(r){if(r&&r.b64){MS.photos[id]=r.b64;if(MS.cuPendId===id&&sheetOpen())cuPendSheet(id);}},function(){});
+  if(p.ph&&!nw)mCall('mPhotoGet',[id,'new']).then(function(r){if(r&&r.b64){MS.photosN[id]=r.b64;if(MS.cuPendId===id&&sheetOpen())cuPendSheet(id);}},function(){});}}
+function cuNextPend(){var c=(MS.cust.custs||[]).filter(function(x){return x.pend;})[0];if(c)cuPendSheet(c.id);else{closeSheet();mRender();}}
 function cuOrderHtml(){var F=MS.cuOrder.f,ids=MS.cuOrder.ids,h='<div class="fhead"><button class="back" data-act="cuback">‹</button><b>⇅ '+L('வழி வரிசை — ','Route order — ')+shN(F)+'</b></div>';
  h+='<div class="mseg">'+['FN','AN'].map(function(G){return '<button class="'+(G===F?'on':'')+'" data-act="cuof" data-f="'+G+'">'+shN(G)+'</button>';}).join('')+'</div><div class="card">';
  ids.forEach(function(id,i){var c=cuFind(id);h+='<div class="mstop"><div><span class="rtn">'+(i+1)+'</span> - '+esc(c?c.n:id)+'</div><div class="q"><button class="tb mini" data-act="cuup" data-i="'+i+'">▲</button><button class="tb mini" data-act="cudn" data-i="'+i+'">▼</button></div></div>';});
@@ -1692,6 +1730,17 @@ var MACT2={
  cugps:function(){cuGrab();if(!navigator.geolocation){toast('⚠ GPS',true);return;}toast(L('📍 இருப்பிடம் எடுக்கிறது…','📍 Getting location…'));
   navigator.geolocation.getCurrentPosition(function(p){var f=MS.cuForm;if(!f)return;f.lat=Math.round(p.coords.latitude*1e6)/1e6;f.lng=Math.round(p.coords.longitude*1e6)/1e6;mRender();toast('✓ 📍 ±'+Math.round(p.coords.accuracy||0)+' m');},
    function(){toast('⚠ '+L('இருப்பிடம் கிடைக்கவில்லை — GPS / அனுமதியைப் பாருங்கள்','Could not get location — check GPS / permission'),true);},{enableHighAccuracy:true,timeout:25000,maximumAge:0});},
+ cupend:function(){cuNextPend();},
+ cupendone:function(b){cuGrab();cuPendSheet(b.getAttribute('data-id'));},
+ cuok:function(b){var id=MS.cuPendId,w=b.getAttribute('data-w');if(!id)return;closeSheet();
+  mDo('mHomeOk',[id,w],function(r){toast(w==='no'?L('✓ நீக்கப்பட்டது','✓ Removed'):L('✓ ஏற்கப்பட்டது','✓ Accepted'));delete MS.photosN[id];if(w==='both'||w==='ph')delete MS.photos[id];
+   if(MS.cuForm&&MS.cuForm.id===id){var c=cuFind(id);if(c){var keep=MS.cuForm;cuGrab();var nf=cuEdit(c);['n','mob','wa','rate','q','p1','p07','p05','addr','tf','tt','tn','tlat','tlng','tOpen','qFrom'].forEach(function(k){nf[k]=keep[k];});if(w==='both'||w==='loc'){nf.lat=c.lat;nf.lng=c.lng;}MS.cuForm=nf;}mRender();return;}
+   if(r&&(MS.cust.custs||[]).some(function(x){return x.pend;}))cuNextPend();else mRender();});},
+ cutmp:function(){cuGrab();var f=MS.cuForm;f.tOpen=true;if(!f.tf){f.tf=tdy();f.tt=tdy();}mRender();},
+ cutmpx:function(){cuGrab();var f=MS.cuForm;f.tOpen=false;f.tf='';f.tt='';f.tn='';f.tlat=null;f.tlng=null;mRender();},
+ cutgps:function(){cuGrab();if(!navigator.geolocation){toast('⚠ GPS',true);return;}toast(L('📍 இருப்பிடம் எடுக்கிறது…','📍 Getting location…'));
+  navigator.geolocation.getCurrentPosition(function(p){var f=MS.cuForm;if(!f)return;f.tlat=Math.round(p.coords.latitude*1e6)/1e6;f.tlng=Math.round(p.coords.longitude*1e6)/1e6;mRender();toast('✓ 📍 ±'+Math.round(p.coords.accuracy||0)+' m');},
+   function(){toast('⚠ '+L('இருப்பிடம் கிடைக்கவில்லை — GPS / அனுமதியைப் பாருங்கள்','Could not get location — check GPS / permission'),true);},{enableHighAccuracy:true,timeout:25000,maximumAge:0});},
  cuqnx:function(){cuGrab();MS.cuForm.qCancel=true;mRender();},
  cugpsx:function(){cuGrab();MS.cuForm.lat=null;MS.cuForm.lng=null;mRender();},
  cuphload:function(){var f=MS.cuForm;if(!navigator.onLine){toast('⚠ '+t('needNet'),true);return;}busy(true);
@@ -1700,10 +1749,12 @@ var MACT2={
   if(!f.n){toast('⚠ '+L('பெயர் தேவை','Name is required'),true);return;}
   if(!(Number(f.rate)>0)){toast('⚠ '+L('விலை தேவை','Rate is required'),true);return;}
   var pk=(Number(f.p1)||0)+0.7*(Number(f.p07)||0)+0.5*(Number(f.p05)||0);if(pk>0&&Math.abs(pk-Number(f.q))>0.001){toast('⚠ '+L('கவர் கூட்டல், தினசரி அளவுடன் பொருந்தவில்லை','Covers do not add up to the daily quantity'),true);return;}
+  if(f.tOpen){if(!f.tf){toast('⚠ '+L('தற்காலிக முகவரி — முதல் தேதி','Temporary address — from date'),true);return;}if((f.tt||f.tf)<f.tf){toast('⚠ '+L('"வரை" தேதி "முதல்" தேதிக்குப் பின் இருக்க வேண்டும்','"To" must be on or after "From"'),true);return;}
+   if(!f.tn&&(f.tlat===null||f.tlat===undefined||f.tlat==='')){toast('⚠ '+L('தற்காலிக முகவரி அல்லது இருப்பிடம் தேவை','Temporary address or location is needed'),true);return;}}
   if(!f.isNew&&f.qFrom&&f.qFrom<tdy()){toast('⚠ '+L('மாற்றத் தேதி இன்று அல்லது பின்னர்','Change date must be today or later'),true);return;}
   if(f.isNew&&(!f.start||f.start<tdy())){toast('⚠ '+L('தொடக்கத் தேதி இன்று அல்லது பின்னர்','Start date must be today or later'),true);return;}
   var a={isNew:f.isNew,id:f.id,st:f.st,f:f.f,pos:f.pos,n:f.n,mob:f.mob,wa:f.wa,rate:f.rate,q:f.q,p1:f.p1||0,p07:f.p07||0,p05:f.p05||0,canred:f.canred,min:f.min,ccat:f.ccat,bmode:f.bmode,recip:f.recip,rem:f.rem,
-   freq:f.freq===o.alt?o.alt:o.daily,daily:o.daily,altStart:f.altStart,woff:f.woff,wsw:f.wsw,lat:f.lat,lng:f.lng,addr:f.addr,start:f.start,qFrom:f.qFrom||'',qCancel:!!f.qCancel};
+   freq:f.freq===o.alt?o.alt:o.daily,daily:o.daily,altStart:f.altStart,woff:f.woff,wsw:f.wsw,lat:f.lat,lng:f.lng,addr:f.addr,start:f.start,qFrom:f.qFrom||'',qCancel:!!f.qCancel,tf:f.tOpen?f.tf:'',tt:f.tOpen?(f.tt||f.tf):'',tn:f.tOpen?f.tn:'',tlat:f.tOpen?f.tlat:null,tlng:f.tOpen?f.tlng:null};
   var photo=f.photoNew;
   mDo('mCustSave',[a],function(r){if(!r){MS.cuForm=null;mRender();return;}
    var id=r.saved;MS.cuForm=null;mRender();toast('✓ '+(f.isNew?L('சேர்க்கப்பட்டது — ','Added — ')+id:t('updated')));
